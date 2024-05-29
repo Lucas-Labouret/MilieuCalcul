@@ -8,22 +8,25 @@ import local.furthestpointoptimization.model.VertexSet;
 public class App extends Application {
     @Override
     public void start(Stage stage) {
-        int numVertices = 100;
+        int hexWidth = 8;
+        int hexHeight = (int) Math.ceil(hexWidth / Math.sqrt(2));
+
+        int numVertices = 200;
         double convergenceTolerance = 0.95;
 
-        VertexSet unoptimized = new VertexSet(numVertices);
+        VertexSet unoptimized = VertexSet.newHexBorderedSet(8, 1, numVertices);
         unoptimized.delaunayTriangulate();
 
         VertexSet optimized = new VertexSet(unoptimized);
-        optimized.optimize(convergenceTolerance);
+        //optimized.optimize(convergenceTolerance);
 
         VertexSet bordered = new VertexSet(optimized);
-        bordered.addBorder();
+        //bordered.addBorder();
 
-        int size = 800;
-        //CanvasPopUp.create(unoptimized, size);
+        int size = 100;
+        CanvasPopUp.create(unoptimized, size);
         //CanvasPopUp.create(optimized, size);
-        CanvasPopUp.create(bordered, size);
+        //CanvasPopUp.create(bordered, size);
     }
 
     public static void main(String[] args) {

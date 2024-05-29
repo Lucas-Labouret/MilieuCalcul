@@ -19,20 +19,16 @@ public class CanvasPopUp {
     private final Canvas canvas = new Canvas();
 
     public CanvasPopUp(VertexSet vertexSet, int size) {
-        canvas.setWidth(size+20);
-        canvas.setHeight(size+20);
-
-        //System.out.println(vertexSet.getSize());
+        canvas.setWidth(size*vertexSet.getWidth());
+        canvas.setHeight(size*vertexSet.getHeight());
 
         for (Vertex vertex : vertexSet) {
             GraphicsContext gc = canvas.getGraphicsContext2D();
-            //gc.fillText(Integer.toString(vertex.getId()), vertex.getX()*size + 5, vertex.getY()*size - 5);
-            //gc.fillOval(vertex.getX()*size - 5, vertex.getY()*size - 5, 10, 10);
-            //System.out.println(vertex.getX() + " " + vertex.getY() + " " + vertex.getNeighbors().size());
+            gc.fillOval(vertex.getX()*size-2, vertex.getY()*size-2, 4, 4);
             for (Vertex neighbor : vertex.getNeighbors()) {
                 gc.strokeLine(
-                        vertex.getX()*size   , vertex.getY()*size,
-                        neighbor.getX()*size, neighbor.getY()*size
+                    vertex.getX()*size   , vertex.getY()*size,
+                    neighbor.getX()*size, neighbor.getY()*size
                 );
             }
         }
