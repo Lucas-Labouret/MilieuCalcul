@@ -17,13 +17,13 @@ public class App extends Application {
         VertexSet optimized = new VertexSet(unoptimized);
         optimized.optimize(convergenceTolerance);
 
-        //VertexSet bordered = new VertexSet(optimized);
-        //bordered.addBorder();
+        VertexSet bordered = new VertexSet(optimized);
+        bordered.addBorder();
 
-        int size = 600;
-        CanvasPopUp.create(unoptimized, size);
-        CanvasPopUp.create(optimized, size);
-        //CanvasPopUp.create(bordered, size);
+        int size = 800;
+        //CanvasPopUp.create(unoptimized, size);
+        //CanvasPopUp.create(optimized, size);
+        CanvasPopUp.create(bordered, size);
     }
 
     public static void main(String[] args) {

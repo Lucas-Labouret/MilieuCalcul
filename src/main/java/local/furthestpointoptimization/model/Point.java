@@ -19,7 +19,7 @@ public class Point {
         if (this == obj) return true;
         if (obj == null) return false;
         if (obj instanceof Point point)
-            return Math.abs(this.getX() - point.getX()) < 1e-6 && Math.abs(this.getY() - point.getY()) < 1e-6;
+            return x == point.x && y == point.y;
         return false;
     }
 

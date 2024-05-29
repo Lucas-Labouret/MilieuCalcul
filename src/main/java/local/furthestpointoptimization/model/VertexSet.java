@@ -6,7 +6,7 @@ import java.util.function.Function;
 public class VertexSet extends HashSet<Vertex> {
     public VertexSet(int count) {
         for (int i = 0; i < count; i++) {
-            this.add(new Vertex(Math.random(), Math.random()));
+            this.add(new Vertex(Math.random()*count, Math.random()*count));
         }
 
         double minX = getMinX();
@@ -52,7 +52,7 @@ public class VertexSet extends HashSet<Vertex> {
     }
 
     public void addBorder(){
-        int borderSize = (int) Math.ceil(Math.sqrt(this.size())) - 1;
+        int borderSize = (int) Math.floor(Math.sqrt(this.size()));
 
         double minX = getMinX(), minY = getMinY();
         double maxX = getMaxX(), maxY = getMaxY();
@@ -61,35 +61,157 @@ public class VertexSet extends HashSet<Vertex> {
             double x = vertex.getX();
             double y = vertex.getY();
 
-            vertex.setX((x - minX)*(1-2*getMaxDist())/(maxX - minX) + getMaxDist());
-            vertex.setY((y - minY)*(1-2*getMaxDist())/(maxY - minY) + getMaxDist());
+            vertex.setX((x - minX)*(1-2/(double)borderSize)/(maxX - minX) + 1/(double)borderSize);
+            vertex.setY((y - minY)*(1-2/(double)borderSize)/(maxY - minY) + 1/(double)borderSize);
         }
 
-        this.add(new Vertex(0, 0));
-        this.add(new Vertex(0, 1));
-        this.add(new Vertex(1, 0));
-        this.add(new Vertex(1, 1));
+        ArrayList<Vertex> innerTop = new ArrayList<>();
+        ArrayList<Vertex> innerLeft = new ArrayList<>();
+        ArrayList<Vertex> innerRight = new ArrayList<>();
+        ArrayList<Vertex> innerBot = new ArrayList<>();
 
-        for (int i = 1; i < borderSize; i++){
-            this.add(new Vertex(0, i/(double)borderSize));
-            this.add(new Vertex(1, i/(double)borderSize));
-            this.add(new Vertex(i/(double)borderSize, 0));
-            this.add(new Vertex(i/(double)borderSize, 1));
-        }
+        Vertex innerTopLeft = new Vertex(0.5/(double)borderSize, 0.5/(double)borderSize);
+        Vertex innerTopRight = new Vertex(1-0.5/(double)borderSize, 0.5/(double)borderSize);
+        Vertex innerBotLeft = new Vertex(0.5/(double)borderSize, 1-0.5/(double)borderSize);
+        Vertex innerBotRight = new Vertex(1-0.5/(double)borderSize, 1-0.5/(double)borderSize);
 
-        this.add(new Vertex(getMaxDist()/2, getMaxDist()/2));
-        this.add(new Vertex(1-getMaxDist()/2, getMaxDist()/2));
-        this.add(new Vertex(getMaxDist()/2, 1-getMaxDist()/2));
-        this.add(new Vertex(1-getMaxDist()/2, 1-getMaxDist()/2));
+        innerTop.add(innerTopLeft);
+        innerLeft.add(innerTopLeft);
+        innerRight.add(innerTopRight);
+        innerBot.addFirst(innerBotLeft);
 
-        for (int i = 1; i < borderSize - 1; i++){
-            this.add(new Vertex(getMaxDist()/2, (i+0.5)/(double)borderSize));
-            this.add(new Vertex(1-getMaxDist()/2, (i+0.5)/(double)borderSize));
-            this.add(new Vertex((i+0.5)/(double)borderSize, getMaxDist()/2));
-            this.add(new Vertex((i+0.5)/(double)borderSize, 1-getMaxDist()/2));
+        for (int i = 1; i <= borderSize - 2; i++){
+            innerTop.add(i, new Vertex((i+0.5)/(double)borderSize, 0.5/(double)borderSize));
+            this.add(innerTop.get(i));
+
+            innerBot.add(i, new Vertex((i+0.5)/(double)borderSize, 1-0.5/(double)borderSize));
+            this.add(innerBot.get(i));
         }
 
         delaunayTriangulate();
+
+        ArrayList<Vertex> rightVertices = new ArrayList<>(this);
+        rightVertices.sort((a, b) -> {
+            if (a.getX() < b.getX()) return -1;
+            if (a.getX() > b.getX()) return 1;
+            return Double.compare(a.getY(), b.getY());
+        });
+
+        this.add(innerTopLeft);
+        this.add(innerTopRight);
+        this.add(innerBotLeft);
+        this.add(innerBotRight);
+
+        for (int i = 1; i <= borderSize - 2; i++){
+            innerLeft.add(new Vertex(0.5/(double)borderSize, (i+0.5)/(double)borderSize));
+            this.add(innerLeft.get(i));
+            innerLeft.get(i).addNeighbor(innerLeft.get(i-1));
+            innerLeft.get(i).setId(i);
+
+            innerRight.add(new Vertex(1-0.5/(double)borderSize, (i+0.5)/(double)borderSize));
+            this.add(innerRight.get(i));
+            innerRight.get(i).addNeighbor(innerRight.get(i-1));
+        }
+
+        innerTop.add(innerTopRight);
+        innerLeft.add(innerBotLeft);
+        innerBot.add(innerBotRight);
+        innerRight.add(innerBotRight);
+
+        innerLeft.getLast().addNeighbor(innerLeft.get(innerLeft.size()-2));
+        innerRight.getLast().addNeighbor(innerRight.get(innerRight.size()-2));
+
+        ArrayList<Vertex> vertices;
+
+        vertices = new ArrayList<>(innerLeft);
+        vertices.addAll(rightVertices);
+
+        int rightLowerBound = 0;
+        for (int i = 0; i < vertices.size(); i++){
+            if (vertices.get(i).equals(innerBot.get(1))){
+                rightLowerBound = i;
+                break;
+            }
+        }
+        DelaunayUtils.mergeDT(vertices, borderSize-1, rightLowerBound, 0, innerLeft.size(), vertices.size());
+
+        vertices = new ArrayList<>(this);
+        vertices.sort((a, b) -> {
+            if (a.getX() < b.getX()) return -1;
+            if (a.getX() > b.getX()) return 1;
+            return Double.compare(a.getY(), b.getY());
+        });
+        vertices.addAll(innerRight);
+
+        int leftLowerBound = 0;
+        for (int i = 0; i < vertices.size(); i++){
+            if (vertices.get(i).equals(innerBot.get(innerBot.size()-2))){
+                leftLowerBound = i;
+                break;
+            }
+        }
+        System.out.println(vertices.get(vertices.size()-borderSize+1));
+        DelaunayUtils.mergeDT(vertices, leftLowerBound, vertices.size()-1, 0, vertices.size()-innerRight.size(), vertices.size());
+
+        ArrayList<Vertex> outerTop = new ArrayList<>(borderSize);
+        ArrayList<Vertex> outerBot = new ArrayList<>(borderSize);
+        ArrayList<Vertex> outerLeft = new ArrayList<>(borderSize);
+        ArrayList<Vertex> outerRight = new ArrayList<>(borderSize);
+
+        Vertex outerTopLeft = new Vertex(0, 0);
+        outerTop.addFirst(outerTopLeft);
+        outerLeft.addFirst(outerTopLeft);
+        this.add(outerTopLeft);
+
+        Vertex outerTopRight = new Vertex(1, 0);
+        outerTop.addLast(outerTopRight);
+        outerRight.addFirst(outerTopRight);
+        this.add(outerTopRight);
+
+        Vertex outerBotLeft = new Vertex(0, 1);
+        outerBot.addFirst(outerBotLeft);
+        outerLeft.addLast(outerBotLeft);
+        this.add(outerBotLeft);
+
+        Vertex outerBotRight = new Vertex(1, 1);
+        outerBot.addLast(outerBotRight);
+        outerRight.addLast(outerBotRight);
+        this.add(outerBotRight);
+
+        for (int i = 1; i <= borderSize-1; i++){
+            outerTop.add(i, new Vertex(i/(double)borderSize, 0));
+            this.add(outerTop.get(i));
+
+            outerLeft.add(i, new Vertex(0, i/(double)borderSize));
+            this.add(outerLeft.get(i));
+
+            outerRight.add(i, new Vertex(1, i/(double)borderSize));
+            this.add(outerRight.get(i));
+
+            outerBot.add(i, new Vertex(i/(double)borderSize, 1));
+            this.add(outerBot.get(i));
+        }
+
+        for (int i = 0; i < borderSize; i++){
+            outerTop.get(i).addNeighbor(outerTop.get(i+1));
+            outerBot.get(i).addNeighbor(outerBot.get(i+1));
+            outerLeft.get(i).addNeighbor(outerLeft.get(i+1));
+            outerRight.get(i).addNeighbor(outerRight.get(i+1));
+        }
+
+        for (int i = 0; i <= borderSize-1; i++){
+            innerTop.get(i).addNeighbor(outerTop.get(i));
+            innerTop.get(i).addNeighbor(outerTop.get(i+1));
+
+            innerLeft.get(i).addNeighbor(outerLeft.get(i));
+            innerLeft.get(i).addNeighbor(outerLeft.get(i+1));
+
+            innerRight.get(i).addNeighbor(outerRight.get(i));
+            innerRight.get(i).addNeighbor(outerRight.get(i+1));
+
+            innerBot.get(i).addNeighbor(outerBot.get(i));
+            innerBot.get(i).addNeighbor(outerBot.get(i+1));
+        }
     }
 
     public HashSet<Triangle> getTriangles(){
@@ -213,8 +335,7 @@ class DelaunayUtils {
             if (a.getX() > b.getX()) return 1;
             return Double.compare(a.getY(), b.getY());
         });
-        ArrayList<Integer> hull = _r_bucketDT(vertices, 0, vertices.size());
-        //makeToroid(vertices, hull, vertexSet.getWidth(), vertexSet.getHeight());
+        _r_bucketDT(vertices, 0, vertices.size());
     }
 
     private static ArrayList<Integer> _r_bucketDT(ArrayList<Vertex> vertices, int left, int right){
@@ -239,7 +360,7 @@ class DelaunayUtils {
             v1.addNeighbor(v2);
             v2.addNeighbor(v3);
             if (GeometricPrimitives.orientation(v1, v2, v3) == 0)
-                return new ArrayList<>(List.of(left, left+1, left+2));
+                return new ArrayList<>(List.of(left, left+2));
 
             v1.addNeighbor(v3);
             if (GeometricPrimitives.orientation(v1, v2, v3) == 1)
@@ -252,13 +373,16 @@ class DelaunayUtils {
         ArrayList<Integer> leftHull = _r_bucketDT(vertices, left, mid);
         ArrayList<Integer> rightHull = _r_bucketDT(vertices, mid, right);
         ArrayList<Integer> hull = new ArrayList<>();
-        int[] tmp = bucketDTMergeHull(vertices, leftHull, rightHull, hull);
+        int[] tmp = mergeHull(vertices, leftHull, rightHull, hull);
+        //System.out.println(left + "-" + (mid-1) + ": " + leftHull);
+        //System.out.println(mid + "-" + (right-1) + ": " + rightHull);
+        //System.out.println("Merged: " + hull);
         int leftLowerBound = tmp[0], rightLowerBound = tmp[1];
-        bucketDTMerge(vertices, leftLowerBound, rightLowerBound, left, mid, right);
+        mergeDT(vertices, leftLowerBound, rightLowerBound, left, mid, right);
         return hull;
     }
 
-    private static int[] bucketDTMergeHull(
+    private static int[] mergeHull(
             ArrayList<Vertex> vertices,
             ArrayList<Integer> leftHull, ArrayList<Integer> rightHull,
             ArrayList<Integer> mergedHull
@@ -269,74 +393,42 @@ class DelaunayUtils {
             return new int[]{leftHull.getFirst(), rightHull.getFirst()};
         }
 
-        int p = 0;
+        int left = 0;
         for (int i = 1; i < leftHull.size(); i++)
-            if (vertices.get(leftHull.get(i)).getX() > vertices.get(leftHull.get(p)).getX()) p = i;
-        int q = 0;
+            if (vertices.get(leftHull.get(i)).getX() > vertices.get(leftHull.get(left)).getX()) left = i;
+        int right = 0;
         for (int i = 1; i < rightHull.size(); i++)
-            if (vertices.get(rightHull.get(i)).getX() < vertices.get(rightHull.get(q)).getX() ) q = i;
+            if (vertices.get(rightHull.get(i)).getX() < vertices.get(rightHull.get(right)).getX()) right = i;
 
-        final int p0 = p;
-        final int q0 = q;
-        boolean pDone = false;
-        boolean qDone = false;
+        final int leftStart = left;
+        final int rightStart = right;
+        boolean leftDone;
+        boolean rightDone;
         do {
-            while (!qDone) {
-                int q1 = Math.floorMod(q - 1, rightHull.size());
-                if (GeometricPrimitives.orientation(
-                        vertices.get(leftHull.get(p)),
-                        vertices.get(rightHull.get(q)),
-                        vertices.get(rightHull.get(q1))
-                ) == 2) {
-                    q = q1;
-                    pDone = false;
-                } else qDone = true;
-            }
-            while (!pDone) {
-                int p1 = Math.floorMod(p + 1, leftHull.size());
-                if (GeometricPrimitives.orientation(
-                        vertices.get(rightHull.get(q)),
-                        vertices.get(leftHull.get(p)),
-                        vertices.get(leftHull.get(p1))
-                ) == 1) {
-                    p = p1;
-                    qDone = false;
-                } else pDone = true;
-            }
-        } while (!pDone || !qDone);
-        final int leftUpperBound = p;
-        final int rightUpperBound = q;
+            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, -1, 2);
+            rightDone = rightNext == right;
+            right = rightNext;
 
-        p = p0;
-        q = q0;
-        pDone = false;
-        qDone = false;
+            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, 1, 1);
+            leftDone = leftNext == left;
+            left = leftNext;
+        } while (!leftDone || !rightDone);
+        final int leftUpperBound = left;
+        final int rightUpperBound = right;
+
+        left = leftStart;
+        right = rightStart;
         do {
-            while (!qDone) {
-                int q1 = Math.floorMod(q + 1, rightHull.size());
-                if (GeometricPrimitives.orientation(
-                        vertices.get(leftHull.get(p)),
-                        vertices.get(rightHull.get(q)),
-                        vertices.get(rightHull.get(q1))
-                ) == 1) {
-                    q = q1;
-                    pDone = false;
-                } else qDone = true;
-            }
-            while (!pDone) {
-                int p1 = Math.floorMod(p - 1, leftHull.size());
-                if (GeometricPrimitives.orientation(
-                        vertices.get(rightHull.get(q)),
-                        vertices.get(leftHull.get(p)),
-                        vertices.get(leftHull.get(p1))
-                ) == 2) {
-                    p = p1;
-                    qDone = false;
-                } else pDone = true;
-            }
-        } while (!pDone || !qDone);
-        final int leftLowerBound = p;
-        final int rightLowerBound = q;
+            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, 1, 1);
+            rightDone = rightNext == right;
+            right = rightNext;
+
+            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, -1, 2);
+            leftDone = leftNext == left;
+            left = leftNext;
+        } while (!leftDone || !rightDone);
+        final int leftLowerBound = left;
+        final int rightLowerBound = right;
 
         int i = leftUpperBound;
         while (i != leftLowerBound){
@@ -351,10 +443,33 @@ class DelaunayUtils {
         }
         mergedHull.add(rightHull.get(rightUpperBound));
 
+        //System.out.println("llb: " + leftHull.get(leftLowerBound) + ", lub: " + leftHull.get(leftUpperBound) + ", rlb: " + rightHull.get(rightLowerBound) + ", rub: " + rightHull.get(rightUpperBound));
+
         return new int[]{leftHull.get(leftLowerBound), rightHull.get(rightLowerBound)};
     }
 
-    private static void bucketDTMerge(
+    private static int getNextCandidate(
+            ArrayList<Vertex> vertices,
+            ArrayList<Integer> hull, ArrayList<Integer> otherHull,
+            int current, int reference,
+            int side, int rotation
+    ){
+        boolean done = false;
+        while (!done) {
+            int next = Math.floorMod(current  + side, hull.size());
+            int orientation = GeometricPrimitives.orientation(
+                vertices.get(otherHull.get(reference)),
+                vertices.get(hull.get(current)),
+                vertices.get(hull.get(next))
+            );
+            if (orientation == rotation) {
+                current = next;
+            } else done = true;
+        }
+        return current;
+    }
+
+    public static void mergeDT(
             ArrayList<Vertex> vertices,
             int leftLowerBound, int rightLowerBound,
             int left, int mid, int right
@@ -366,7 +481,7 @@ class DelaunayUtils {
         if (allAligned(vertices, leftArray, rightArray)) {
             vertices.get(mid-1).addNeighbor(vertices.get(mid));
             return;
-        };
+        }
 
         int lCurrent = leftLowerBound;
         int rCurrent = rightLowerBound;
@@ -466,7 +581,7 @@ class FPOUtils {
             newFpo = fpo;
             nbIterations++;
             System.out.println("-------------------------------------");
-            System.out.println("Iteration " + nbIterations);
+            System.out.println("Iteration " + nbIterations + ", " + vertexSet.size() + " vertices left");
             System.out.println("Average min dist: " + vertexSet.getAverageMinDist() + ", max dist: " + vertexSet.getMaxDist());
             System.out.println("FPO: " + fpo + ", Progress: " + (newFpo - oldFpo));
         } while (newFpo < convergenceTolerance && newFpo - oldFpo > 1e-6);
@@ -502,56 +617,12 @@ class FPOUtils {
         return vertices.getAverageMinDist()/vertices.getMaxDist();
     }
 
-    private static void retriangulate(VertexSet originals){
-        VertexSet clones = new VertexSet();
-        HashMap<Vertex, Vertex> cloneToOriginals = new HashMap<>();
-        for (Vertex original : originals){
-            Vertex clone = new Vertex(original.getX(), original.getY());
-            clones.add(clone);
-            cloneToOriginals.put(clone, original);
-        }
-        System.out.println("Retriangulating " + originals);
-        DelaunayUtils.buildDT(clones);
-        for (Vertex clone : clones){
-            Vertex original = cloneToOriginals.get(clone);
-            for (Vertex neighbor : clone.getNeighbors()){
-                original.addNeighbor(cloneToOriginals.get(neighbor));
-            }
-        }
-    }
     private static void delaunayRemove(VertexSet vertices, Vertex vertex){
-        /*VertexSet originals = vertex.getNeighbors();
-        vertices.remove(vertex);
-        retriangulate(originals);*/
         for (Vertex v : vertices) v.getNeighbors().clear();
         vertices.remove(vertex);
         DelaunayUtils.buildDT(vertices);
     }
     private static void delaunayInsert(VertexSet vertices, Vertex vertex){
-/*
-        vertices.add(vertex);
-        VertexSet originals = new VertexSet();
-        originals.add(vertex);
-        for (Triangle triangle : getTriangles(vertices)) {
-            Vertex a = triangle.getA();
-            Vertex b = triangle.getB();
-            Vertex c = triangle.getC();
-
-            if (GeometricPrimitives.orientation(a, b, c) == 0) continue;
-            if (GeometricPrimitives.orientation(a, b, c) == 2 && !GeometricPrimitives.inCircle(a, b, c, vertex)) continue;
-            if (GeometricPrimitives.orientation(a, b, c) == 1 && !GeometricPrimitives.inCircle(a, c, b, vertex)) continue;
-
-            a.removeNeighbor(b);
-            b.removeNeighbor(c);
-            c.removeNeighbor(a);
-
-            originals.add(a);
-            originals.add(b);
-            originals.add(c);
-        }
-        if (originals.size() == 1) retriangulate(vertices);
-        else retriangulate(originals);
- */
         vertices.add(vertex);
         for (Vertex v : vertices) v.getNeighbors().clear();
         DelaunayUtils.buildDT(vertices);
@@ -584,14 +655,14 @@ class GeometricPrimitives {
     public static int orientation(Vertex a, Vertex b, Vertex c){
         double val = orientationPrimitive(a, b, c);
 
-        if (Math.abs(val) < 1e-6) return 0;
+        if (val == 0) return 0;
         return (val > 0) ? 2 : 1;
     }
     public static boolean ccw(Vertex a, Vertex b, Vertex c){
         return orientation(a, b, c) == 2;
     }
     public static boolean inCircle(Vertex a, Vertex b, Vertex c, Vertex d){
-        return inCirclePrimitive(a, b, c, d) > 1e-6;
+        return inCirclePrimitive(a, b, c, d) > 0;
     }
 
     public static int sortCCW(Vertex v1, Vertex v2, Vertex va, Vertex vb){
