@@ -1,6 +1,8 @@
 package local.furthestpointoptimization.model;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ForkJoinPool;
 
 public class VertexSet extends HashSet<Vertex> {
     public VertexSet(int count) {
@@ -216,28 +218,48 @@ public class VertexSet extends HashSet<Vertex> {
         }
     }
 
+    /** Donne tout les triangles (version unithread) */
     public HashSet<Triangle> getTriangles(){
         HashSet<Triangle> triangles = new HashSet<>();
         for (Vertex vertex : this){ 
-                ArrayList<Vertex> sortedNeighbors = new ArrayList<>(vertex.getNeighbors());
-                sortedNeighbors.sort(new VertexSet.ClockWise(vertex));
-                int nb_neighbourg = sortedNeighbors.size();
-                for (int i = 0; i <  nb_neighbourg + 1; i++) {
-                    Vertex neighbor1 = (sortedNeighbors).get(i % nb_neighbourg);
-                    Vertex neighbor2 = (sortedNeighbors).get((i + 1)% nb_neighbourg);
-                    if (neighbor1.hasNeighbors(neighbor2))
-                        triangles.add(new Triangle(vertex, neighbor1, neighbor2));
-                }
+            vertex.getSurroundTriangleIn(triangles);
         }
         return triangles;
     }
 
+    public HashSet<Triangle> getTrianglesParallel(){
+        int nb_threads = Runtime.getRuntime().availableProcessors();
+        return getTriangles(nb_threads);
+    }
+
+    /** Version parallele de getTriangles() */
+    public HashSet<Triangle> getTriangles(int nb_threads) {
+        try (ForkJoinPool forkJoinPool = new ForkJoinPool(nb_threads)) {
+            Set<Triangle> triangles = ConcurrentHashMap.newKeySet();
+    
+            forkJoinPool.submit(() ->
+                this.parallelStream().forEach(vertex ->
+                    vertex.getSurroundTriangleIn(triangles)
+                )
+            ).get();
+            // Créer un nouvel HashSet et y ajouter tous les triangles
+            HashSet<Triangle> triangleHashSet = new HashSet<>(triangles);
+            return triangleHashSet;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashSet<>();
+        }
+    }
+    
+
     public double getLocalMinDist(Vertex x){
         double minDistance = Double.POSITIVE_INFINITY;
-        for (Vertex y : this) if (x != y){
-            double distance = Segment.length(x, y);
-            if (distance < minDistance) minDistance = distance;
-        }
+        for (Vertex y : this) 
+            if (x != y){
+                double distance = Segment.length(x, y);
+                if (distance < minDistance) 
+                    minDistance = distance;
+            }
         return minDistance;
     }
     public double getAverageMinDist(){

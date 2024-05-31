@@ -1,5 +1,7 @@
 package local.furthestpointoptimization.model;
 
+import java.util.Objects;
+
 public class Triangle {
     // VOIR https://www.geogebra.org/m/gqxh5a8x
     
@@ -157,14 +159,13 @@ public class Triangle {
         if (this == obj) return true;
         if (obj == null || this.getClass() != obj.getClass()) return false;
         Triangle triangle = (Triangle) obj;
-        return this.getA().equals(triangle.getA()) 
-            && this.getB().equals(triangle.getB()) 
-            && this.getC().equals(triangle.getC());
+        return Objects.equals(this.getVertices(), triangle.getVertices());
     }
 
     @Override
     public String toString() {
-        return "(" + a + ", " + b + ", " + c + ")";
+        // return "(" + a + ", " + b + ", " + c + ")";
+        return "(" + a.id + ", " + b.id + ", " + c.id + ")";
     }
 
     @Override
