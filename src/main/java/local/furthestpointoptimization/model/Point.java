@@ -38,6 +38,11 @@ public class Point {
         return '(' + String.valueOf(getX()) + ',' + String.valueOf(getY()) + ')';
     }
 
+    public double distance_from(Point other) {
+        return Math.sqrt((this.x - other.x)*(this.x - other.x) + (this.y - other.y)*(this.y - other.y));
+        
+    }
+
     public static class CompareByXThenY implements Comparator<Point> {
         @Override
         public int compare(Point p1, Point p2) {
