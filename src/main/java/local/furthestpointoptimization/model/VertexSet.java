@@ -4,23 +4,24 @@ import java.util.*;
 
 public class VertexSet extends HashSet<Vertex> {
     public VertexSet(int count) {
+        super();
         for (int i = 0; i < count; i++) {
-            this.add(new Vertex(Math.random()*count, Math.random()*count));
+            double x = Math.random();//*count;
+            double y = Math.random();//*count;
+            this.add(new Vertex(x,y));
         }
 
-        double minX = getMinX();
-        double minY = getMinY();
-        double maxX = getMaxX();
-        double maxY = getMaxY();
-        for (Vertex vertex : this){
-            double x = vertex.getX();
-            double y = vertex.getY();
-            vertex.setX((x - minX)/(maxX - minX));
-            vertex.setY((y - minY)/(maxY - minY));
-        }
+        // double minX = getMinX(), maxX = getMaxX();
+        // double minY = getMinY(), maxY = getMaxY();
+        // for (Vertex vertex : this){
+        //     double x = vertex.getX(), y = vertex.getY();
+        //     vertex.setX((x - minX)/(maxX - minX));
+        //     vertex.setY((y - minY)/(maxY - minY));
+        // }
     }
 
     public VertexSet(VertexSet vertices) {
+        super();
         HashMap<Vertex, Vertex> originalToClone = new HashMap<>();
         for (Vertex vertex : vertices){
             Vertex clone = new Vertex(vertex.getX(), vertex.getY());
@@ -39,7 +40,9 @@ public class VertexSet extends HashSet<Vertex> {
         this.addAll(Arrays.asList(vertices));
     }
 
-    public VertexSet(){}
+    public VertexSet(){
+        super();
+    }
 
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
@@ -215,12 +218,16 @@ public class VertexSet extends HashSet<Vertex> {
 
     public HashSet<Triangle> getTriangles(){
         HashSet<Triangle> triangles = new HashSet<>();
-        for (Vertex vertex : this) for (Vertex neighbor : vertex.getNeighbors()){
-            ArrayList<Vertex> sortedNeighborNeighbors = new ArrayList<>(neighbor.getNeighbors());
-            if (sortedNeighborNeighbors.size() < 2) continue;
-            sortedNeighborNeighbors.sort((a, b) -> GeometricPrimitives.sortCCW(vertex, neighbor, a, b));
-            if (sortedNeighborNeighbors.getFirst().hasNeighbors(vertex))
-                triangles.add(new Triangle(vertex, neighbor, sortedNeighborNeighbors.getFirst()));
+        for (Vertex vertex : this){ 
+                ArrayList<Vertex> sortedNeighbors = new ArrayList<>(vertex.getNeighbors());
+                sortedNeighbors.sort(new VertexSet.ClockWise(vertex));
+                int nb_neighbourg = sortedNeighbors.size();
+                for (int i = 0; i <  nb_neighbourg + 1; i++) {
+                    Vertex neighbor1 = (sortedNeighbors).get(i % nb_neighbourg);
+                    Vertex neighbor2 = (sortedNeighbors).get((i + 1)% nb_neighbourg);
+                    if (neighbor1.hasNeighbors(neighbor2))
+                        triangles.add(new Triangle(vertex, neighbor1, neighbor2));
+                }
         }
         return triangles;
     }
@@ -279,5 +286,24 @@ public class VertexSet extends HashSet<Vertex> {
             if (vertex.getY() > maxY) maxY = vertex.getY();
         }
         return maxY;
+    }
+
+    public static class ClockWise implements Comparator<Vertex> {
+        private Vertex center;
+        ClockWise(Vertex center) {
+            this.center = center;
+        }
+
+        @Override
+        public int compare(Vertex v1, Vertex v2) {
+            double det = (v1.getX() - center.getX()) * (v2.getY() - center.getY()) - (v2.getX() - center.getX()) * (v1.getY() - center.getY());
+            if (det < 0.0)
+                return -1;
+            else if (det > 0.0)
+                return 1;
+            else {
+                return Double.compare(v1.getX(), v2.getX());
+            }
+        }
     }
 }
