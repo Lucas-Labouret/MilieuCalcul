@@ -1,11 +1,23 @@
 package local.furthestpointoptimization.model;
 
 public class Triangle {
+    // VOIR https://www.geogebra.org/m/gqxh5a8x
+    
     private final Vertex a;
     private final Vertex b;
     private final Vertex c;
 
     public Triangle(Vertex a, Vertex b, Vertex c) {
+        if (a.equals(b) || b.equals(c) || c.equals(a)) {
+            throw new IllegalArgumentException("Les points d'un triangle ne peuvent pas etre identiques");
+        }
+
+        // condition sur l'aire ?
+        // double area2 = Math.abs(a.getX() * (b.getY() - c.getY()) + b.getX() * (c.getY() - a.getY()) + c.getX() * (a.getY() - b.getY()));
+        // if (area2 == 0) {
+            // throw new IllegalArgumentException("Les points d'un triangle ne peuvent pas être alignés.");
+        // }
+
         this.a = a;
         this.b = b;
         this.c = c;
@@ -15,30 +27,36 @@ public class Triangle {
     public Vertex getB() { return b; }
     public Vertex getC() { return c; }
 
+    /** centre du cercle circonscrit | centre du cercle passant par les 3 sommets */
     public Vertex getCircumcenter() {
-        double x1 = a.getX(), y1 = a.getY();
-        double x2 = b.getX(), y2 = b.getY();
-        double x3 = c.getX(), y3 = c.getY();
+        double xa = a.getX(), ya = a.getY();
+        double xb = b.getX(), yb = b.getY();
+        double xc = c.getX(), yc = c.getY();
+    
+        double a = (xa*xa+ya*ya);
+        double b = (xb*xb+yb*yb);
+        double c = (xc*xc+yc*yc);
+        
+        // Formule de cramer
+        //     det(A_x)         a(yb-yc)+b(yc-ya)+c(ya-yb)
+        //x = ---------- = -------------------------------------
+        //      det(A)       2xa(yb-yc)+2xb(yc-ya)+2xc(ya-yb)
+        // où det(A) est l'equation catésienne de cercle circonscrit
+        // 
 
-        double a = Math.sqrt((x2 - x3)*(x2 - x3) + (y2 - y3)*(y2 - y3));
-        double b = Math.sqrt((x1 - x3)*(x1 - x3) + (y1 - y3)*(y1 - y3));
-        double c = Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
-
-        double D = 2 * (x1*(y2 - y3) + x2*(y3 - y1) + x3*(y1 - y2));
-
-        double v1 = a * (x1 * x1 + y1 * y1);
-        double v2 = b * (x2 * x2 + y2 * y2);
-        double v3 = c * (x3 * x3 + y3 * y3);
-
-        double x = ((v1 - v2 + v3) / D);
-        double y = ((v1 + v2 - v3) / D);
-
-        return new Vertex(x, y);
+        // Denominator
+        double D = 2*(xa*(yb - yc)+xb*(yc - ya)+xc*(ya - yb));
+        double Ux = (a*(yb-yc)+b*(yc-ya)+c*(ya-yb))/D;
+        double Uy = (a*(xc-xb)+b*(xa-xc)+c*(xb-xa))/D;
+        
+        return new Vertex(Ux, Uy);
     }
-    public double getCircumRadius() {Vertex circumcenter = getCircumcenter();
+    public double getCircumRadius() {
+        Vertex circumcenter = getCircumcenter();
         return Math.sqrt(Segment.length2(a, circumcenter));
     }
 
+    /** centre de masse ou centroïde | intersection des droite passant par sommet et milieu opposé */
     public Vertex getCentroid() {
         double x = (a.getX() + b.getX() + c.getX()) / 3;
         double y = (a.getY() + b.getY() + c.getY()) / 3;
@@ -54,20 +72,25 @@ public class Triangle {
         );
     }
 
+    /** orthocentre | Intersection des hauteurs */
     public Vertex getOrthocenter() {
-        double x1 = a.getX(), y1 = a.getY();
-        double x2 = b.getX(), y2 = b.getY();
-        double x3 = c.getX(), y3 = c.getY();
+        double xa = a.getX(), ya = a.getY();
+        double xb = b.getX(), yb = b.getY();
+        double xc = c.getX(), yc = c.getY();
 
-        double A = x1 - x2;
-        double B = y1 - y2;
-        double C = x1 - x3;
-        double D = y1 - y3;
-        double E = (A * (x1 + x2) + B * (y1 + y2)) / 2;
-        double F = (C * (x1 + x3) + D * (y1 + y3)) / 2;
-
-        double x = (E * D - B * F) / (A * D - B * C);
-        double y = (A * F - E * C) / (A * D - B * C);
+        // Systeme de produit scalaire (deux hauteurs suffisent)
+        // { Ax + By = E
+        // { Cx + Dy = F
+        double A = xc - xb;
+        double B = yc - yb;
+        double C = xc - xa;
+        double D = yc - ya;
+        double E = xa*A+ya*B;
+        double F = xb*C+yb*D;
+        // Regle de cramer
+        double denom = (A * D - B * C);
+        double x = (E * D - B * F) / denom;
+        double y = (A * F - E * C) / denom;
 
         return new Vertex(x, y);
     }
@@ -81,35 +104,30 @@ public class Triangle {
         );
     }
 
+
     public Vertex getBarycenter() {
-        double x = (a.getX() + b.getX() + c.getX()) / 3;
-        double y = (a.getY() + b.getY() + c.getY()) / 3;
-        return new Vertex(x, y);
+        return this.getCentroid();
     }
     public double getBarycenterDist() {
-        return Math.min(
-            Segment.length(a, getBarycenter()),
-            Math.min(
-                Segment.length(b, getBarycenter()),
-                Segment.length(c, getBarycenter())
-            )
-        );
+        return getCentroidDist();
     }
 
+    /** Centre du cercle incrit */
     public Vertex getIncenter() {
-        double x1 = a.getX(), y1 = a.getY();
-        double x2 = b.getX(), y2 = b.getY();
-        double x3 = c.getX(), y3 = c.getY();
+        double xa = a.getX(), ya = a.getY();
+        double xb = b.getX(), yb = b.getY();
+        double xc = c.getX(), yc = c.getY();
 
-        double a = Math.sqrt((x2 - x3)*(x2 - x3) + (y2 - y3)*(y2 - y3));
-        double b = Math.sqrt((x1 - x3)*(x1 - x3) + (y1 - y3)*(y1 - y3));
-        double c = Math.sqrt((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2));
+        double a = this.b.distance_from(this.c);
+        double b = this.a.distance_from(this.c);
+        double c = this.a.distance_from(this.b);
 
-        double x = (a * x1 + b * x2 + c * x3) / (a + b + c);
-        double y = (a * y1 + b * y2 + c * y3) / (a + b + c);
-
+        double perimeter = a+b+c;
+        double x = (a * xa + b * xb + c * xc) / perimeter;
+        double y = (a * ya + b * yb + c * yc) / perimeter;
         return new Vertex(x, y);
     }
+
     public double getIncenterDist() {
         return Math.min(
             Segment.length(a, getIncenter()),
@@ -134,17 +152,22 @@ public class Triangle {
         return alpha >= 0 && beta >= 0 && gamma >= 0;
     }
 
+    @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (obj == null || this.getClass() != obj.getClass()) return false;
         Triangle triangle = (Triangle) obj;
-        return this.getVertices().equals(triangle.getVertices());
+        return this.getA().equals(triangle.getA()) 
+            && this.getB().equals(triangle.getB()) 
+            && this.getC().equals(triangle.getC());
     }
 
+    @Override
     public String toString() {
         return "(" + a + ", " + b + ", " + c + ")";
     }
 
+    @Override
     public int hashCode() {
         return this.getVertices().hashCode();
     }
