@@ -242,13 +242,20 @@ public class VertexSet extends HashSet<Vertex> {
                     vertex.getSurroundTriangleIn(triangles)
                 )
             ).get();
-            // Créer un nouvel HashSet et y ajouter tous les triangles
+            // Créer un nouvel HashSet et y ajouter tous les triangles (conversion)
             HashSet<Triangle> triangleHashSet = new HashSet<>(triangles);
             return triangleHashSet;
         } catch (Exception e) {
             e.printStackTrace();
             return new HashSet<>();
         }
+    }
+
+    /** @deprecated use delaunayTriangulate */
+    @Deprecated
+    public void triangulate() {
+        DelaunayTriangulation triangulator = new DelaunayTriangulation(this.toArray(new Vertex[0]));
+        triangulator.triangulate();
     }
     
 

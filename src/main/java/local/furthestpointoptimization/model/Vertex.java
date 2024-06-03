@@ -47,10 +47,20 @@ public class Vertex extends Point {
     public void setId(int id) { this.id = id; }
     public int getId() { return id; }
 
+    public static void link(Vertex v1, Vertex v2) {
+        v1.neighbors.add(v2);
+        v2.neighbors.add(v1);
+    }
+
+    public static void unlink(Vertex v1, Vertex v2) {
+        v1.neighbors.remove(v2);
+        v2.neighbors.remove(v1);
+    }
+
     @Override
     public String toString() {
         String co = "("+ getX() + ',' + getY() + ')';
-        String identifiant = "Vertex " + id + " " + co;
+        String identifiant = "Vertex " + id + " " + co+ " ";
         StringBuilder sb = new StringBuilder(); // car concatenation dans une boucle
         sb.append("Neighbors: ");
         for (Vertex neighbor : neighbors) {
