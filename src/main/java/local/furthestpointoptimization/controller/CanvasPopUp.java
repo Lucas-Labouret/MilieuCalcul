@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.VertexSet;
@@ -24,13 +25,16 @@ public class CanvasPopUp {
 
         for (Vertex vertex : vertexSet) {
             GraphicsContext gc = canvas.getGraphicsContext2D();
-            gc.fillOval(vertex.getX()*size-2, vertex.getY()*size-2, 4, 4);
+            gc.setFill(Color.BLACK);
             for (Vertex neighbor : vertex.getNeighbors()) {
                 gc.strokeLine(
                     vertex.getX()*size   , vertex.getY()*size,
                     neighbor.getX()*size, neighbor.getY()*size
                 );
             }
+            if (vertex.isBorder()) gc.setFill(Color.GREEN);
+            else gc.setFill(Color.BLACK);
+            gc.fillOval(vertex.getX()*size-5, vertex.getY()*size-5, 10, 10);
         }
     }
 

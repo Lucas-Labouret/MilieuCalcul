@@ -77,6 +77,11 @@ public class VertexSet extends HashSet<Vertex> {
         super();
     }
 
+    public double getWidth() { return width; }
+    public double getHeight() { return height; }
+
+    public ArrayList<Vertex> getBorder() { return border; }
+
     private void addBorder(int totalWidth, int totalHeight){
         final double smallHeight = 0.5*Math.tan(Math.PI/6);
         final double mediumHeight = 1/Math.sqrt(2);
@@ -242,7 +247,6 @@ public class VertexSet extends HashSet<Vertex> {
             return new HashSet<>();
         }
     }
-
 
     public double getLocalMinDist(Vertex x){
         double minDistance = Double.POSITIVE_INFINITY;
