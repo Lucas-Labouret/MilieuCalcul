@@ -44,6 +44,7 @@ public class Vertex extends Point {
     public Optional<Vertex> getKNeighbor(int k) {
         ArrayList<Vertex> vs = new ArrayList<>();
         vs.addAll(getNeighbors());
+
         Vertex maxX = vs.getFirst();
         for (Vertex v : vs) {
             if (v.getX() > maxX.getX()) {
