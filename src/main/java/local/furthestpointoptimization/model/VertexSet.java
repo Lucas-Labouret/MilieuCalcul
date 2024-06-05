@@ -1,5 +1,8 @@
 package local.furthestpointoptimization.model;
 
+import local.furthestpointoptimization.model.diemkeTriangulator.DiemkeInterface;
+import local.furthestpointoptimization.model.diemkeTriangulator.NotEnoughPointsException;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
@@ -14,21 +17,38 @@ public class VertexSet extends HashSet<Vertex> {
     public static VertexSet newHexBorderedSet(int borderWidth, int borderHeight, int count){
         VertexSet vertices = new VertexSet();
 
-        final double smallHeight = 0.5*Math.tan(Math.PI/6);
-        final double mediumHeight = 1/Math.sqrt(2);
-        final double largeHeight = mediumHeight + 2*smallHeight;
+        borderHeight++;
+
+        final double largeHeight = 1/Math.tan(Math.PI/6);
 
         vertices.width = borderWidth;
-        if (borderHeight%2 == 0) vertices.height = (borderHeight/2)*(largeHeight+mediumHeight)+smallHeight;
-        else vertices.height = (borderHeight / 2 + 1) * largeHeight + (borderHeight / 2) * mediumHeight;
+        vertices.height = (borderHeight/2.)*largeHeight;
 
-        vertices.addBorder(borderWidth, borderHeight);
+        vertices.addBorder(
+                borderWidth, borderHeight,
+                largeHeight
+        );
 
         for (int i = 0; i < count; i++){
             Vertex v;
             do v = new Vertex(Math.random()*vertices.width, Math.random()*vertices.height);
             while (!GeometricPrimitives.insidePolygon(v, vertices.getBorder()));
             vertices.add(v);
+        }
+        for (Vertex vertex : vertices){
+            vertex.setX(vertex.getX()/vertices.width);
+            vertex.setY(vertex.getY()/vertices.width);
+        }
+        vertices.width = 1;
+        vertices.height = vertices.height/vertices.width;
+
+        for (Vertex vertex : vertices){
+            for (Vertex other : vertices){
+                if (vertex == other) continue;
+                if (vertex.almostEquals(other, 1e-10)){
+                    throw new RuntimeException("Two vertices are too close");
+                }
+            }
         }
 
         return vertices;
@@ -99,9 +119,11 @@ public class VertexSet extends HashSet<Vertex> {
 
         this.width = vertices.width;
         this.height = vertices.height;
+        this.border = vertices.border;
+
         HashMap<Vertex, Vertex> originalToClone = new HashMap<>();
         for (Vertex vertex : vertices){
-            Vertex clone = new Vertex(vertex.getX(), vertex.getY());
+            Vertex clone = new Vertex(vertex.getX(), vertex.getY(), vertex.isBorder());
             originalToClone.put(vertex, clone);
             this.add(clone);
         }
@@ -126,126 +148,40 @@ public class VertexSet extends HashSet<Vertex> {
 
     public ArrayList<Vertex> getBorder() { return border; }
 
-    private void addBorder(int totalWidth, int totalHeight){
-        final double smallHeight = 0.5*Math.tan(Math.PI/6);
-        final double mediumHeight = 1/Math.sqrt(2);
-        final double largeHeight = mediumHeight + 2*smallHeight;
-
+    private void addBorder(
+            int totalWidth, int totalHeight,
+            double hexHeight
+    ){
         ArrayList<Vertex> border = new ArrayList<>();
 
-        ArrayList<Vertex> top = new ArrayList<>();
-        ArrayList<Vertex> bottom = new ArrayList<>();
         for (int i = 0; i < totalWidth; i++){
-            Vertex topIn = new Vertex(i, smallHeight, true);
-            Vertex topOut = new Vertex(i+0.5, 0, true);
-
-            if (!top.isEmpty())
-                top.getLast().addNeighbor(topIn);
-            topOut.addNeighbor(topIn);
-
-            top.add(topIn);
-            top.add(topOut);
-            this.add(topIn);
-            this.add(topOut);
+            Vertex vertex = new Vertex(i+0.5, 0, true);
+            if (!border.isEmpty())
+                border.getLast().addNeighbor(vertex);
+            border.add(vertex);
         }
-        Vertex lastTopIn = new Vertex(totalWidth, smallHeight, true);
-        lastTopIn.addNeighbor(top.getLast());
-        top.add(lastTopIn);
-
-        if (totalHeight%2 == 1){
-            for (int i = 0; i < totalWidth; i++) {
-                Vertex botIn = new Vertex(i, this.height - smallHeight, true);
-                Vertex botOut = new Vertex(i + 0.5, this.height, true);
-
-                if (!bottom.isEmpty())
-                    bottom.getLast().addNeighbor(botIn);
-                botOut.addNeighbor(botIn);
-
-                bottom.add(botIn);
-                bottom.add(botOut);
-                this.add(botIn);
-                this.add(botOut);
-            }
-            Vertex lastBotIn = new Vertex(totalWidth, this.height - smallHeight, true);
-            lastBotIn.addNeighbor(bottom.getLast());
-            bottom.add(lastBotIn);
-        } else {
-            for (int i = 0; i < totalWidth-1; i++) {
-                Vertex botIn = new Vertex(i+0.5, this.height - smallHeight, true);
-                Vertex botOut = new Vertex(i+1, this.height, true);
-
-                if (!bottom.isEmpty())
-                    bottom.getLast().addNeighbor(botIn);
-                botOut.addNeighbor(botIn);
-
-                bottom.add(botIn);
-                bottom.add(botOut);
-                this.add(botIn);
-                this.add(botOut);
-            }
-            Vertex lastBotIn = new Vertex(totalWidth-0.5, this.height - smallHeight, true);
-            lastBotIn.addNeighbor(bottom.getLast());
-            bottom.add(lastBotIn);
+        for (int i = 0; i < totalHeight-1; i++){
+            Vertex vertex;
+            if (i%2 == 0) vertex = new Vertex(totalWidth, (i+1)*hexHeight/2, true);
+            else vertex = new Vertex(totalWidth-0.5, (i+1)*hexHeight/2, true);
+            border.getLast().addNeighbor(vertex);
+            border.add(vertex);
         }
-
-        ArrayList<Vertex> left = new ArrayList<>();
-        ArrayList<Vertex> right = new ArrayList<>();
-        for (int i = 0; i < totalHeight; i++){
-            Vertex left1;
-            Vertex left2;
-            Vertex right1;
-            Vertex right2;
-
-            if (i%2 == 0){
-                double y1 = (i/2)*(largeHeight+mediumHeight)+smallHeight;
-                double y2 = (i/2)*(largeHeight+mediumHeight)+smallHeight+mediumHeight;
-                left1 = new Vertex(0, y1, true);
-                left2 = new Vertex(0, y2, true);
-                right1 = new Vertex(totalWidth, y1, true);
-                right2 = new Vertex(totalWidth, y2, true);
-            } else {
-                double y1 = (i / 2 + 1) * largeHeight + (i / 2) * mediumHeight;
-                double y2 = (i / 2 + 1) * largeHeight + (i / 2 + 1) * mediumHeight;
-                left1 = new Vertex(0.5, y1, true);
-                left2 = new Vertex(0.5, y2, true);
-                right1 = new Vertex(totalWidth - 0.5, y1, true);
-                right2 = new Vertex(totalWidth - 0.5, y2, true);
-            }
-
-            if (!left.isEmpty())
-                left.getLast().addNeighbor(left1);
-            left2.addNeighbor(left1);
-
-            if (!right.isEmpty())
-                right.getLast().addNeighbor(right1);
-            right2.addNeighbor(right1);
-
-            left.add(left1);
-            left.add(left2);
-            right.add(right1);
-            right.add(right2);
+        for (int i = totalWidth - (totalHeight%2 == 0 ? 1 : 0); i >= 0; i--){
+            Vertex vertex;
+            if (totalHeight%2 == 1) vertex = new Vertex(i, this.height, true);
+            else vertex = new Vertex(i+0.5, this.height, true);
+            border.getLast().addNeighbor(vertex);
+            border.add(vertex);
         }
-
-        left.getFirst().removeNeighbor(left.get(1));
-        left.getLast().removeNeighbor(left.get(left.size()-2));
-        right.getFirst().removeNeighbor(right.get(1));
-        right.getLast().removeNeighbor(right.get(right.size()-2));
-
-        left.get(1).addNeighbor(top.getFirst());
-        left.get(left.size()-2).addNeighbor(bottom.getFirst());
-        right.get(1).addNeighbor(top.getLast());
-        right.get(right.size()-2).addNeighbor(bottom.getLast());
-
-        border.addAll(bottom);
-        for (int i = right.size()-2; i >= 1; i--){
-            border.add(right.get(i));
+        for (int i = totalHeight-1; i > 0; i--){
+            Vertex vertex;
+            if (i%2 == 0) vertex = new Vertex(0.5, i*hexHeight/2, true);
+            else vertex = new Vertex(0, i*hexHeight/2, true);
+            border.getLast().addNeighbor(vertex);
+            border.add(vertex);
         }
-        for (int i = top.size()-1; i >= 0; i--){
-            border.add(top.get(i));
-        }
-        for (int i = 1; i < left.size()-1; i++){
-            border.add(left.get(i));
-        }
+        border.getLast().addNeighbor(border.getFirst());
 
         this.addAll(border);
         this.border = border;
@@ -254,17 +190,24 @@ public class VertexSet extends HashSet<Vertex> {
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
         DelaunayUtils.buildDT(this);
+
+//        try {
+//            DiemkeInterface.triangulate(this);
+//        } catch (NotEnoughPointsException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void optimize(double convergenceTolerance){
         FPOUtils.buildFPO(this, convergenceTolerance);
     }
 
+    public HashSet<Triangle> triangles = new HashSet<>();
     public HashSet<Triangle> getTriangles(){
-        HashSet<Triangle> triangles = new HashSet<>();
-        for (Vertex vertex : this){
-            vertex.getSurroundTriangleIn(triangles);
-        }
+//        HashSet<Triangle> triangles = new HashSet<>();
+//        for (Vertex vertex : this){
+//            vertex.getSurroundTriangleIn(triangles);
+//        }
         return triangles;
     }
 

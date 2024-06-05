@@ -24,6 +24,7 @@ class FPOUtils {
     private static double fpoIteration(VertexSet vertices){
         VertexSet vertexSet = new VertexSet(vertices.toArray(new Vertex[0]));
         for (Vertex vertex : vertexSet){
+            if (vertex.isBorder()) continue;
             Vertex f = vertex;
             double rmax = vertices.getLocalMinDist(vertex);
             //System.out.println("Starting with " + vertex + " with rmax = " + rmax);
@@ -36,9 +37,10 @@ class FPOUtils {
                 double circumradius = triangle.getCircumRadius();
                 //System.out.println("    Triangle: " + triangle + ", c = (" + circumcenter.getX() + ", " + circumcenter.getY() + "), r = " + circumradius);
                 if (
-                        circumcenter.getX() < 0 || circumcenter.getX() > 1 ||
-                        circumcenter.getY() < 0 || circumcenter.getY() > 1 ||
-                        vertices.contains(circumcenter)
+                        circumcenter.getX() < 0 || circumcenter.getX() > vertices.getWidth() ||
+                        circumcenter.getY() < 0 || circumcenter.getY() > vertices.getHeight() ||
+                        vertices.contains(circumcenter) ||
+                        !GeometricPrimitives.insidePolygon(circumcenter, vertices.getBorder())
                 ) continue;
                 if (circumradius > rmax){
                     rmax = circumradius;
@@ -56,11 +58,11 @@ class FPOUtils {
     private static void delaunayRemove(VertexSet vertices, Vertex vertex){
         for (Vertex v : vertices) v.getNeighbors().clear();
         vertices.remove(vertex);
-        DelaunayUtils.buildDT(vertices);
+        vertices.delaunayTriangulate();
     }
     private static void delaunayInsert(VertexSet vertices, Vertex vertex){
         vertices.add(vertex);
         for (Vertex v : vertices) v.getNeighbors().clear();
-        DelaunayUtils.buildDT(vertices);
+        vertices.delaunayTriangulate();
     }
 }
