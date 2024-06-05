@@ -1,7 +1,9 @@
 package local.furthestpointoptimization.model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class Vertex extends Point {
@@ -39,6 +41,23 @@ public class Vertex extends Point {
         return t;
     }
 
+    public Optional<Vertex> getKNeighbor(int k) {
+        ArrayList<Vertex> vs = new ArrayList<>();
+        vs.addAll(getNeighbors());
+        Vertex maxX = vs.getFirst();
+        for (Vertex v : vs) {
+            if (v.getX() > maxX.getX()) {
+                maxX=v;
+            }
+        }
+        vs.sort(new Point.CompareByAngleDistance(this, maxX, false));
+        try {
+            return Optional.of(vs.get(k));
+        } catch (IndexOutOfBoundsException e) {
+            return Optional.empty();
+        }
+    }
+
     public void getSurroundTriangleIn(Set<Triangle> triangleSet) {
         ArrayList<Vertex> sortedNeighbors = new ArrayList<>(this.getNeighbors());
         sortedNeighbors.sort(new VertexSet.ClockWise(this));
@@ -55,10 +74,20 @@ public class Vertex extends Point {
     public void setId(int id) { this.id = id; }
     public int getId() { return id; }
 
+    public static void link(Vertex v1, Vertex v2) {
+        v1.neighbors.add(v2);
+        v2.neighbors.add(v1);
+    }
+
+    public static void unlink(Vertex v1, Vertex v2) {
+        v1.neighbors.remove(v2);
+        v2.neighbors.remove(v1);
+    }
+
     @Override
     public String toString() {
         String co = "("+ getX() + ',' + getY() + ')';
-        String identifiant = "Vertex " + id + " " + co;
+        String identifiant = "Vertex " + id + " " + co+ " ";
         StringBuilder sb = new StringBuilder(); // car concatenation dans une boucle
         sb.append("Neighbors: ");
         for (Vertex neighbor : neighbors) {

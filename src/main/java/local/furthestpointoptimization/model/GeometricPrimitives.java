@@ -25,14 +25,20 @@ class GeometricPrimitives {
         return (b.getY() - a.getY()) * (c.getX() - b.getX()) - (b.getX() - a.getX()) * (c.getY() - b.getY());
     }
 
-    public static int orientation(Point a, Point b, Point c){
+    public enum Orientation {
+        CoLineaire, // 0
+        ClockWise, // 1
+        CounterClockWise; // 2
+    }
+
+    public static Orientation orientation(Point a, Point b, Point c){
         double val = orientationPrimitive(a, b, c);
 
-        if (val == 0) return 0;
-        return (val > 0) ? 2 : 1;
+        if (val == 0) return Orientation.CoLineaire;
+        return (val > 0) ? Orientation.CounterClockWise : Orientation.ClockWise;
     }
     public static boolean ccw(Point a, Point b, Point c){
-        return orientation(a, b, c) == 2;
+        return orientation(a, b, c) == Orientation.CounterClockWise;
     }
     public static boolean inCircle(Point a, Point b, Point c, Point d){
         return inCirclePrimitive(a, b, c, d) > 0;

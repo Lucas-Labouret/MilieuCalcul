@@ -144,6 +144,11 @@ public class Triangle {
         return new VertexSet(a, b, c);
     }
 
+    public boolean _contains(Point p) {
+        Point center = this.getCircumcenter();
+        return Double.compare(p.distance_from(center), this.getCircumRadius()) < 0;
+    }
+
     public boolean contains(Vertex v) {
         double denominator = ((b.getY() - c.getY()) * (a.getX() - c.getX()) + (c.getX() - b.getX()) * (a.getY() - c.getY()));
         if (denominator == 0) return false;

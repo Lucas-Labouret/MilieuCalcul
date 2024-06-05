@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import local.furthestpointoptimization.model.GeometricPrimitives.Orientation;
+
 class DelaunayUtils {
     private DelaunayUtils(){}
 
@@ -14,14 +16,14 @@ class DelaunayUtils {
             }
         }
 
-        public boolean equals(Object o) {
+        @Override public boolean equals(Object o) {
                 if (o == this) return true;
                 if (!(o instanceof BucketKey)) return false;
                 BucketKey b = (BucketKey) o;
                 return x == b.x && y == b.y;
             }
 
-        public int hashCode() {
+            @Override  public int hashCode() {
                 return x < y ? y * y + x : x * x + x + y;
             }
         }
@@ -49,17 +51,15 @@ class DelaunayUtils {
         bucketDT(vertexSet);
     }
 
+    /** Premier appel */
     private static void bucketDT(VertexSet vertexSet){
         ArrayList<Vertex> vertices = new ArrayList<>(vertexSet);
-        vertices.sort((a, b) -> {
-            if (a.getX() < b.getX()) return -1;
-            if (a.getX() > b.getX()) return 1;
-            return Double.compare(a.getY(), b.getY());
-        });
+        vertices.sort(new Point.CompareByXThenY());
         _r_bucketDT(vertices, 0, vertices.size());
     }
 
     private static ArrayList<Integer> _r_bucketDT(ArrayList<Vertex> vertices, int left, int right){
+        // cas de base
         if (right - left == 2){
             vertices.get(left).setId(left);
             vertices.get(left+1).setId(left+1);
@@ -69,6 +69,7 @@ class DelaunayUtils {
             return new ArrayList<>(List.of(left, left+1));
         }
 
+        // cas de base
         if (right - left == 3){
             Vertex v1 = vertices.get(left);
             Vertex v2 = vertices.get(left+1);
@@ -80,15 +81,21 @@ class DelaunayUtils {
 
             v1.addNeighbor(v2);
             v2.addNeighbor(v3);
-            if (GeometricPrimitives.orientation(v1, v2, v3) == 0)
-                return new ArrayList<>(List.of(left, left+2));
 
-            v1.addNeighbor(v3);
-            if (GeometricPrimitives.orientation(v1, v2, v3) == 1)
-                return new ArrayList<>(List.of(left, left+2, left+1));
-
-            return new ArrayList<>(List.of(left, left+1, left+2));
+            GeometricPrimitives.Orientation sens = GeometricPrimitives.orientation(v1, v2, v3);
+            switch (sens) {
+                case CoLineaire :
+                    return new ArrayList<>(List.of(left, left+2));
+                case ClockWise : 
+                    v1.addNeighbor(v3);
+                    return new ArrayList<>(List.of(left, left+2, left+1));
+                case CounterClockWise:
+                    v1.addNeighbor(v3);
+                    return new ArrayList<>(List.of(left, left+1, left+2));
+            };
         }
+
+        // recurence
 
         int mid = (left + right) / 2;
         ArrayList<Integer> leftHull = _r_bucketDT(vertices, left, mid);
@@ -126,11 +133,11 @@ class DelaunayUtils {
         boolean leftDone;
         boolean rightDone;
         do {
-            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, -1, 2);
+            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, -1, Orientation.CounterClockWise);
             rightDone = rightNext == right;
             right = rightNext;
 
-            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, 1, 1);
+            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, 1, Orientation.ClockWise);
             leftDone = leftNext == left;
             left = leftNext;
         } while (!leftDone || !rightDone);
@@ -140,11 +147,11 @@ class DelaunayUtils {
         left = leftStart;
         right = rightStart;
         do {
-            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, 1, 1);
+            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, 1, Orientation.ClockWise);
             rightDone = rightNext == right;
             right = rightNext;
 
-            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, -1, 2);
+            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, -1, Orientation.CounterClockWise);
             leftDone = leftNext == left;
             left = leftNext;
         } while (!leftDone || !rightDone);
@@ -173,12 +180,12 @@ class DelaunayUtils {
             ArrayList<Vertex> vertices,
             ArrayList<Integer> hull, ArrayList<Integer> otherHull,
             int current, int reference,
-            int side, int rotation
+            int side, Orientation rotation
     ){
         boolean done = false;
         while (!done) {
             int next = Math.floorMod(current  + side, hull.size());
-            int orientation = GeometricPrimitives.orientation(
+            Orientation orientation = GeometricPrimitives.orientation(
                 vertices.get(otherHull.get(reference)),
                 vertices.get(hull.get(current)),
                 vertices.get(hull.get(next))
@@ -282,7 +289,7 @@ class DelaunayUtils {
 
     private static boolean allAligned(ArrayList<Vertex> vertices, ArrayList<Integer> left, ArrayList<Integer> right){
         for (Integer i : left) for (Integer j : right){
-            if (GeometricPrimitives.orientation(vertices.get(left.getFirst()), vertices.get(i), vertices.get(j)) != 0)
+            if (GeometricPrimitives.orientation(vertices.get(left.getFirst()), vertices.get(i), vertices.get(j)) != Orientation.CoLineaire)
                 return false;
         }
         return true;
