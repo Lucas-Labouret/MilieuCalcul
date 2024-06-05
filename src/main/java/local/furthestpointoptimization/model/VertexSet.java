@@ -3,6 +3,7 @@ package local.furthestpointoptimization.model;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
+import java.util.random.RandomGenerator;
 
 public class VertexSet extends HashSet<Vertex> {
     private double width = 1;
@@ -50,16 +51,44 @@ public class VertexSet extends HashSet<Vertex> {
         // }
     }
 
+
+
+    public VertexSet(Set<Vertex> sv) {
+        super();
+        this.addAll(sv);
+    }
+
+    static  Random rd = new Random();
+    
+    public static double randomEps() {
+        return rd.nextDouble(1e-5);
+    }
+
     public static VertexSet cristal(int width, int height) {
         VertexSet vs = new VertexSet();
         double w = 1/(double)(width+1);
-        System.out.println(w);
         for (int i = 1; i<=height; ++i) {
             for (int j = 1; j<=width; ++j) {
                 double x = w*(j+0.5*(1-i%2));
                 double y = (i-0.5)*w*(double)(Math.sqrt(3)/(double)2);
-                Vertex v = new Vertex((x), (y));
+                
+                Vertex v = new Vertex((x+randomEps()), (y+randomEps()));
                 vs.add(v);
+            }
+        }
+        return vs;
+    }
+
+    public static HashMap<Vertex, Coord> cristalHM(int width, int height) {
+        HashMap<Vertex, Coord> vs = new HashMap<>();
+        double w = 1/(double)(width+1);
+        for (int i = 1; i<=height; ++i) {
+            for (int j = 1; j<=width; ++j) {
+                double x = w*(j+0.5*(1-i%2));
+                double y = (i-0.5)*w*(double)(Math.sqrt(3)/(double)2);
+                
+                Vertex v = new Vertex((x+randomEps()), (y+randomEps()));
+                vs.put(v, new Coord(i, j));
             }
         }
         return vs;
