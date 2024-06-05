@@ -71,8 +71,6 @@ public class VertexSet extends HashSet<Vertex> {
         // }
     }
 
-
-
     public VertexSet(Set<Vertex> sv) {
         super();
         this.addAll(sv);
@@ -189,13 +187,14 @@ public class VertexSet extends HashSet<Vertex> {
 
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
-        DelaunayUtils.buildDT(this);
+        //DelaunayUtils.buildDT(this);
 
-//        try {
-//            DiemkeInterface.triangulate(this);
-//        } catch (NotEnoughPointsException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            triangles.clear();
+            DiemkeInterface.triangulate(this);
+        } catch (NotEnoughPointsException e) {
+            e.printStackTrace();
+        }
     }
 
     public void optimize(double convergenceTolerance){
@@ -204,7 +203,7 @@ public class VertexSet extends HashSet<Vertex> {
 
     public HashSet<Triangle> triangles = new HashSet<>();
     public HashSet<Triangle> getTriangles(){
-//        HashSet<Triangle> triangles = new HashSet<>();
+//        triangles.clear();
 //        for (Vertex vertex : this){
 //            vertex.getSurroundTriangleIn(triangles);
 //        }

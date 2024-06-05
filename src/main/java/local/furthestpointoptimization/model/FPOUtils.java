@@ -31,8 +31,8 @@ class FPOUtils {
             delaunayRemove(vertices, vertex);
             HashSet<Triangle> triangles = vertices.getTriangles();
             for (Triangle triangle : triangles){
-                // Vertex circumcenter = triangle.getOrthocenter();
-                // double circumradius = triangle.getOrthocenterDist();
+                //Vertex circumcenter = triangle.getOrthocenter();
+                //double circumradius = triangle.getOrthocenterDist();
                 Vertex circumcenter = triangle.getCircumcenter();
                 double circumradius = triangle.getCircumRadius();
                 //System.out.println("    Triangle: " + triangle + ", c = (" + circumcenter.getX() + ", " + circumcenter.getY() + "), r = " + circumradius);
