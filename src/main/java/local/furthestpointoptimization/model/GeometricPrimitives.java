@@ -1,7 +1,5 @@
 package local.furthestpointoptimization.model;
 
-import javafx.geometry.Orientation;
-
 class GeometricPrimitives {
     private GeometricPrimitives(){}
 

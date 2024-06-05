@@ -22,6 +22,21 @@ public class VertexSet extends HashSet<Vertex> {
         // }
     }
 
+    public static VertexSet cristal(int width, int height) {
+        VertexSet vs = new VertexSet();
+        double w = 1/(double)(width+1);
+        System.out.println(w);
+        for (int i = 1; i<=height; ++i) {
+            for (int j = 1; j<=width; ++j) {
+                double x = w*(j+0.5*(1-i%2));
+                double y = (i-0.5)*w*(double)(Math.sqrt(3)/(double)2);
+                Vertex v = new Vertex((x), (y));
+                vs.add(v);
+            }
+        }
+        return vs;
+    }
+
     public VertexSet(VertexSet vertices) {
         super();
         HashMap<Vertex, Vertex> originalToClone = new HashMap<>();
@@ -251,7 +266,7 @@ public class VertexSet extends HashSet<Vertex> {
         }
     }
 
-    /** @deprecated use delaunayTriangulate */
+    /** @deprecated use delaunayTriangulate, Its faster */
     @Deprecated
     public void triangulate() {
         DelaunayTriangulation triangulator = new DelaunayTriangulation(this.toArray(new Vertex[0]));
@@ -315,6 +330,15 @@ public class VertexSet extends HashSet<Vertex> {
             if (vertex.getY() > maxY) maxY = vertex.getY();
         }
         return maxY;
+    }
+
+    public int getMaxNeighborsCount() {
+        int maxN = 0;
+        for (Vertex vertex : this){
+            int count = vertex.getNeighbors().size();
+            if (count > maxN) maxN = count;
+        }
+        return maxN;
     }
 
     public static class ClockWise implements Comparator<Vertex> {

@@ -1,7 +1,9 @@
 package local.furthestpointoptimization.model;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class Vertex extends Point {
@@ -29,6 +31,23 @@ public class Vertex extends Point {
         HashSet<Triangle> t = new HashSet<>();
         getSurroundTriangleIn(t);
         return t;
+    }
+
+    public Optional<Vertex> getKNeighbor(int k) {
+        ArrayList<Vertex> vs = new ArrayList<>();
+        vs.addAll(getNeighbors());
+        Vertex maxX = vs.getFirst();
+        for (Vertex v : vs) {
+            if (v.getX() > maxX.getX()) {
+                maxX=v;
+            }
+        }
+        vs.sort(new Point.CompareByAngleDistance(this, maxX, false));
+        try {
+            return Optional.of(vs.get(k));
+        } catch (IndexOutOfBoundsException e) {
+            return Optional.empty();
+        }
     }
 
     public void getSurroundTriangleIn(Set<Triangle> triangleSet) {

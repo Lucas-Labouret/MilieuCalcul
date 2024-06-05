@@ -22,12 +22,42 @@ public class DelaunayTriangulation {
         // The Parralelisation is useless 
 
         DelaunayTriangulationAction action = new DelaunayTriangulationAction(this.vertices, 0, this.vertices.length-1);
-        ForkJoinPool yo = new ForkJoinPool();
-        yo.invoke(action);
-        yo.close();
+        // ForkJoinPool yo = new ForkJoinPool();
+        // yo.invoke(action);
+        // yo.close();
+        System.out.println("lancé");
+        action.triangulate_rec(new SliceBound(0, this.vertices.length-1));
         // triangulate_rec(new SliceBound(0, vertices.length - 1));
     }
 }
+
+class SliceBound {
+    int start, end;
+
+    SliceBound(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    public int len() {
+        return end - start + 1;
+    }
+
+    public int lowBound() {
+        return start;
+    }
+
+    public int highBound() {
+        return end;
+    }
+
+    @Override
+    public String toString() {
+
+        return lowBound() + " -- " + highBound();
+    }
+}
+
 
 class DelaunayTriangulationAction extends RecursiveAction {
     private Vertex[] vertices;
@@ -42,6 +72,7 @@ class DelaunayTriangulationAction extends RecursiveAction {
 
     @Override
     protected void compute() {
+        // if (true) return;
         if (this.end - this.start < 100) {
             triangulate_rec(new SliceBound(start, end));
         } else {
@@ -65,18 +96,28 @@ class DelaunayTriangulationAction extends RecursiveAction {
 
 
     /** Inclusive bound */
-    private void triangulate_rec(SliceBound bound) {
+    void triangulate_rec(SliceBound bound) {
         int sliceLength = bound.len();
         int leftIndex = bound.lowBound(), rightIndex = bound.highBound();
         switch (sliceLength) {
+            case 1:
+            case 0:
+            System.exit(1);
             // base case
             case 2:
                 Vertex.link(vertices[leftIndex], vertices[rightIndex]);
                 break;
             // base case
             case 3:
-                for (int i = leftIndex, j = rightIndex; i <= rightIndex; j = i,i++) {
-                    Vertex.link(vertices[i], vertices[j]);
+                ArrayList<Point> vs = new ArrayList<>();
+                vs.add(vertices[leftIndex]);
+                vs.add(vertices[leftIndex+1]);
+                vs.add(vertices[leftIndex+2]);
+                Vertex.link(vertices[leftIndex], vertices[leftIndex+1]);
+                Vertex.link(vertices[leftIndex+1], vertices[leftIndex+2]);
+
+                if (!Point.areAllPointsCollinear(vs)) {
+                    Vertex.link(vertices[leftIndex], vertices[leftIndex+2]);
                 }
                 break;
             // recursion
@@ -84,40 +125,16 @@ class DelaunayTriangulationAction extends RecursiveAction {
                 int pivot = (leftIndex + rightIndex) / 2;
                 SliceBound l = new SliceBound(leftIndex, pivot);
                 SliceBound r = new SliceBound(pivot + 1, rightIndex);
+                System.out.println(l+ " \033[91m<\033[0m|\033[91m>\033[0m "+r);
                 triangulate_rec(l);
                 triangulate_rec(r);
+                System.out.println(l+ " \033[92m>\033[0m|\033[92m<\033[0m "+r);
                 fusion(l, r);
                 break;
         }
     }
 
 
-    class SliceBound {
-        int start, end;
-
-        SliceBound(int start, int end) {
-            this.start = start;
-            this.end = end;
-        }
-
-        public int len() {
-            return end - start + 1;
-        }
-
-        public int lowBound() {
-            return start;
-        }
-
-        public int highBound() {
-            return end;
-        }
-
-        @Override
-        public String toString() {
-
-            return lowBound() + " -- " + highBound();
-        }
-    }
 
     void fusion(SliceBound leftTrig, SliceBound rightTrig) {
         int[] base = get_base_for_fusion(leftTrig.start, rightTrig.end);
@@ -125,7 +142,8 @@ class DelaunayTriangulationAction extends RecursiveAction {
         int leftPtIdx = base[0];
         int rightPtIdx = base[1];
         Vertex.link(vertices[leftPtIdx], vertices[rightPtIdx]);
-        
+        // if (true) return;
+        int i = 1;
         while (true) {
 
             OptionalInt leftCandidate = getCandidate(leftPtIdx, rightPtIdx, Side.LEFT);
@@ -135,8 +153,27 @@ class DelaunayTriangulationAction extends RecursiveAction {
                 Vertex basel = vertices[leftPtIdx];
                 Vertex baser = vertices[rightPtIdx];
 
+                System.out.println(" - - - ");
+                System.out.println("("+leftPtIdx+","+rightPtIdx+")");
+                System.out.println("("+leftCandidate.getAsInt()+","+rightCandidate.getAsInt()+")");
+                
                 Vertex l = vertices[leftCandidate.getAsInt()];
                 Vertex r = vertices[rightCandidate.getAsInt()];
+                
+                // ArrayList<Vertex> arr = new ArrayList<>();
+                // arr.add(basel);
+                // arr.add(baser);
+                // arr.add(l);
+                // arr.add(r);
+                // if (Point.areAllPointsCollinear()) {
+
+                // }
+
+                // if (leftCandidate.getAsInt() == rightCandidate.getAsInt()) {
+                    // Vertex.link(basel, vertices[leftCandidate.getAsInt()]);
+                    // Vertex.link(baser, vertices[leftCandidate.getAsInt()]);
+                    // return;
+                // }
 
                 Triangle leftTriangle = new Triangle(basel, baser, l);
                 Triangle rightTriangle = new Triangle(basel, baser, r);
@@ -148,10 +185,22 @@ class DelaunayTriangulationAction extends RecursiveAction {
                 // boolean rightTest = test_in_circle(basel, baser, r, l);
                 boolean rightTest = rightTriangle._contains(l);
 
-                if ((leftTest && rightTest) || (!leftTest && !rightTest)) {
-                    System.out.println("Two true or Two false");
+                if (leftTest && rightTest) {
+                    System.out.println("Two true");
                     // System.exit(1);
                     return;
+                } else if (!leftTest && !rightTest) {
+                    System.out.println("Two false");
+                    // System.out.println("("+leftPtIdx+","+rightPtIdx+")");
+                    // System.out.println("("+leftCandidate.getAsInt()+","+rightCandidate.getAsInt()+")");
+                    leftPtIdx = leftCandidate.getAsInt();
+                    rightPtIdx = rightCandidate.getAsInt();
+
+                    // return;
+                    // Vertex.link(vertices[rightPtIdx], vertices[leftCandidate.getAsInt()]);
+                    // leftPtIdx = leftCandidate.getAsInt();
+                    // return;
+
                 } else if (!leftTest) {
                     Vertex.link(vertices[rightPtIdx], vertices[leftCandidate.getAsInt()]);
                     leftPtIdx = leftCandidate.getAsInt();
@@ -173,6 +222,9 @@ class DelaunayTriangulationAction extends RecursiveAction {
                 break;
             }
 
+            if (i++ == 1000) {
+                System.out.println("boucle inf");
+                return;}
             // sniff java :'(
 
             // leftCandidate.ifPresent(new IntConsumer() {
@@ -217,7 +269,7 @@ class DelaunayTriangulationAction extends RecursiveAction {
         int k = 0;
         // bottom hull
         for (int i = left; i < right + 1; ++i) {
-            while (k >= 2 && vertices[res[k - 2]].cross(vertices[res[k - 1]], vertices[i]) >= 0.0) {
+            while (k >= 2 && vertices[res[k - 2]].cross(vertices[res[k - 1]], vertices[i]) > 0.0) {
                 k--;
             }
             res[k++] = i;
@@ -267,7 +319,8 @@ class DelaunayTriangulationAction extends RecursiveAction {
         neighbors.remove(vertices[other]);
 
         // trier
-        neighbors.sort(new Point.CompareByAngle(angleWithBase));
+        // neighbors.sort(new Point.CompareByAngle(angleWithBase));
+        neighbors.sort(new Point.CompareByAngleDistance(vertices[center], vertices[other], s==Side.RIGHT));
         ArrayList<Integer> neighborsID = new ArrayList<>();
 
         // Not opti

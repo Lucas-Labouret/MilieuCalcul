@@ -146,7 +146,7 @@ public class Triangle {
 
     public boolean _contains(Point p) {
         Point center = this.getCircumcenter();
-        return p.distance_from(center) < this.getCircumRadius();
+        return Double.compare(p.distance_from(center), this.getCircumRadius()) < 0;
     }
 
     public boolean contains(Vertex v) {
