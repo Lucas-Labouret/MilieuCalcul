@@ -7,12 +7,20 @@ import java.util.Optional;
 import java.util.Set;
 
 public class Vertex extends Point {
+    private final boolean isBorder;
     private final VertexSet neighbors = new VertexSet();
     int id;
 
     public Vertex(double x, double y) {
-        super(x, y);
+        this(x, y, false);
     }
+
+    public Vertex(double x, double y, boolean isBorder) {
+        super(x, y);
+        this.isBorder = isBorder;
+    }
+
+    public boolean isBorder() { return isBorder; }
 
     public boolean hasNeighbors(Vertex v) { return neighbors.contains(v); }
     public void addNeighbor(Vertex v) {

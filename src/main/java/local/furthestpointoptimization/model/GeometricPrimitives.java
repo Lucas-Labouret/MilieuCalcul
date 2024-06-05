@@ -1,9 +1,11 @@
 package local.furthestpointoptimization.model;
 
+import java.util.ArrayList;
+
 class GeometricPrimitives {
     private GeometricPrimitives(){}
 
-    private static double inCirclePrimitive(Vertex a, Vertex b, Vertex c, Vertex d){
+    private static double inCirclePrimitive(Point a, Point b, Point c, Point d){
         double ax = a.getX(), ay = a.getY();
         double bx = b.getX(), by = b.getY();
         double cx = c.getX(), cy = c.getY();
@@ -19,7 +21,7 @@ class GeometricPrimitives {
                 (cx_*cx_ + cy_*cy_) * (ax_*by_-bx_*ay_)
         );
     }
-    private static double orientationPrimitive(Vertex a, Vertex b, Vertex c){
+    private static double orientationPrimitive(Point a, Point b, Point c){
         return (b.getY() - a.getY()) * (c.getX() - b.getX()) - (b.getX() - a.getX()) * (c.getY() - b.getY());
     }
 
@@ -29,16 +31,16 @@ class GeometricPrimitives {
         CounterClockWise; // 2
     }
 
-    public static Orientation orientation(Vertex a, Vertex b, Vertex c){
+    public static Orientation orientation(Point a, Point b, Point c){
         double val = orientationPrimitive(a, b, c);
 
         if (val == 0) return Orientation.CoLineaire;
         return (val > 0) ? Orientation.CounterClockWise : Orientation.ClockWise;
     }
-    public static boolean ccw(Vertex a, Vertex b, Vertex c){
+    public static boolean ccw(Point a, Point b, Point c){
         return orientation(a, b, c) == Orientation.CounterClockWise;
     }
-    public static boolean inCircle(Vertex a, Vertex b, Vertex c, Vertex d){
+    public static boolean inCircle(Point a, Point b, Point c, Point d){
         return inCirclePrimitive(a, b, c, d) > 0;
     }
 
@@ -58,5 +60,36 @@ class GeometricPrimitives {
         if (angleB < 0) angleB += 2 * Math.PI;
 
         return Double.compare(angleA, angleB);
+    }
+
+    public static boolean intersect(Segment s1, Segment s2){
+        return orientation(s1.getStart(), s1.getEnd(), s2.getStart()) != orientation(s1.getStart(), s1.getEnd(), s2.getEnd()) &&
+                orientation(s2.getStart(), s2.getEnd(), s1.getStart()) != orientation(s2.getStart(), s2.getEnd(), s1.getEnd());
+    }
+    public static boolean insidePolygon(Point vertex, ArrayList<Vertex> polygon){
+        if (polygon == null) return true;
+
+        int intersections = 0;
+        for (int i = 0; i < polygon.size(); i++){
+            Point a = polygon.get(i);
+            Point b = polygon.get((i+1)%polygon.size());
+            if (a.getY() == b.getY()) continue;
+            if (vertex.getY() < Math.min(a.getY(), b.getY())) continue;
+            if (vertex.getY() >= Math.max(a.getY(), b.getY())) continue;
+            double x = (vertex.getY() - a.getY()) * (b.getX() - a.getX()) / (b.getY() - a.getY()) + a.getX();
+            if (x > vertex.getX()) intersections++;
+        }
+        return intersections % 2 == 1;
+    }
+    public static boolean insidePolygon(Segment s, ArrayList<Vertex> polygon){
+        if (polygon == null) return true;
+
+        if(!insidePolygon(s.getStart(), polygon) || !insidePolygon(s.getEnd(), polygon)) return false;
+        for (int i = 0; i < polygon.size(); i++){
+            Point a = polygon.get(i);
+            Point b = polygon.get((i+1)%polygon.size());
+            if (intersect(s, new Segment(a, b))) return false;
+        }
+        return true;
     }
 }

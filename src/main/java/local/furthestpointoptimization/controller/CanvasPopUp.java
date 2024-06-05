@@ -4,6 +4,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.VertexSet;
@@ -19,22 +20,21 @@ public class CanvasPopUp {
     private final Canvas canvas = new Canvas();
 
     public CanvasPopUp(VertexSet vertexSet, int size) {
-        canvas.setWidth(size+20);
-        canvas.setHeight(size+20);
-
-        //System.out.println(vertexSet.getSize());
+        canvas.setWidth(size*vertexSet.getWidth());
+        canvas.setHeight(size*vertexSet.getHeight());
 
         for (Vertex vertex : vertexSet) {
             GraphicsContext gc = canvas.getGraphicsContext2D();
-            //gc.fillText(Integer.toString(vertex.getId()), vertex.getX()*size + 5, vertex.getY()*size - 5);
-            //gc.fillOval(vertex.getX()*size - 5, vertex.getY()*size - 5, 10, 10);
-            //System.out.println(vertex.getX() + " " + vertex.getY() + " " + vertex.getNeighbors().size());
+            gc.setFill(Color.BLACK);
             for (Vertex neighbor : vertex.getNeighbors()) {
                 gc.strokeLine(
-                        vertex.getX()*size   , vertex.getY()*size,
-                        neighbor.getX()*size, neighbor.getY()*size
+                    vertex.getX()*size   , vertex.getY()*size,
+                    neighbor.getX()*size, neighbor.getY()*size
                 );
             }
+            if (vertex.isBorder()) gc.setFill(Color.GREEN);
+            else gc.setFill(Color.BLACK);
+            gc.fillOval(vertex.getX()*size-5, vertex.getY()*size-5, 10, 10);
         }
     }
 
