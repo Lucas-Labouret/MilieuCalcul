@@ -29,9 +29,13 @@ public class Point {
         return false;
     }
 
+    public boolean almostEquals(Point other, double epsilon) {
+        return Math.abs(this.x - other.x) < epsilon && Math.abs(this.y - other.y) < epsilon;
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(x, y);
+        return 0;
     }
 
     @Override
