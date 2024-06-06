@@ -1,0 +1,71 @@
+package local.Ui.View;
+
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.PerspectiveCamera;
+import javafx.scene.Scene;
+import javafx.scene.SceneAntialiasing;
+import javafx.scene.SubScene;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.Box;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Sphere;
+import javafx.scene.transform.Rotate;
+import local.Ui.Main;
+import local.Ui.camera.SimpleFPSCamera;
+import local.Ui.controller.BackendButtonController;
+
+public class MainLayout extends BorderPane {
+
+    SidePanel sidepannel;
+
+    public MainLayout() {
+        super();
+
+        this.sidepannel = new SidePanel();
+
+        ToolBarComponent tc = new ToolBarComponent();
+        tc.back.setOnAction(event -> {
+            if (this.getLeft() == null) {
+                setLeft(this.sidepannel);
+            } else setLeft(null);
+        });
+        setTop(tc);
+
+
+        Group g = new Group();
+
+        Box cube = new Box(100, 100, 100);
+        cube.setMaterial(new PhongMaterial(Color.RED));
+        Sphere sphere = new Sphere(50);
+        sphere.setMaterial(new PhongMaterial(Color.BLUE));
+        g.getChildren().addAll(cube, sphere);
+
+        addAxis(g);
+
+
+        SubScene subScene = new SubScene(g, Main.WIDTH, Main.HEIGHT, true, SceneAntialiasing.BALANCED);
+
+        SimpleFPSCamera fpscam = new SimpleFPSCamera();
+        subScene.setCamera(fpscam.getCamera());
+        fpscam.loadControlsForSubScene(subScene);
+        subScene.setCamera(fpscam.getCamera());
+        subScene.setPickOnBounds(true);
+        
+        setCenter(subScene);
+    }
+
+    void addAxis(Group g) {
+        Line xAxis = new Line(-2000, 0, 2000, 0);
+        xAxis.setStroke(Color.RED);
+        Line yAxis = new Line(0, -2000, 0, 2000);
+        yAxis.setStroke(Color.GREEN);
+        Line zAxis = new Line(-2000, 0, 2000, 0);
+        zAxis.getTransforms().add(new Rotate(90, 0, 0, 0, Rotate.Y_AXIS));
+        zAxis.setStroke(Color.BLUE);
+        g.getChildren().addAll(xAxis, yAxis, zAxis);
+    }
+}
+
