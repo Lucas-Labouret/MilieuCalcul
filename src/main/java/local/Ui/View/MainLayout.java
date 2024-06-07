@@ -21,6 +21,9 @@ public class MainLayout extends BorderPane {
 
     SidePanel sidepannel;
 
+    SubScene subScene3D;
+    SubScene subSceneFortune;
+
     public MainLayout() {
         super();
 
@@ -39,22 +42,28 @@ public class MainLayout extends BorderPane {
 
         Box cube = new Box(100, 100, 100);
         cube.setMaterial(new PhongMaterial(Color.RED));
-        Sphere sphere = new Sphere(50);
-        sphere.setMaterial(new PhongMaterial(Color.BLUE));
-        g.getChildren().addAll(cube, sphere);
+        g.getChildren().addAll(cube);
 
         addAxis(g);
 
 
-        SubScene subScene = new SubScene(g, Main.WIDTH, Main.HEIGHT, true, SceneAntialiasing.BALANCED);
-
-        SimpleFPSCamera fpscam = new SimpleFPSCamera();
-        subScene.setCamera(fpscam.getCamera());
-        fpscam.loadControlsForSubScene(subScene);
-        subScene.setCamera(fpscam.getCamera());
-        subScene.setPickOnBounds(true);
+        subScene3D = new SubScene(g, Main.WIDTH, Main.HEIGHT, true, SceneAntialiasing.BALANCED);
         
-        setCenter(subScene);
+        SimpleFPSCamera fpscam = new SimpleFPSCamera();
+        subScene3D.setCamera(fpscam.getCamera());
+        fpscam.loadControlsForSubScene(subScene3D);
+        subScene3D.setCamera(fpscam.getCamera());
+        subScene3D.setPickOnBounds(true);
+
+        Group gf = new Group();
+        Sphere sphere = new Sphere(50);
+        sphere.setMaterial(new PhongMaterial(Color.BLUE));
+        gf.getChildren().add(sphere);
+        subSceneFortune = new SubScene(gf, Main.WIDTH, Main.HEIGHT, true, SceneAntialiasing.BALANCED);
+        
+
+
+        setCenter(subScene3D);
     }
 
     void addAxis(Group g) {

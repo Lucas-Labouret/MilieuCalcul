@@ -9,10 +9,10 @@ public class ToolBarComponent extends ToolBar {
     public ToolBarComponent() {
         super();
         back = new BackendButton();
+        // Button btn2 = new Button("Button 2");
         getItems().add(back);
 
         // Button btn1 = new Button("Backend");
-        // Button btn2 = new Button("Button 2");
         // Button btn3 = new Button("Button 3");
     }
 
