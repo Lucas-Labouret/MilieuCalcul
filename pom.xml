@@ -5,25 +5,21 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>local</groupId>
-    <artifactId>FurthestPointOptimization</artifactId>
+    <artifactId>FPO</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>FurthestPointOptimization</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.0</junit.version>
+        <javafx.version>22.0.1</javafx.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.openjfx</groupId>
-            <artifactId>javafx-controls</artifactId>
-            <version>21</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openjfx</groupId>
             <artifactId>javafx-fxml</artifactId>
-            <version>21</version>
+            <version>${javafx.version}</version>
         </dependency>
 
         <dependency>

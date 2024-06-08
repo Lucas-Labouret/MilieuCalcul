@@ -7,4 +7,7 @@ module local.furthestpointoptimization {
 
     opens local.furthestpointoptimization to javafx.fxml;
     exports local.furthestpointoptimization;
+    opens local.Ui to javafx.fxml;
+    // exports local.Ui to javafx.graphics;
+    exports local.Ui;
 }

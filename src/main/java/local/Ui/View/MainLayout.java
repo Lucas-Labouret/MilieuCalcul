@@ -13,13 +13,20 @@ import javafx.scene.shape.Box;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
 import local.Ui.Main;
 import local.Ui.camera.SimpleFPSCamera;
-import local.Ui.controller.BackendButtonController;
+import local.furthestpointoptimization.model.Vertex;
+import local.furthestpointoptimization.model.VertexSet;
 
 public class MainLayout extends BorderPane {
 
     SidePanel sidepannel;
+
+    SubScene subScene3D;
+    SubScene subSceneFortune;
+
+    Group g;
 
     public MainLayout() {
         super();
@@ -32,29 +39,47 @@ public class MainLayout extends BorderPane {
                 setLeft(this.sidepannel);
             } else setLeft(null);
         });
+        
         setTop(tc);
 
 
-        Group g = new Group();
+        g = new Group();
+
+        VertexSet vs = new VertexSet(150);
+        vs.triangulate();
 
         Box cube = new Box(100, 100, 100);
         cube.setMaterial(new PhongMaterial(Color.RED));
-        Sphere sphere = new Sphere(50);
-        sphere.setMaterial(new PhongMaterial(Color.BLUE));
-        g.getChildren().addAll(cube, sphere);
+        g.getChildren().addAll(cube);
+
+        showVertexSet(vs);
 
         addAxis(g);
 
 
-        SubScene subScene = new SubScene(g, Main.WIDTH, Main.HEIGHT, true, SceneAntialiasing.BALANCED);
-
-        SimpleFPSCamera fpscam = new SimpleFPSCamera();
-        subScene.setCamera(fpscam.getCamera());
-        fpscam.loadControlsForSubScene(subScene);
-        subScene.setCamera(fpscam.getCamera());
-        subScene.setPickOnBounds(true);
+        subScene3D = new SubScene(g, Main.WIDTH, Main.HEIGHT, true, SceneAntialiasing.BALANCED);
         
-        setCenter(subScene);
+        SimpleFPSCamera fpscam = new SimpleFPSCamera();
+        subScene3D.setCamera(fpscam.getCamera());
+        fpscam.loadControlsForSubScene(subScene3D);
+        subScene3D.setCamera(fpscam.getCamera());
+        subScene3D.setPickOnBounds(true);
+
+        Group gf = new Group();
+        Sphere sphere = new Sphere(50);
+        sphere.setMaterial(new PhongMaterial(Color.BLUE));
+        gf.getChildren().add(sphere);
+        subSceneFortune = new SubScene(gf, Main.WIDTH, Main.HEIGHT, true, SceneAntialiasing.BALANCED);
+        
+        tc.fortune.setOnAction(event -> {
+            setCenter(subSceneFortune);
+        });
+
+        tc.thirdDimension.setOnAction(event -> {
+            setCenter(subScene3D);
+        });
+
+        setCenter(subScene3D);
     }
 
     void addAxis(Group g) {
@@ -66,6 +91,28 @@ public class MainLayout extends BorderPane {
         zAxis.getTransforms().add(new Rotate(90, 0, 0, 0, Rotate.Y_AXIS));
         zAxis.setStroke(Color.BLUE);
         g.getChildren().addAll(xAxis, yAxis, zAxis);
+    }
+
+    public void showVertexSet(VertexSet vs) {
+        for (Vertex v : vs) {
+            double x = v.getX();
+            double y = v.getY();
+            
+            // Créer la sphère et définir sa couleur en noir
+            Sphere s = new Sphere(10);
+            PhongMaterial blackMaterial = new PhongMaterial();
+            blackMaterial.setDiffuseColor(Color.BLACK);
+            s.setMaterial(blackMaterial);
+            s.getTransforms().add(new Translate(x * 3000, y * 3000));
+            g.getChildren().add(s);
+            
+            for (Vertex nei : v.getNeighbors()) {
+                // Créer la ligne et définir sa couleur en noir
+                Line l = new Line(x * 3000, y * 3000, nei.getX() * 3000, nei.getY() * 3000);
+                l.setStroke(Color.BLACK);
+                g.getChildren().add(l);
+            }
+        }
     }
 }
 
