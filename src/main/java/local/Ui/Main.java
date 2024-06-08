@@ -1,29 +1,11 @@
 package local.Ui;
 
 import javafx.application.Application;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
-import javafx.scene.SceneAntialiasing;
-import javafx.scene.SubScene;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Box;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.Sphere;
-import javafx.scene.text.Font;
-import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import local.Ui.View.MainLayout;
-import local.Ui.View.ToolBarComponent;
-import local.Ui.camera.SimpleFPSCamera;
 
 public class Main extends Application {
 
@@ -34,9 +16,10 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         blobStaging(stage);
 
-        MainLayout ml = new MainLayout();
+        // MainLayout ml = new MainLayout();
+        MasterScene ms = MasterScene.getInstance();
 
-        Scene scene = new Scene(ml, Main.WIDTH, Main.HEIGHT, Color.SKYBLUE);
+        Scene scene = new Scene(ms, Main.WIDTH, Main.HEIGHT, Color.SKYBLUE);
 
         stage.setScene(scene);
         stage.show();
