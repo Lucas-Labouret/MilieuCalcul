@@ -2,7 +2,7 @@ package local.furthestpointoptimization.model;
 
 import java.util.HashSet;
 
-class FPOUtils {
+public class FPOUtils {
     private FPOUtils(){}
 
     public static void buildFPO(VertexSet vertexSet, double convergenceTolerance){
@@ -21,7 +21,7 @@ class FPOUtils {
         } while (newFpo < convergenceTolerance && newFpo - oldFpo > 1e-6);
     }
 
-    private static double fpoIteration(VertexSet vertices){
+    public static double fpoIteration(VertexSet vertices){
         VertexSet vertexSet = new VertexSet(vertices.toArray(new Vertex[0]));
         for (Vertex vertex : vertexSet){
             if (vertex.isBorder()) continue;

@@ -185,6 +185,15 @@ public class VertexSet extends HashSet<Vertex> {
         this.border = border;
     }
 
+    public Vertex getVertex(Point p) {
+        for (Vertex v : this) {
+            if (Double.compare(v.getX(),p.getX())==0 && Double.compare(v.getY(),p.getY())==0) {
+                return v;
+            }
+        }
+        return null;
+    }
+
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
         //DelaunayUtils.buildDT(this);

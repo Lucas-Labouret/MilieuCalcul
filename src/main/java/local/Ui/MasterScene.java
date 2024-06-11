@@ -29,13 +29,17 @@ public class MasterScene extends BorderPane {
         SubScene subScene = new SubScene(triangulationView, 500, 500);
         addApp(subScene, "Triangulation");
         setCenter(subScene);
-        
+        MiseEnBoite subapp2 = new MiseEnBoite();
+        addApp(new SubScene(subapp2, 500, 500), "Boxing");
+
         widthProperty().addListener((obs, oldVal, newVal) -> {
-            subScene.setWidth(newVal.doubleValue());
+            for (SubScene sbscene : apps)
+                sbscene.setWidth(newVal.doubleValue());
         });
 
         heightProperty().addListener((obs, oldVal, newVal) -> {
-            subScene.setHeight(newVal.doubleValue() - toolBar.getHeight());
+            for (SubScene sbscene : apps)
+                sbscene.setHeight(newVal.doubleValue() - toolBar.getHeight());
         });
     }
 
