@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.OptionalInt;
 import java.util.concurrent.*;
 
+/** Arthur */
 @Deprecated
 public class DelaunayTriangulation {
     private Vertex[] vertices;

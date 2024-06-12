@@ -12,7 +12,7 @@ public class Vertex extends Point {
     int id;
 
     public Vertex(double x, double y) {
-        this(x, y, false);
+        this(x+VertexSet.randomEps(), y+VertexSet.randomEps(), false);
     }
 
     public Vertex(double x, double y, boolean isBorder) {

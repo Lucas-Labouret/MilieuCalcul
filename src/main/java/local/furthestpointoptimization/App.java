@@ -1,8 +1,14 @@
 package local.furthestpointoptimization;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 import local.furthestpointoptimization.controller.CanvasPopUp;
+import local.furthestpointoptimization.model.CalculEfficiency;
+import local.furthestpointoptimization.model.Coord;
+import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.VertexSet;
 
 public class App extends Application {

@@ -6,6 +6,7 @@ import java.util.function.Function;
 
 import local.furthestpointoptimization.model.GeometricPrimitives.Orientation;
 
+/** Lucas */
 class DelaunayUtils {
     private DelaunayUtils(){}
 
