@@ -9,6 +9,7 @@ import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.VertexSet;
 import local.furthestpointoptimization.model.optimisation.GeometricPrimitives.Orientation;
 
+/** Lucas */
 class DelaunayUtils {
     private DelaunayUtils(){}
 

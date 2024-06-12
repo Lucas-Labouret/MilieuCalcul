@@ -14,9 +14,9 @@ public class Triangle {
     private final Vertex c;
 
     public Triangle(Vertex a, Vertex b, Vertex c) {
-        if (a.equals(b) || b.equals(c) || c.equals(a)) {
-            throw new IllegalArgumentException("Les points d'un triangle ne peuvent pas etre identiques");
-        }
+        // if (a.equals(b) || b.equals(c) || c.equals(a)) {
+            // throw new IllegalArgumentException("Les points d'un triangle ne peuvent pas etre identiques");
+        // }
 
         // condition sur l'aire ?
         // double area2 = Math.abs(a.getX() * (b.getY() - c.getY()) + b.getX() * (c.getY() - a.getY()) + c.getX() * (a.getY() - b.getY()));

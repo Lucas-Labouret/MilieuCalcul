@@ -168,31 +168,25 @@ public class VertexSet extends HashSet<Vertex> {
         this.border = border;
     }
 
-    public static HashMap<Vertex, Coord> cristalHM(int width, int height) {
-        HashMap<Vertex, Coord> vs = new HashMap<>();
-        double w = 1/(double)(width+1);
-        for (int i = 1; i<=height; ++i) {
-            for (int j = 1; j<=width; ++j) {
-                double x = w*(j+0.5*(1-i%2));
-                double y = (i-0.5)*w*(double)(Math.sqrt(3)/(double)2);
-
-                Vertex v = new Vertex((x+randomEps()), (y+randomEps()));
-                vs.put(v, new Coord(i, j));
+    public Vertex getVertex(Point p) {
+        for (Vertex v : this) {
+            if (Double.compare(v.getX(),p.getX())==0 && Double.compare(v.getY(),p.getY())==0) {
+                return v;
             }
         }
-        return vs;
+        return null;
     }
 
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
-        //DelaunayUtils.buildDT(this);
+        DelaunayUtils.buildDT(this);
 
-        try {
-            triangles.clear();
-            DiemkeInterface.triangulate(this);
-        } catch (NotEnoughPointsException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            triangles.clear();
+//            DiemkeInterface.triangulate(this);
+//        } catch (NotEnoughPointsException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void optimize(double convergenceTolerance){
@@ -201,10 +195,10 @@ public class VertexSet extends HashSet<Vertex> {
 
     public HashSet<Triangle> triangles = new HashSet<>();
     public HashSet<Triangle> getTriangles(){
-//        triangles.clear();
-//        for (Vertex vertex : this){
-//            vertex.getSurroundTriangleIn(triangles);
-//        }
+       triangles.clear();
+       for (Vertex vertex : this){
+           vertex.getSurroundTriangleIn(triangles);
+       }
         return triangles;
     }
 
