@@ -7,7 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.VertexSet;
-import local.furthestpointoptimization.model.FPOUtils;
+import local.furthestpointoptimization.model.optimisation.FPOUtils;
 
 public class Triangulation2DView extends BorderPane {
 

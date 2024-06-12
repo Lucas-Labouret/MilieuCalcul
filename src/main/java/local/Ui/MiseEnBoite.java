@@ -9,7 +9,7 @@ import javafx.scene.layout.BorderPane;
 import local.Ui.View.InformationBar;
 import local.Ui.View.PaneVertexSetDrawer;
 import local.Ui.View.TBIntInput;
-import local.furthestpointoptimization.model.FPOUtils;
+import local.furthestpointoptimization.model.optimisation.FPOUtils;
 import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.VertexSet;
 

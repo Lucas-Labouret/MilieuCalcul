@@ -136,29 +136,29 @@ public class VertexSet extends HashSet<Vertex> {
         ArrayList<Vertex> border = new ArrayList<>();
 
         for (int i = 0; i < totalWidth; i++){
-            Vertex vertex = new Vertex(i+0.5, 0, true);
+            Vertex vertex = new Vertex(i+0.5, 0, true, true, i == 0, i == totalWidth-1, false);
             if (!border.isEmpty())
                 border.getLast().addNeighbor(vertex);
             border.add(vertex);
         }
         for (int i = 0; i < totalHeight-1; i++){
             Vertex vertex;
-            if (i%2 == 0) vertex = new Vertex(totalWidth, (i+1)*hexHeight/2, true);
-            else vertex = new Vertex(totalWidth-0.5, (i+1)*hexHeight/2, true);
+            if (i%2 == 0) vertex = new Vertex(totalWidth, (i+1)*hexHeight/2, true, false, false, true, i == totalHeight-2);
+            else vertex = new Vertex(totalWidth-0.5, (i+1)*hexHeight/2, true, false, false, true, i == totalHeight-2);
             border.getLast().addNeighbor(vertex);
             border.add(vertex);
         }
         for (int i = totalWidth - (totalHeight%2 == 0 ? 1 : 0); i >= 0; i--){
             Vertex vertex;
-            if (totalHeight%2 == 1) vertex = new Vertex(i, this.height, true);
-            else vertex = new Vertex(i+0.5, this.height, true);
+            if (totalHeight%2 == 1) vertex = new Vertex(i, this.height, true, false, i == 0, i == totalWidth, true);
+            else vertex = new Vertex(i+0.5, this.height, true, false, i == 0, i == totalWidth, true);
             border.getLast().addNeighbor(vertex);
             border.add(vertex);
         }
         for (int i = totalHeight-1; i > 0; i--){
             Vertex vertex;
-            if (i%2 == 0) vertex = new Vertex(0.5, i*hexHeight/2, true);
-            else vertex = new Vertex(0, i*hexHeight/2, true);
+            if (i%2 == 0) vertex = new Vertex(0.5, i*hexHeight/2, true, false, true, false, false);
+            else vertex = new Vertex(0, i*hexHeight/2, true, false, true, false, false);
             border.getLast().addNeighbor(vertex);
             border.add(vertex);
         }
@@ -195,10 +195,10 @@ public class VertexSet extends HashSet<Vertex> {
 
     public HashSet<Triangle> triangles = new HashSet<>();
     public HashSet<Triangle> getTriangles(){
-       triangles.clear();
-       for (Vertex vertex : this){
-           vertex.getSurroundTriangleIn(triangles);
-       }
+        triangles.clear();
+        for (Vertex vertex : this){
+            vertex.getSurroundTriangleIn(triangles);
+        }
         return triangles;
     }
 
@@ -250,6 +250,14 @@ public class VertexSet extends HashSet<Vertex> {
             minDistance += getLocalMinDist(x);
         }
         return minDistance/this.size();
+    }
+    public double getGlobalMinDist(){
+        double minDistance = Double.POSITIVE_INFINITY;
+        for (Vertex x : this){
+            double distance = getLocalMinDist(x);
+            if (distance < minDistance) minDistance = distance;
+        }
+        return minDistance;
     }
     public double getMaxMinDist(){
         double maxDistance = 0;

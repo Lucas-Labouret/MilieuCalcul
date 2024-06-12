@@ -10,7 +10,7 @@ import local.furthestpointoptimization.model.VertexSet;
 import local.furthestpointoptimization.model.optimisation.GeometricPrimitives.Orientation;
 
 /** Lucas */
-class DelaunayUtils {
+public class DelaunayUtils {
     private DelaunayUtils(){}
 
     private record BucketKey(int x, int y) {
@@ -65,11 +65,7 @@ class DelaunayUtils {
     private static ArrayList<Integer> _r_bucketDT(ArrayList<Vertex> vertices, int left, int right){
         // cas de base
         if (right - left == 2){
-            vertices.get(left).setId(left);
-            vertices.get(left+1).setId(left+1);
-
             vertices.get(left).addNeighbor(vertices.get(left+1));
-
             return new ArrayList<>(List.of(left, left+1));
         }
 
@@ -78,10 +74,6 @@ class DelaunayUtils {
             Vertex v1 = vertices.get(left);
             Vertex v2 = vertices.get(left+1);
             Vertex v3 = vertices.get(left+2);
-
-            v1.setId(left);
-            v2.setId(left+1);
-            v3.setId(left+2);
 
             v1.addNeighbor(v2);
             v2.addNeighbor(v3);

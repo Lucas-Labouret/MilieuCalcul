@@ -33,7 +33,7 @@ public class CalculEfficiency {
     }
 
     public CalculEfficiency(MiseEnBoite meb, VertexSet vs, int width, int height) {
-        hm = new HashMap<>(meb.miseEnBoite(vs, width, height));
+        hm = new HashMap<>(meb.miseEnBoite(vs));
     }
 
     Coord h(Vertex v) {

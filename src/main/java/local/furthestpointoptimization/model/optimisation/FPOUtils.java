@@ -21,7 +21,7 @@ public class FPOUtils {
             System.out.println("Iteration " + nbIterations + ", " + vertexSet.size() + " vertices left");
             System.out.println("Average min dist: " + vertexSet.getAverageMinDist() + ", max dist: " + vertexSet.getMaxDist());
             System.out.println("FPO: " + fpo + ", Progress: " + (newFpo - oldFpo));
-        } while (newFpo < convergenceTolerance && newFpo - oldFpo > 1e-6);
+        } while (/*newFpo < convergenceTolerance &&*/ newFpo - oldFpo > 1e-6);
     }
 
     public static double fpoIteration(VertexSet vertices){
@@ -55,7 +55,7 @@ public class FPOUtils {
             vertex.setY(f.getY());
             delaunayInsert(vertices, vertex);
         }
-        return vertices.getAverageMinDist()/vertices.getMaxDist();
+        return vertices.getGlobalMinDist()/vertices.getMaxDist();
     }
 
     private static void delaunayRemove(VertexSet vertices, Vertex vertex){

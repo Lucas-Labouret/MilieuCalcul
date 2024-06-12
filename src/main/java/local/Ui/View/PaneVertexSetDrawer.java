@@ -15,7 +15,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import local.furthestpointoptimization.model.Point;
-import local.furthestpointoptimization.model.Triangle;
+import local.furthestpointoptimization.model.optimisation.Triangle;
 import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.VertexSet;
 

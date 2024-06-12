@@ -19,9 +19,6 @@ public class DelaunayTriangulation {
     public void triangulate() {
         // Sorting
         Arrays.sort(this.vertices, new Point.CompareByXThenY());
-        for (int i = 0; i < vertices.length; i++) {
-            vertices[i].setId(i);
-        }
         // recursion
         // The Parralelisation is useless 
 

@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class Vertex extends Point {
     private final VertexSet neighbors = new VertexSet();
-    int id;
+    String id;
 
     private final boolean isBorder;
     private final boolean isTopBorder;
@@ -19,7 +19,7 @@ public class Vertex extends Point {
 
 
     public Vertex(double x, double y) {
-        this(x+VertexSet.randomEps(), y+VertexSet.randomEps(), false, false, false, false, false);
+        this(x, y, false, false, false, false, false);
     }
 
     public Vertex(double x, double y, boolean isBorder) {
@@ -31,7 +31,7 @@ public class Vertex extends Point {
             boolean isBorder,
             boolean isTopBorder, boolean isLeftBorder, boolean isRightBorder, boolean isBottomBorder
     ) {
-        super(x, y);
+        super(x+VertexSet.randomEps(), y+VertexSet.randomEps());
         this.isBorder = isBorder;
         this.isTopBorder = isTopBorder;
         this.isLeftBorder = isLeftBorder;
@@ -95,8 +95,8 @@ public class Vertex extends Point {
         }
     }
 
-    public void setId(int id) { this.id = id; }
-    public int getId() { return id; }
+    public void setId(String id) { this.id = id; }
+    public String getId() { return id; }
 
     public static void link(Vertex v1, Vertex v2) {
         v1.neighbors.add(v2);
@@ -110,17 +110,19 @@ public class Vertex extends Point {
 
     @Override
     public String toString() {
-        String co = "("+ getX() + ',' + getY() + ')';
-        String identifiant = "Vertex " + id + " " + co+ " ";
-        StringBuilder sb = new StringBuilder(); // car concatenation dans une boucle
-        sb.append("Neighbors: ");
-        for (Vertex neighbor : neighbors) {
-            sb.append(neighbor.getId()).append(", ");
-        }
-        // enlever la virgule
-        if (!neighbors.isEmpty()) {
-            sb.delete(sb.length() - 2, sb.length());
-        }
-        return identifiant + sb.toString();
+//        String co = "("+ getX() + ',' + getY() + ')';
+//        String identifiant = "Vertex " + id + " " + co+ " ";
+//        StringBuilder sb = new StringBuilder(); // car concatenation dans une boucle
+//        sb.append("Neighbors: ");
+//        for (Vertex neighbor : neighbors) {
+//            sb.append(neighbor.getId()).append(", ");
+//        }
+//        // enlever la virgule
+//        if (!neighbors.isEmpty()) {
+//            sb.delete(sb.length() - 2, sb.length());
+//        }
+//        return identifiant + sb.toString();
+
+        return "("+ getX() + ',' + getY() + ")";
     }
 }

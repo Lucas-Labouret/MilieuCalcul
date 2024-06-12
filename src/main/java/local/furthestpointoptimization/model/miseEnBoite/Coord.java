@@ -12,4 +12,8 @@ public class Coord {
         return new Coord(a.i - b.i, a.j - b.j);
     }
 
+    public String toString() {
+        return "(" + i + "," + j + ")";
+    }
+
 }
