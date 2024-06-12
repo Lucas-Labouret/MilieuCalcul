@@ -1,4 +1,4 @@
-package local.furthestpointoptimization.model.diemkeTriangulator;
+package local.furthestpointoptimization.model.optimisation.diemkeTriangulator;
 
 import java.awt.Dimension;
 

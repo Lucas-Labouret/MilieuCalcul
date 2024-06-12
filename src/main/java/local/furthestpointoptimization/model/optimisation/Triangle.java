@@ -1,4 +1,8 @@
-package local.furthestpointoptimization.model;
+package local.furthestpointoptimization.model.optimisation;
+
+import local.furthestpointoptimization.model.Point;
+import local.furthestpointoptimization.model.Vertex;
+import local.furthestpointoptimization.model.VertexSet;
 
 import java.util.Objects;
 
@@ -170,7 +174,7 @@ public class Triangle {
     @Override
     public String toString() {
         // return "(" + a + ", " + b + ", " + c + ")";
-        return "(" + a.id + ", " + b.id + ", " + c.id + ")";
+        return "(" + a.getId() + ", " + b.getId() + ", " + c.getId() + ")";
     }
 
     @Override

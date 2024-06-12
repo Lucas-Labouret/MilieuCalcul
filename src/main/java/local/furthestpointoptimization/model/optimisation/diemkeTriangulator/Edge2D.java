@@ -1,4 +1,4 @@
-package local.furthestpointoptimization.model.diemkeTriangulator;
+package local.furthestpointoptimization.model.optimisation.diemkeTriangulator;
 
 /**
  * 2D edge class implementation.

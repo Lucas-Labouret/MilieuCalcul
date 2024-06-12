@@ -1,4 +1,4 @@
-package local.furthestpointoptimization.model.diemkeTriangulator;
+package local.furthestpointoptimization.model.optimisation.diemkeTriangulator;
 
 /**
  * Edge distance pack class implementation used to describe the distance to a

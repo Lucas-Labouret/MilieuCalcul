@@ -1,4 +1,4 @@
-package local.furthestpointoptimization.model.diemkeTriangulator;
+package local.furthestpointoptimization.model.optimisation.diemkeTriangulator;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -108,7 +108,7 @@ class TriangleSoup {
      * Returns one of the possible triangles sharing the specified edge. Based
      * on the ordering of the triangles in this triangle soup the returned
      * triangle may differ. To find the other triangle that shares this edge use
-     * the {@link findNeighbour(Triangle2D triangle, Edge2D edge)} method.
+     * the findNeighbour(Triangle2D triangle, Edge2D edge) method.
      *
      * @param edge The edge
      * @return Returns one triangle that shares the specified edge

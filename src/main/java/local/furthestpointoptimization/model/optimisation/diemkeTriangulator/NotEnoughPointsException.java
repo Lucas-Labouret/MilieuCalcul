@@ -1,4 +1,4 @@
-package local.furthestpointoptimization.model.diemkeTriangulator;
+package local.furthestpointoptimization.model.optimisation.diemkeTriangulator;
 
 /**
  * Exception thrown by the Delaunay triangulator when it is initialized with

@@ -1,26 +1,49 @@
 package local.furthestpointoptimization.model;
 
-import java.lang.reflect.Array;
+import local.furthestpointoptimization.model.optimisation.Triangle;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 public class Vertex extends Point {
-    private final boolean isBorder;
     private final VertexSet neighbors = new VertexSet();
     int id;
 
+    private final boolean isBorder;
+    private final boolean isTopBorder;
+    private final boolean isLeftBorder;
+    private final boolean isRightBorder;
+    private final boolean isBottomBorder;
+
+
     public Vertex(double x, double y) {
-        this(x, y, false);
+        this(x, y, false, false, false, false, false);
     }
 
     public Vertex(double x, double y, boolean isBorder) {
+        this(x, y, isBorder, false, false, false, false);
+    }
+
+    public Vertex(
+            double x, double y,
+            boolean isBorder,
+            boolean isTopBorder, boolean isLeftBorder, boolean isRightBorder, boolean isBottomBorder
+    ) {
         super(x, y);
         this.isBorder = isBorder;
+        this.isTopBorder = isTopBorder;
+        this.isLeftBorder = isLeftBorder;
+        this.isRightBorder = isRightBorder;
+        this.isBottomBorder = isBottomBorder;
     }
 
     public boolean isBorder() { return isBorder; }
+    public boolean isTopBorder() { return isTopBorder; }
+    public boolean isLeftBorder() { return isLeftBorder; }
+    public boolean isRightBorder() { return isRightBorder; }
+    public boolean isBottomBorder() { return isBottomBorder; }
 
     public boolean hasNeighbors(Vertex v) { return neighbors.contains(v); }
     public void addNeighbor(Vertex v) {

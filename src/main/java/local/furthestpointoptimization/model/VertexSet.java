@@ -1,12 +1,13 @@
 package local.furthestpointoptimization.model;
 
-import local.furthestpointoptimization.model.diemkeTriangulator.DiemkeInterface;
-import local.furthestpointoptimization.model.diemkeTriangulator.NotEnoughPointsException;
+import local.furthestpointoptimization.model.miseEnBoite.Coord;
+import local.furthestpointoptimization.model.optimisation.diemkeTriangulator.DiemkeInterface;
+import local.furthestpointoptimization.model.optimisation.diemkeTriangulator.NotEnoughPointsException;
+import local.furthestpointoptimization.model.optimisation.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
-import java.util.random.RandomGenerator;
 
 public class VertexSet extends HashSet<Vertex> {
     private double width = 1;
@@ -97,21 +98,6 @@ public class VertexSet extends HashSet<Vertex> {
         return vs;
     }
 
-    public static HashMap<Vertex, Coord> cristalHM(int width, int height) {
-        HashMap<Vertex, Coord> vs = new HashMap<>();
-        double w = 1/(double)(width+1);
-        for (int i = 1; i<=height; ++i) {
-            for (int j = 1; j<=width; ++j) {
-                double x = w*(j+0.5*(1-i%2));
-                double y = (i-0.5)*w*(double)(Math.sqrt(3)/(double)2);
-                
-                Vertex v = new Vertex((x+randomEps()), (y+randomEps()));
-                vs.put(v, new Coord(i, j));
-            }
-        }
-        return vs;
-    }
-
     public VertexSet(VertexSet vertices) {
         super();
 
@@ -146,10 +132,7 @@ public class VertexSet extends HashSet<Vertex> {
 
     public ArrayList<Vertex> getBorder() { return border; }
 
-    private void addBorder(
-            int totalWidth, int totalHeight,
-            double hexHeight
-    ){
+    private void addBorder(int totalWidth, int totalHeight, double hexHeight){
         ArrayList<Vertex> border = new ArrayList<>();
 
         for (int i = 0; i < totalWidth; i++){
@@ -183,6 +166,21 @@ public class VertexSet extends HashSet<Vertex> {
 
         this.addAll(border);
         this.border = border;
+    }
+
+    public static HashMap<Vertex, Coord> cristalHM(int width, int height) {
+        HashMap<Vertex, Coord> vs = new HashMap<>();
+        double w = 1/(double)(width+1);
+        for (int i = 1; i<=height; ++i) {
+            for (int j = 1; j<=width; ++j) {
+                double x = w*(j+0.5*(1-i%2));
+                double y = (i-0.5)*w*(double)(Math.sqrt(3)/(double)2);
+
+                Vertex v = new Vertex((x+randomEps()), (y+randomEps()));
+                vs.put(v, new Coord(i, j));
+            }
+        }
+        return vs;
     }
 
     public void delaunayTriangulate(){

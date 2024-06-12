@@ -134,7 +134,7 @@ public class Point {
     }
 
     @FunctionalInterface
-    static interface AngleCalculator {
+    public interface AngleCalculator {
         double calculate(Point point);
     }
 
@@ -157,7 +157,7 @@ public class Point {
         private Point center, ref;
         private boolean clockwise;
 
-        CompareByAngleDistance(Point center, Point ref, boolean clockwise) {
+        public CompareByAngleDistance(Point center, Point ref, boolean clockwise) {
             this.center=center;
             this.ref=ref;
             this.clockwise = clockwise;

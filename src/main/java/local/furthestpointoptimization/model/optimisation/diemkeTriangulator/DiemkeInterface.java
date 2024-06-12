@@ -1,6 +1,6 @@
-package local.furthestpointoptimization.model.diemkeTriangulator;
+package local.furthestpointoptimization.model.optimisation.diemkeTriangulator;
 
-import local.furthestpointoptimization.model.Triangle;
+import local.furthestpointoptimization.model.optimisation.Triangle;
 import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.VertexSet;
 
