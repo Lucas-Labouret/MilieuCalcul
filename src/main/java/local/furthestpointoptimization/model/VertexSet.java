@@ -79,7 +79,7 @@ public class VertexSet extends HashSet<Vertex> {
     static  Random rd = new Random();
     
     public static double randomEps() {
-        return rd.nextDouble(1e-5);
+        return rd.nextDouble(1e-3);
     }
 
     public static VertexSet cristal(int width, int height) {
@@ -196,7 +196,7 @@ public class VertexSet extends HashSet<Vertex> {
 
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
-        //DelaunayUtils.buildDT(this);
+        // DelaunayUtils.buildDT(this);
 
         try {
             triangles.clear();
@@ -212,10 +212,10 @@ public class VertexSet extends HashSet<Vertex> {
 
     public HashSet<Triangle> triangles = new HashSet<>();
     public HashSet<Triangle> getTriangles(){
-//        triangles.clear();
-//        for (Vertex vertex : this){
-//            vertex.getSurroundTriangleIn(triangles);
-//        }
+       triangles.clear();
+       for (Vertex vertex : this){
+           vertex.getSurroundTriangleIn(triangles);
+       }
         return triangles;
     }
 
