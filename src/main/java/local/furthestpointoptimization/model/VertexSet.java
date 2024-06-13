@@ -5,11 +5,16 @@ import local.furthestpointoptimization.model.optimisation.diemkeTriangulator.Die
 import local.furthestpointoptimization.model.optimisation.diemkeTriangulator.NotEnoughPointsException;
 import local.furthestpointoptimization.model.optimisation.*;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 
-public class VertexSet extends HashSet<Vertex> {
+public class VertexSet extends HashSet<Vertex> implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 9168791764777148744L;
+
     private double width = 1;
     private double height = 1;
 
@@ -193,9 +198,8 @@ public class VertexSet extends HashSet<Vertex> {
         FPOUtils.buildFPO(this, convergenceTolerance);
     }
 
-    public HashSet<Triangle> triangles = new HashSet<>();
     public HashSet<Triangle> getTriangles(){
-        triangles.clear();
+        HashSet<Triangle> triangles = new HashSet<>();
         for (Vertex vertex : this){
             vertex.getSurroundTriangleIn(triangles);
         }

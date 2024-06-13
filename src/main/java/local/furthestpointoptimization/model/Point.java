@@ -1,10 +1,15 @@
 package local.furthestpointoptimization.model;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-public class Point {
+public class Point implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -5217163308210341910L;
+
     private double x;
     private double y;
 

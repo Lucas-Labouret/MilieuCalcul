@@ -21,7 +21,7 @@ public class FPOUtils {
             System.out.println("Iteration " + nbIterations + ", " + vertexSet.size() + " vertices left");
             System.out.println("Average min dist: " + vertexSet.getAverageMinDist() + ", max dist: " + vertexSet.getMaxDist());
             System.out.println("FPO: " + fpo + ", Progress: " + (newFpo - oldFpo));
-        } while (/*newFpo < convergenceTolerance &&*/ newFpo - oldFpo > 1e-6);
+        } while (newFpo < convergenceTolerance && newFpo - oldFpo > 1e-6);
     }
 
     public static double fpoIteration(VertexSet vertices){
@@ -30,15 +30,11 @@ public class FPOUtils {
             if (vertex.isBorder()) continue;
             Vertex f = vertex;
             double rmax = vertices.getLocalMinDist(vertex);
-            //System.out.println("Starting with " + vertex + " with rmax = " + rmax);
             delaunayRemove(vertices, vertex);
             HashSet<Triangle> triangles = vertices.getTriangles();
             for (Triangle triangle : triangles){
-                //Vertex circumcenter = triangle.getOrthocenter();
-                //double circumradius = triangle.getOrthocenterDist();
                 Vertex circumcenter = triangle.getCircumcenter();
                 double circumradius = triangle.getCircumRadius();
-                //System.out.println("    Triangle: " + triangle + ", c = (" + circumcenter.getX() + ", " + circumcenter.getY() + "), r = " + circumradius);
                 if (
                         circumcenter.getX() < 0 || circumcenter.getX() > vertices.getWidth() ||
                         circumcenter.getY() < 0 || circumcenter.getY() > vertices.getHeight() ||
@@ -50,12 +46,11 @@ public class FPOUtils {
                     f = circumcenter;
                 }
             }
-            //System.out.println("Found (" + f.getX() + ", " + f.getY() + ") with rmax = " + rmax + " /already contained: " + vertices.contains(f));
             vertex.setX(f.getX());
             vertex.setY(f.getY());
             delaunayInsert(vertices, vertex);
         }
-        return vertices.getGlobalMinDist()/vertices.getMaxDist();
+        return vertices.getAverageMinDist()/vertices.getMaxDist();
     }
 
     private static void delaunayRemove(VertexSet vertices, Vertex vertex){

@@ -2,12 +2,17 @@ package local.furthestpointoptimization.model;
 
 import local.furthestpointoptimization.model.optimisation.Triangle;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class Vertex extends Point {
+public class Vertex extends Point implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 259046735400992602L;
+
     private final VertexSet neighbors = new VertexSet();
     String id;
 

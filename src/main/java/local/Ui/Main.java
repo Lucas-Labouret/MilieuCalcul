@@ -27,8 +27,8 @@ public class Main extends Application {
 
     private void blobStaging(Stage stage) {
         stage.setTitle("Blob");
-        Image icon = new Image("blob.png");
-        stage.getIcons().add(icon);
+        //Image icon = new Image("blob.png");
+        //stage.getIcons().add(icon);
     }
 
     public static void main(String args[]) {

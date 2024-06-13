@@ -7,6 +7,7 @@ import local.furthestpointoptimization.model.VertexSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@Deprecated
 public class DiemkeInterface {
     public static void triangulate(VertexSet vertexSet) throws NotEnoughPointsException {
         HashMap<Vector2D, Vertex> vectorToVertex = new HashMap<>();
@@ -31,7 +32,7 @@ public class DiemkeInterface {
             b.addNeighbor(c);
             c.addNeighbor(a);
 
-            vertexSet.triangles.add(new Triangle(a, b, c));
+            //vertexSet.triangles.add(new Triangle(a, b, c));
         }
     }
 }
