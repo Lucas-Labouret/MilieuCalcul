@@ -32,7 +32,7 @@ public class CalculEfficiency {
         this.hm = hm;
     }
 
-    public CalculEfficiency(MiseEnBoite meb, VertexSet vs, int width, int height) {
+    public CalculEfficiency(MiseEnBoite meb, VertexSet vs) {
         hm = new HashMap<>(meb.miseEnBoite(vs));
     }
 

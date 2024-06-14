@@ -128,6 +128,7 @@ public class Vertex extends Point implements Serializable {
 //        }
 //        return identifiant + sb.toString();
 
-        return "("+ getX() + ',' + getY() + ")";
+        //return "("+ getX() + ',' + getY() + ")";
+        return id;
     }
 }

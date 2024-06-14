@@ -35,7 +35,7 @@ public class CanvasPopUp {
             if (vertex.isBorder()) gc.setFill(Color.GREEN);
             else gc.setFill(Color.BLACK);
             gc.fillOval(vertex.getX()*size-5, vertex.getY()*size-5, 10, 10);
-            //gc.fillText(vertex.toString(), vertex.getX()*size, vertex.getY()*size);
+            gc.fillText(vertex.toString(), vertex.getX()*size, vertex.getY()*size);
         }
     }
 
