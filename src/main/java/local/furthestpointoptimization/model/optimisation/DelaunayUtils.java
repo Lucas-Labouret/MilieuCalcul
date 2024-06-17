@@ -21,16 +21,16 @@ public class DelaunayUtils {
         }
 
         @Override public boolean equals(Object o) {
-                if (o == this) return true;
-                if (!(o instanceof BucketKey)) return false;
-                BucketKey b = (BucketKey) o;
-                return x == b.x && y == b.y;
-            }
-
-            @Override  public int hashCode() {
-                return x < y ? y * y + x : x * x + x + y;
-            }
+            if (o == this) return true;
+            if (!(o instanceof BucketKey)) return false;
+            BucketKey b = (BucketKey) o;
+            return x == b.x && y == b.y;
         }
+
+        @Override  public int hashCode() {
+            return x < y ? y * y + x : x * x + x + y;
+        }
+    }
 
     public static void buildDT(VertexSet vertexSet){
     /*

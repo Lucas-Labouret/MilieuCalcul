@@ -26,43 +26,61 @@ public class CalculEfficiency {
     // MeB : [0..line][0..col] -> Set[Optionnal<Vertex>]
     // h : Vertex -> (i,j)
 
-    HashMap<Vertex, Coord> hm;
+    HashMap<Vertex, Coord> vertexToCoord;
+    HashMap<Coord, Vertex> coordToVertex;
 
-    public CalculEfficiency(HashMap<Vertex, Coord> hm) {
-        this.hm = hm;
+    private void reverse(){
+        coordToVertex = new HashMap<>();
+        for (Vertex vertex : vertexToCoord.keySet())
+            coordToVertex.put(vertexToCoord.get(vertex), vertex);
+    }
+
+    public CalculEfficiency(HashMap<Vertex, Coord> vertexToCoord) {
+        this.vertexToCoord = vertexToCoord;
+        reverse();
     }
 
     public CalculEfficiency(MiseEnBoite meb, VertexSet vs) {
-        hm = new HashMap<>(meb.miseEnBoite(vs));
+        vertexToCoord = new HashMap<>(meb.miseEnBoite(vs));
+        reverse();
     }
 
-    Coord h(Vertex v) {
-        return hm.get(v);
+    private double Tik(Vertex vertex){
+        HashSet<Coord> set = new HashSet<>();
+        for (Vertex neighbor : vertex.get)
+            set.add(vertexToCoord.get(neighbor).minus(vertexToCoord.get(vertex)));
+        return set.size()/6.;
     }
 
-    public int Tk(int k) {
-        HashSet<Coord> ens = new HashSet<>();
-        for (Vertex v : hm.keySet()) {
-            Optional<Vertex> vopt = v.getKNeighbor(k);
-            if (vopt.isPresent()) {
-                ens.add(Coord.minus(h(vopt.get()), h(v)));
-            }
+    private double Ti(ArrayList<Vertex> line){
+        if (line.isEmpty()) return 0;
+
+        HashSet<Coord> set = new HashSet<>();
+        for (Vertex vertex : line) for (Vertex neighbor : vertex.getNeighbors())
+            set.add(vertexToCoord.get(neighbor).minus(vertexToCoord.get(vertex)));
+        return set.size()/6.;
+    }
+
+    public double T(){
+        if (vertexToCoord.isEmpty()) return 0;
+
+        int yMax = 0, xMax = 0;
+        for (Coord coord : coordToVertex.keySet()){
+            if (coord.getI() > yMax) yMax = coord.getI();
+            if (coord.getJ() > xMax) xMax = coord.getJ();
         }
-        return ens.size();
-    }
+        yMax++; xMax++;
 
-    public double Tmoy() {
-        int maxNbVoisins = 0;
-        for (Vertex vertex : hm.keySet()) {
-            int count = vertex.getNeighbors().size();
-            if (count > maxNbVoisins)
-                maxNbVoisins = count;
+        ArrayList<ArrayList<Vertex>> lines = new ArrayList<>(yMax);
+        for (int i = 0; i < yMax; i++){
+            ArrayList<Vertex> line = new ArrayList<>(xMax);
+            lines.add(line);
+            for (Vertex vertex: vertexToCoord.keySet())
+                if (vertexToCoord.get(vertex).getI() == i && !vertex.isBorder()) line.add(vertex);
         }
-        ArrayList<Integer> s = new ArrayList<>();
-        for (int k = 0; k < maxNbVoisins; ++k) {
-            s.add(Tk(k));
-        }
-        return maxNbVoisins;
-    }
 
+        double sum = 0;
+        for (ArrayList<Vertex> line: lines) sum += Ti(line);
+        return sum/lines.size()
+    }
 }
