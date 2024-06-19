@@ -22,12 +22,12 @@ public class Coord {
     @Override public boolean equals(Object o) {
         if (o == this) return true;
         if (!(o instanceof Coord)) return false;
-        BucketKey b = (Coord) o;
+        Coord b = (Coord) o;
         return i == b.i && j == b.j;
     }
 
     @Override  public int hashCode() {
-        return x < y ? y * y + x : x * x + x + y;
+        return j < i ? i * i + j : j * j + i + j;
     }
 
 }

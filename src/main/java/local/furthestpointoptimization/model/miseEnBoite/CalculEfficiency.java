@@ -45,19 +45,12 @@ public class CalculEfficiency {
         reverse();
     }
 
-    private double Tik(Vertex vertex){
-        HashSet<Coord> set = new HashSet<>();
-        for (Vertex neighbor : vertex.get)
-            set.add(vertexToCoord.get(neighbor).minus(vertexToCoord.get(vertex)));
-        return set.size()/6.;
-    }
-
     private double Ti(ArrayList<Vertex> line){
         if (line.isEmpty()) return 0;
 
         HashSet<Coord> set = new HashSet<>();
         for (Vertex vertex : line) for (Vertex neighbor : vertex.getNeighbors())
-            set.add(vertexToCoord.get(neighbor).minus(vertexToCoord.get(vertex)));
+            set.add(Coord.minus(vertexToCoord.get(vertex), vertexToCoord.get(neighbor)));
         return set.size()/6.;
     }
 
@@ -74,13 +67,13 @@ public class CalculEfficiency {
         ArrayList<ArrayList<Vertex>> lines = new ArrayList<>(yMax);
         for (int i = 0; i < yMax; i++){
             ArrayList<Vertex> line = new ArrayList<>(xMax);
-            lines.add(line);
             for (Vertex vertex: vertexToCoord.keySet())
                 if (vertexToCoord.get(vertex).getI() == i && !vertex.isBorder()) line.add(vertex);
+            if (!line.isEmpty()) lines.add(line);
         }
 
         double sum = 0;
         for (ArrayList<Vertex> line: lines) sum += Ti(line);
-        return sum/lines.size()
+        return sum/lines.size();
     }
 }

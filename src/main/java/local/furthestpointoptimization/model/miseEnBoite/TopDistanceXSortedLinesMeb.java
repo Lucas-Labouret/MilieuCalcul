@@ -11,10 +11,6 @@ public class TopDistanceXSortedLinesMeb implements MiseEnBoite {
     public HashMap<Vertex, Coord> miseEnBoite(VertexSet vertexSet) {
         DistanceToSideGetter distanceToSideGetter = new DistanceToSideGetter();
         HashMap<Vertex, Integer> topCoords = distanceToSideGetter.getDistanceToTop(vertexSet);
-        System.out.println("TopCoords: " + topCoords);
-        try{
-            System.in.read();
-        } catch (Exception ignored) {}
 
         HashMap<Integer, ArrayList<Vertex>> lines = new HashMap<>();
         for (Vertex vertex : topCoords.keySet()) {

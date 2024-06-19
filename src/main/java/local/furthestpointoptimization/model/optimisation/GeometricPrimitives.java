@@ -69,6 +69,7 @@ public class GeometricPrimitives {
         return orientation(s1.getStart(), s1.getEnd(), s2.getStart()) != orientation(s1.getStart(), s1.getEnd(), s2.getEnd()) &&
                 orientation(s2.getStart(), s2.getEnd(), s1.getStart()) != orientation(s2.getStart(), s2.getEnd(), s1.getEnd());
     }
+
     public static boolean insidePolygon(Point vertex, ArrayList<Vertex> polygon){
         if (polygon == null) return true;
 
@@ -84,15 +85,38 @@ public class GeometricPrimitives {
         }
         return intersections % 2 == 1;
     }
-    public static boolean insidePolygon(Segment s, ArrayList<Vertex> polygon){
-        if (polygon == null) return true;
-
-        if(!insidePolygon(s.getStart(), polygon) || !insidePolygon(s.getEnd(), polygon)) return false;
-        for (int i = 0; i < polygon.size(); i++){
-            Point a = polygon.get(i);
-            Point b = polygon.get((i+1)%polygon.size());
-            if (intersect(s, new Segment(a, b))) return false;
+    private static boolean insidePolygonOrOnBorder(Point point, ArrayList<Vertex> polygon) {
+        if (GeometricPrimitives.insidePolygon(point, polygon)) {
+            return true;
         }
-        return true;
+        for (int i = 0; i < polygon.size(); i++) {
+            Point a = polygon.get(i);
+            Point b = polygon.get((i + 1) % polygon.size());
+            Segment edge = new Segment(a, b);
+            if (edge.contains(point)) {
+                return true;
+            }
+        }
+        return false;
     }
+    public static boolean insidePolygonOrOnBorder(Segment segment, ArrayList<Vertex> polygon) {
+        Point start = segment.getStart();
+        Point end = segment.getEnd();
+
+        if (!insidePolygonOrOnBorder(start, polygon) || !insidePolygonOrOnBorder(end, polygon)) return false;
+        boolean result = true;
+        for (int i = 0; i < polygon.size(); i++) {
+            Point a = polygon.get(i);
+            Point b = polygon.get((i + 1) % polygon.size());
+            Segment edge = new Segment(a, b);
+            if (segment.equals(edge)) return true;
+            if (
+                GeometricPrimitives.intersect(segment, edge) &&
+                !edge.contains(start) &&
+                !edge.contains(end)
+            ) result = false;
+        }
+        return result;
+    }
+
 }

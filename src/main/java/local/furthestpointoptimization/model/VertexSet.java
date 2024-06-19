@@ -172,6 +172,15 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
         this.addAll(border);
         this.border = border;
     }
+    public void bandageBorderFix(){
+        for (Vertex v1 : border) for (Vertex v2 : border){
+            if (v1 == v2) continue;
+            if (!GeometricPrimitives.insidePolygonOrOnBorder(new Segment(v1, v2), border)){
+                v1.removeNeighbor(v2);
+            }
+        }
+        border.getFirst().addNeighbor(border.getLast());
+    }
 
     public Vertex getVertex(Point p) {
         for (Vertex v : this) {

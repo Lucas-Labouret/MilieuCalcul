@@ -8,10 +8,10 @@ import java.util.HashMap;
 
 public class RoundedCoordMeb implements MiseEnBoite {
     private HashMap<Coord, Vertex> getCoordVertexMap(VertexSet vertexSet){
-        HashMap<Coord, Vertex> coordVertexMap<>();
+        HashMap<Coord, Vertex> coordVertexMap = new HashMap<>();
 
-        int scale = 0;
-        while (scale++){
+        int scale = 1;
+        while (true){
             boolean exit = true;
             for (Vertex vertex : vertexSet){
                 Coord coord = new Coord(
@@ -26,6 +26,7 @@ public class RoundedCoordMeb implements MiseEnBoite {
             }
             if (exit) return coordVertexMap;
             coordVertexMap.clear();
+            scale++;
         }
     }
 
@@ -79,13 +80,13 @@ public class RoundedCoordMeb implements MiseEnBoite {
 
         Vertex[][] grid = new Vertex[yMax][xMax];
         for (Coord coord : coordVertexMap.keySet()){
-            grid[coord.getI()][coord.getJ()] = coordVertexMap.get(cord);
+            grid[coord.getI()][coord.getJ()] = coordVertexMap.get(coord);
         }
         collapse(grid, yMax, xMax);
 
         HashMap<Vertex, Coord> result = new HashMap<>();
         for (int y = 0; y < yMax; y++) for (int x = 0; x < xMax; x++){
-            if (grid[y][x] != null) HashMap.put(grid[y][x], new Coord(y, x));
+            if (grid[y][x] != null) result.put(grid[y][x], new Coord(y, x));
         }
         return result;
     }

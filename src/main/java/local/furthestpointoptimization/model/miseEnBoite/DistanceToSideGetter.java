@@ -15,32 +15,26 @@ public class DistanceToSideGetter {
 
     private Vertex getStart(Set<Vertex> vs, SIDE side){
         for (Vertex vertex : vs) {
-            for (Vertex neighbor : vertex.getNeighbors()) {
-                if (side == SIDE.TOP && neighbor.isTopBorder()) return vertex;
-                if (side == SIDE.LEFT && neighbor.isLeftBorder()) return vertex;
-                if (side == SIDE.RIGHT && neighbor.isRightBorder()) return vertex;
-                if (side == SIDE.BOTTOM && neighbor.isBottomBorder()) return vertex;
-            }
+            //System.out.println("isBorder: " + vertex.isBorder() + " side: " + side + " isTopBorder: " + vertex.isTopBorder() + " isLeftBorder: " + vertex.isLeftBorder() + " isRightBorder: " + vertex.isRightBorder() + " isBottomBorder: " + vertex.isBottomBorder());
+            if (side == SIDE.TOP && vertex.isTopBorder()) return vertex;
+            if (side == SIDE.LEFT && vertex.isLeftBorder()) return vertex;
+            if (side == SIDE.RIGHT && vertex.isRightBorder()) return vertex;
+            if (side == SIDE.BOTTOM && vertex.isBottomBorder()) return vertex;
         }
         return null;
     }
 
     private boolean nearBorder(Vertex vertex, SIDE side){
-        for (Vertex neighbor : vertex.getNeighbors()) {
-            if (side == SIDE.TOP && neighbor.isTopBorder()) return true;
-            if (side == SIDE.LEFT && neighbor.isLeftBorder()) return true;
-            if (side == SIDE.RIGHT && neighbor.isRightBorder()) return true;
-            if (side == SIDE.BOTTOM && neighbor.isBottomBorder()) return true;
-        }
-        return false;
+        //System.out.println("isBorder: " + vertex.isBorder() + " side: " + side + " isTopBorder: " + vertex.isTopBorder() + " isLeftBorder: " + vertex.isLeftBorder() + " isRightBorder: " + vertex.isRightBorder() + " isBottomBorder: " + vertex.isBottomBorder());
+        if (side == SIDE.TOP && vertex.isTopBorder()) return true;
+        if (side == SIDE.LEFT && vertex.isLeftBorder()) return true;
+        if (side == SIDE.RIGHT && vertex.isRightBorder()) return true;
+        return side == SIDE.BOTTOM && vertex.isBottomBorder();
     }
 
     private void propagate(Vertex vertex, SIDE side){
-        if (vertex.isBorder()) return;
-
         if (nearBorder(vertex, side)) coords.put(vertex, 0);
         for (Vertex neighbor : vertex.getNeighbors()) {
-            if (neighbor.isBorder()) continue;
             if (coords.get(neighbor) == null) {
                 coords.put(neighbor, coords.get(vertex) + 1);
                 propagate(neighbor, side);
@@ -55,7 +49,7 @@ public class DistanceToSideGetter {
         coords.clear();
 
         for (Vertex vertex : vs)
-            if (!vertex.isBorder()) coords.put(vertex, null);
+            coords.put(vertex, null);
 
         Vertex start = getStart(coords.keySet(), side);
         coords.put(start, 0);

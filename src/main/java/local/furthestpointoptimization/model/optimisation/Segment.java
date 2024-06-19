@@ -19,6 +19,10 @@ public class Segment {
     /**returns a reference*/
     public Point getEnd() { return end; }
 
+    public Point getMiddle() {
+        return new Point((start.getX() + end.getX()) / 2, (start.getY() + end.getY()) / 2);
+    }
+
     public static double length2(Point start, Point end) {
         double dx = end.getX() - start.getX();
         double dy = end.getY() - start.getY();
@@ -38,5 +42,9 @@ public class Segment {
     @Override
     public String toString() {
         return '[' + start.toString() + ',' + end.toString() + ']';
+    }
+
+    public boolean contains(Point point) {
+        return Math.abs(length() - (length(start, point) + length(point, end))) < 1e-6;
     }
 }

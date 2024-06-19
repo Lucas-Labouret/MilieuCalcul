@@ -6,6 +6,7 @@ import local.furthestpointoptimization.model.VertexSet;
 import java.util.HashMap;
 import java.util.Set;
 
+@Deprecated
 public class TopLeftDistanceMeb implements MiseEnBoite {
     @Override
     public HashMap<Vertex, Coord> miseEnBoite(VertexSet vs) {
