@@ -175,7 +175,7 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
     public void bandageBorderFix(){
         for (Vertex v1 : border) for (Vertex v2 : border){
             if (v1 == v2) continue;
-            if (!GeometricPrimitives.insidePolygonOrOnBorder(new Segment(v1, v2), border)){
+            if (Math.abs(v1.getX() - v2.getX()) < 1e-4){
                 v1.removeNeighbor(v2);
             }
         }
