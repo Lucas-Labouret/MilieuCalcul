@@ -5,8 +5,7 @@ import local.furthestpointoptimization.model.optimisation.diemkeTriangulator.Die
 import local.furthestpointoptimization.model.optimisation.diemkeTriangulator.NotEnoughPointsException;
 import local.furthestpointoptimization.model.optimisation.*;
 
-import java.io.Serial;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
@@ -58,6 +57,31 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
         }
 
         return vertices;
+    }
+
+    public static VertexSet fromFile(String fileName) {
+        VertexSet vertexSet = null;
+        try {
+            FileInputStream fis = new FileInputStream(fileName);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            vertexSet = (VertexSet) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+        vertexSet.delaunayTriangulate();
+
+        return vertexSet;
+    }
+    public static void toFile(VertexSet vertexSet, String fileName) {
+        try {
+            FileOutputStream fos = new FileOutputStream(fileName);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(vertexSet);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public VertexSet(int count) {
@@ -180,6 +204,39 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
             }
         }
         border.getFirst().addNeighbor(border.getLast());
+
+        /*for (int i = 0; i < border.size(); i+=1){
+            Vertex v0 = border.get(i);
+            Vertex v1 = border.get((i+1)%border.size());
+            Vertex v2 = border.get((i+2)%border.size());
+
+            System.out.println("1");
+
+            if (!(v0.isLeftBorder() && v2.isLeftBorder()) && !(v0.isRightBorder() && v2.isRightBorder()))
+                continue;
+
+            System.out.println("2");
+            if (v0.isLeftBorder() && v0.getX() < v1.getX()) continue;
+            if (v0.isRightBorder() && v0.getX() > v1.getX()) continue;
+
+            boolean hasTriangle = false;
+            for (Vertex neighbor : v0.getNeighbors()){
+                if (neighbor.isBorder()) continue;
+                if (neighbor.getNeighbors().contains(v1)){
+                    hasTriangle = true;
+                    break;
+                }
+            }
+            for (Vertex neighbor : v2.getNeighbors()){
+                if (neighbor.isBorder()) continue;
+                if (neighbor.getNeighbors().contains(v1)){
+                    hasTriangle = true;
+                    break;
+                }
+            }
+            System.out.println(v0 + " " + v1 + " " + v2 + " " + hasTriangle);
+            if (!hasTriangle) v0.addNeighbor(v2);
+        }*/
     }
 
     public Vertex getVertex(Point p) {
@@ -194,13 +251,7 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
         DelaunayUtils.buildDT(this);
-
-//        try {
-//            triangles.clear();
-//            DiemkeInterface.triangulate(this);
-//        } catch (NotEnoughPointsException e) {
-//            e.printStackTrace();
-//        }
+        if (this.border != null) bandageBorderFix();
     }
 
     public void optimize(double convergenceTolerance){

@@ -2,7 +2,6 @@ package local.Ui;
 
 import java.util.ArrayList;
 
-import javafx.scene.Scene;
 import javafx.scene.SubScene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ToolBar;
@@ -29,7 +28,7 @@ public class MasterScene extends BorderPane {
         SubScene subScene = new SubScene(triangulationView, 500, 500);
         addApp(subScene, "Triangulation");
         setCenter(subScene);
-        MiseEnBoite subapp2 = new MiseEnBoite();
+        MiseEnBoiteUI subapp2 = new MiseEnBoiteUI();
         addApp(new SubScene(subapp2, 500, 500), "Boxing");
 
         widthProperty().addListener((obs, oldVal, newVal) -> {

@@ -126,6 +126,9 @@ public class PaneVertexSetDrawer extends Pane {
 
         getChildren().add(circle);
 
+        javafx.scene.text.Text text = new javafx.scene.text.Text(x, y, v.toString());
+        getChildren().add(text);
+
         if (selection.contains(v)) {
             getChildren().add(selectionCircle);
         }
