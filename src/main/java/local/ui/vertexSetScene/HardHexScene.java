@@ -1,13 +1,12 @@
-package local.Ui;
+package local.ui.vertexSetScene;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import local.Ui.View.InformationBar;
-import local.Ui.View.PaneVertexSetDrawer;
-import local.Ui.View.TBIntInput;
+import local.ui.view.InformationBar;
+import local.ui.view.PaneVertexSetDrawer;
+import local.ui.view.TBIntInput;
 import local.furthestpointoptimization.model.miseEnBoite.Coord;
 import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
 import local.furthestpointoptimization.model.miseEnBoite.TopDistanceXSortedLinesMeb;
@@ -15,23 +14,24 @@ import local.furthestpointoptimization.model.optimisation.FPOUtils;
 import local.furthestpointoptimization.model.vertexSets.Vertex;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
-public class MiseEnBoiteUI extends BorderPane {
+public class HardHexScene extends BorderPane {
 
     ToolBar toolbar;
-    private TBIntInput ptCountInput;
-    private TBIntInput heightInput;
+    private final TBIntInput ptCountInput;
+    private final TBIntInput heightInput;
     InformationBar infoBar;
-    // Pane drawPane;
     PaneVertexSetDrawer drawPane;
     VertexSet vertexSet;
 
     Vertex selection;
 
-    ArrayList<Vertex>[][] boite;
+    public HardHexScene() {
+        toolbar = new ToolBar();
+        drawPane = new PaneVertexSetDrawer(infoBar, selection);
+        infoBar = new InformationBar("Information");
 
-    public MiseEnBoiteUI() {
-        super();
-        this.infoBar = new InformationBar("Information");
+        setTop(toolbar);
+        setCenter(drawPane);
         setBottom(infoBar);
 
         ptCountInput = new TBIntInput("Count", "20");
@@ -46,13 +46,10 @@ public class MiseEnBoiteUI extends BorderPane {
         Button MEB = new Button("Met en boite");
         MEB.setOnAction(e -> this.showMEB());
 
-        toolbar = new ToolBar();
         toolbar.getItems().addAll(ptCountInput, heightInput, gen, tri, fpo, MEB);
         setTop(toolbar);
 
         // drawPane = new Pane();
-        selection = null;
-        drawPane = new PaneVertexSetDrawer(infoBar, selection);
         setCenter(drawPane);
 
         widthProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
@@ -62,13 +59,6 @@ public class MiseEnBoiteUI extends BorderPane {
 
     void showVertexSet() {
         drawPane.showVertexSet(vertexSet);
-    }
-
-    private void fpoIteration() {
-        if (vertexSet != null) {
-            FPOUtils.fpoIteration(vertexSet);
-        }
-        showVertexSet();
     }
 
     private void generate() {
@@ -84,6 +74,13 @@ public class MiseEnBoiteUI extends BorderPane {
             vertexSet.delaunayTriangulate();
             showVertexSet();
         }
+    }
+
+    private void fpoIteration() {
+        if (vertexSet != null) {
+            FPOUtils.fpoIteration(vertexSet);
+        }
+        showVertexSet();
     }
 
     private void showMEB() {

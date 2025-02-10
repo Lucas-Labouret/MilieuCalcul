@@ -20,7 +20,7 @@ public class App extends Application {
         //vertexSet.fromFile(fileName);
         // VertexSet vertexSet = VertexSet.fromFile(fileName);
 
-//        MiseEnBoiteUI miseEnBoite = new TopDistanceXSortedLinesMeb();
+//        HardHexScene miseEnBoite = new TopDistanceXSortedLinesMeb();
 //        HashMap<Vertex, Coord> miseEnBoiteResult = miseEnBoite.miseEnBoite(vertexSet2);
 //        for (Vertex vertex : miseEnBoiteResult.keySet()) {
 //            vertex.setId(miseEnBoiteResult.get(vertex).toString());
