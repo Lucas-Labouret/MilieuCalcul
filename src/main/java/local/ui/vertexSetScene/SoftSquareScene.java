@@ -1,14 +1,8 @@
 package local.ui.vertexSetScene;
 
 import javafx.scene.control.*;
-import local.furthestpointoptimization.model.miseEnBoite.Coord;
 import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
-import local.furthestpointoptimization.model.miseEnBoite.RoundedCoordMeb;
-import local.furthestpointoptimization.model.vertexSets.Vertex;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
-import local.furthestpointoptimization.model.optimisation.FPOUtils;
-
-import java.util.HashMap;
 
 public class SoftSquareScene extends VertexSetScene {
     TextField pointCountField;
