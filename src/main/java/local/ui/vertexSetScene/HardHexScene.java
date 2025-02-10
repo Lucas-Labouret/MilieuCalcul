@@ -1,0 +1,38 @@
+package local.ui.vertexSetScene;
+
+import javafx.scene.control.*;
+import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
+import local.ui.view.InformationBar;
+import local.ui.view.PaneVertexSetDrawer;
+import local.ui.view.TBIntInput;
+import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.vertexSets.VertexSet;
+
+public class HardHexScene extends VertexSetScene {
+    private final TBIntInput ptCountInput;
+    private final TBIntInput heightInput;
+
+    Vertex selection;
+
+    public HardHexScene(MiseEnBoite miseEnBoite) {
+        super(miseEnBoite);
+
+        ptCountInput = new TBIntInput("Count", "20");
+        heightInput = new TBIntInput("Height", "7");
+
+        toolbar.getItems().addAll(ptCountInput, heightInput, gen, tri, fpo, meb);
+        setTop(toolbar);
+    }
+
+    void showVertexSet() {
+        drawPane.showVertexSet(vertexSet);
+    }
+
+    protected void generate() {
+        int pointCount = this.ptCountInput.getValue();
+        int height = this.heightInput.getValue();
+        int width = (int) (height * Math.sqrt(2));
+        vertexSet = VertexSet.newHexBorderedSet(width, height, pointCount);
+        showVertexSet();
+    }
+}
