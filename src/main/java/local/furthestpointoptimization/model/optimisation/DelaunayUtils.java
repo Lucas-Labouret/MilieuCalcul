@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import local.furthestpointoptimization.model.Point;
-import local.furthestpointoptimization.model.Vertex;
-import local.furthestpointoptimization.model.VertexSet;
+import local.furthestpointoptimization.model.vertexSets.Point;
+import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.vertexSets.VertexSet;
 import local.furthestpointoptimization.model.optimisation.GeometricPrimitives.Orientation;
 
 /** Lucas */
@@ -284,8 +284,15 @@ public class DelaunayUtils {
     }
 
     private static boolean allAligned(ArrayList<Vertex> vertices, ArrayList<Integer> left, ArrayList<Integer> right){
-        for (Integer i : left) for (Integer j : right){
-            if (GeometricPrimitives.orientation(vertices.get(left.getFirst()), vertices.get(i), vertices.get(j)) != Orientation.CoLineaire)
+        ArrayList<Integer> candidates = new ArrayList<>();
+        candidates.addAll(left);
+        candidates.addAll(right);
+        for (int i = 1; i < candidates.size()-1; i++) for (int j = i+1; j < candidates.size(); j++){
+            if (GeometricPrimitives.orientation(
+                    vertices.get(candidates.getFirst()),
+                    vertices.get(i),
+                    vertices.get(j)
+            ) != Orientation.CoLineaire)
                 return false;
         }
         return true;

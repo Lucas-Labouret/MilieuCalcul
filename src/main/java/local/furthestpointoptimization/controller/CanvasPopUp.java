@@ -6,8 +6,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import local.furthestpointoptimization.model.Vertex;
-import local.furthestpointoptimization.model.VertexSet;
+import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 public class CanvasPopUp {
     public static void create(VertexSet vertexSet, int size) {

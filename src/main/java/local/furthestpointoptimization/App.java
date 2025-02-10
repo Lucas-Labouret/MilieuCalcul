@@ -3,12 +3,7 @@ package local.furthestpointoptimization;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import local.furthestpointoptimization.controller.CanvasPopUp;
-import local.furthestpointoptimization.model.Vertex;
-import local.furthestpointoptimization.model.VertexSet;
-import local.furthestpointoptimization.model.miseEnBoite.*;
-
-import java.io.*;
-import java.util.HashMap;
+import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 public class App extends Application {
     @Override

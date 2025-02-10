@@ -1,8 +1,5 @@
-package local.furthestpointoptimization.model;
+package local.furthestpointoptimization.model.vertexSets;
 
-import local.furthestpointoptimization.model.miseEnBoite.Coord;
-import local.furthestpointoptimization.model.optimisation.diemkeTriangulator.DiemkeInterface;
-import local.furthestpointoptimization.model.optimisation.diemkeTriangulator.NotEnoughPointsException;
 import local.furthestpointoptimization.model.optimisation.*;
 
 import java.io.*;
@@ -251,7 +248,7 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
         DelaunayUtils.buildDT(this);
-        if (this.border != null) bandageBorderFix();
+        //if (this.border != null) bandageBorderFix();
     }
 
     public void optimize(double convergenceTolerance){

@@ -12,8 +12,8 @@ import local.furthestpointoptimization.model.miseEnBoite.Coord;
 import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
 import local.furthestpointoptimization.model.miseEnBoite.TopDistanceXSortedLinesMeb;
 import local.furthestpointoptimization.model.optimisation.FPOUtils;
-import local.furthestpointoptimization.model.Vertex;
-import local.furthestpointoptimization.model.VertexSet;
+import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 public class MiseEnBoiteUI extends BorderPane {
 
@@ -25,7 +25,7 @@ public class MiseEnBoiteUI extends BorderPane {
     PaneVertexSetDrawer drawPane;
     VertexSet vertexSet;
 
-    ArrayList<Vertex> selection;
+    Vertex selection;
 
     ArrayList<Vertex>[][] boite;
 
@@ -39,17 +39,19 @@ public class MiseEnBoiteUI extends BorderPane {
 
         Button gen = new Button("Generate");
         gen.setOnAction((event) -> this.generate());
+        Button tri = new Button("Triangulate");
+        tri.setOnAction((event) -> this.triangulate());
         Button fpo = new Button("FPO");
         fpo.setOnAction(e -> this.fpoIteration());
         Button MEB = new Button("Met en boite");
         MEB.setOnAction(e -> this.showMEB());
 
         toolbar = new ToolBar();
-        toolbar.getItems().addAll(ptCountInput, heightInput, gen, fpo, MEB);
+        toolbar.getItems().addAll(ptCountInput, heightInput, gen, tri, fpo, MEB);
         setTop(toolbar);
 
         // drawPane = new Pane();
-        selection = new ArrayList<>();
+        selection = null;
         drawPane = new PaneVertexSetDrawer(infoBar, selection);
         setCenter(drawPane);
 
@@ -75,6 +77,13 @@ public class MiseEnBoiteUI extends BorderPane {
         int width = (int) (height * Math.sqrt(2));
         vertexSet = VertexSet.newHexBorderedSet(width, height, pointCount);
         showVertexSet();
+    }
+
+    private void triangulate() {
+        if (vertexSet != null) {
+            vertexSet.delaunayTriangulate();
+            showVertexSet();
+        }
     }
 
     private void showMEB() {

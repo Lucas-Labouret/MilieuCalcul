@@ -16,8 +16,8 @@
 // import javafx.scene.transform.Translate;
 // import local.Ui.Main;
 // import local.Ui.camera.SimpleFPSCamera;
-// import local.furthestpointoptimization.model.Vertex;
-// import local.furthestpointoptimization.model.VertexSet;
+// import local.furthestpointoptimization.model.vertexSets.Vertex;
+// import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 // public class MainLayout extends BorderPane {
 

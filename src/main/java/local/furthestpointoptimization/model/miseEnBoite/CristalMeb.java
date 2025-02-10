@@ -1,11 +1,11 @@
 package local.furthestpointoptimization.model.miseEnBoite;
 
-import local.furthestpointoptimization.model.Vertex;
-import local.furthestpointoptimization.model.VertexSet;
+import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 import java.util.HashMap;
 
-import static local.furthestpointoptimization.model.VertexSet.randomEps;
+import static local.furthestpointoptimization.model.vertexSets.VertexSet.randomEps;
 
 public class CristalMeb implements MiseEnBoite{
     int width;

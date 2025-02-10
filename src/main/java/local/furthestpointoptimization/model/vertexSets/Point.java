@@ -1,10 +1,9 @@
-package local.furthestpointoptimization.model;
+package local.furthestpointoptimization.model.vertexSets;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 public class Point implements Serializable {
     @Serial

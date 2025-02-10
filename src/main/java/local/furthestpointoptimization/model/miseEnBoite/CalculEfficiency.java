@@ -1,13 +1,11 @@
 package local.furthestpointoptimization.model.miseEnBoite;
 
-import local.furthestpointoptimization.model.Vertex;
-import local.furthestpointoptimization.model.VertexSet;
+import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Optional;
-
 
 
 public class CalculEfficiency {

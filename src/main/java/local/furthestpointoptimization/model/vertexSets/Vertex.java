@@ -1,4 +1,4 @@
-package local.furthestpointoptimization.model;
+package local.furthestpointoptimization.model.vertexSets;
 
 import local.furthestpointoptimization.model.optimisation.Triangle;
 

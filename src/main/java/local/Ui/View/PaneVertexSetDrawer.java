@@ -1,6 +1,5 @@
 package local.Ui.View;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.function.Consumer;
 import javafx.collections.ObservableList;
@@ -14,10 +13,10 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import local.furthestpointoptimization.model.Point;
+import local.furthestpointoptimization.model.vertexSets.Point;
 import local.furthestpointoptimization.model.optimisation.Triangle;
-import local.furthestpointoptimization.model.Vertex;
-import local.furthestpointoptimization.model.VertexSet;
+import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 public class PaneVertexSetDrawer extends Pane {
 
@@ -33,9 +32,9 @@ public class PaneVertexSetDrawer extends Pane {
 
     VertexSet tmpvertexSet;
     HashSet<Vertex> visited;
-    ArrayList<Vertex> selection;
+    Vertex selection;
 
-    public PaneVertexSetDrawer(InformationBar infoBar, ArrayList<Vertex> selection) {
+    public PaneVertexSetDrawer(InformationBar infoBar, Vertex selection) {
         super();
         this.infoBar = infoBar;
         this.selection = selection;
@@ -108,19 +107,11 @@ public class PaneVertexSetDrawer extends Pane {
             infoBar.setText("Coordinates : (" + xs + ", " + ys + "), Neighbors: " + neighborCount);
         });
 
-        circle.setOnMouseExited(event -> {infoBar.removeText();showDistance();});
+        circle.setOnMouseExited(event -> {infoBar.removeText();});
 
         circle.setOnMouseClicked(event -> {
-            
-            if (selection.contains(v)) {
-                selection.remove(v);
-            } else {
-                if (selection.size() == 2) {
-                    selection.removeFirst();
-                }
-                selection.addLast(v);
-            }
-            showDistance();
+            if (selection == v) selection = null;
+            else selection = v;
             redrawPoints();
         });
 
@@ -129,8 +120,14 @@ public class PaneVertexSetDrawer extends Pane {
         javafx.scene.text.Text text = new javafx.scene.text.Text(x, y, v.toString());
         getChildren().add(text);
 
-        if (selection.contains(v)) {
+        if (selection == v) {
             getChildren().add(selectionCircle);
+            for (Vertex neighbor : v.getNeighbors()) {
+                double neighborX = (neighbor.getX() - xmin) * scale + offsetX;
+                double neighborY = (neighbor.getY() - ymin) * scale + offsetY;
+                Circle neighborSelectionCircle = new Circle(neighborX, neighborY, 7);
+                getChildren().add(neighborSelectionCircle);
+            }
         }
     }
 
@@ -138,49 +135,6 @@ public class PaneVertexSetDrawer extends Pane {
         getChildren().clear();
         drawLines();
         drawPoints();
-    }
-
-    private void showDistance() {
-        if (selection.size() == 0) {
-            return;
-        }
-        if (selection.size() == 1) {
-            String s = new String("Selected vertex : ");
-            Vertex v = selection.getFirst();
-            Point co = get_coordinate(v);
-            if (co==null) {
-                s+="(?, ?)";
-            } else {
-                double x = co.getX();
-                double y = co.getY();
-                s += "("+x+", "+y+")";
-            }
-            infoBar.setText(s);
-        }
-        if (selection.size() == 2) {
-            String s = new String("Selected vertex : ");
-            Vertex v1 = selection.getFirst();
-            Point co1 = get_coordinate(v1);
-            if (co1 != null) {
-                double x1 = co1.getX();
-                double y1 = co1.getY();
-                s += "("+x1+","+y1+")";
-            } else {
-                s += "(?, ?)";
-            }
-            s += " - ";
-            Vertex v2 = selection.getLast();
-            Point co2 = get_coordinate(v2);
-            if (co2 != null) {
-                double x2 = co2.getX();
-                double y2 = co2.getY();
-                s += "("+x2+","+y2+")";
-            } else {
-                s += "(¿, ¿)";
-            }
-            infoBar.setText(s);
-            
-        }
     }
 
     private void drawPoints() {
@@ -219,7 +173,7 @@ public class PaneVertexSetDrawer extends Pane {
                 infoBar.setText("link (" + xs + ", " + ys + ") to (" + nxs + ", " + nys + ")");
             });
 
-            line.setOnMouseExited(event -> {infoBar.removeText();showDistance();});
+            line.setOnMouseExited(event -> {infoBar.removeText();});
             getChildren().add(line);
         }
     }
