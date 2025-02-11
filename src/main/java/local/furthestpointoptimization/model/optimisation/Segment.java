@@ -1,6 +1,6 @@
 package local.furthestpointoptimization.model.optimisation;
 
-import local.furthestpointoptimization.model.vertexSets.Point;
+import local.furthestpointoptimization.model.Point;
 
 public class Segment {
     private final Point start;

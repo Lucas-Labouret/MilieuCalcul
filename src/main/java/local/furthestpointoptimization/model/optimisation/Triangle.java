@@ -1,7 +1,7 @@
 package local.furthestpointoptimization.model.optimisation;
 
-import local.furthestpointoptimization.model.vertexSets.Point;
-import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.Point;
+import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 import java.util.Objects;
@@ -124,9 +124,9 @@ public class Triangle {
         double xb = b.getX(), yb = b.getY();
         double xc = c.getX(), yc = c.getY();
 
-        double a = this.b.distance_from(this.c);
-        double b = this.a.distance_from(this.c);
-        double c = this.a.distance_from(this.b);
+        double a = this.b.distanceFrom(this.c);
+        double b = this.a.distanceFrom(this.c);
+        double c = this.a.distanceFrom(this.b);
 
         double perimeter = a+b+c;
         double x = (a * xa + b * xb + c * xc) / perimeter;
@@ -150,7 +150,7 @@ public class Triangle {
 
     public boolean _contains(Point p) {
         Point center = this.getCircumcenter();
-        return Double.compare(p.distance_from(center), this.getCircumRadius()) < 0;
+        return Double.compare(p.distanceFrom(center), this.getCircumRadius()) < 0;
     }
 
     public boolean contains(Vertex v) {

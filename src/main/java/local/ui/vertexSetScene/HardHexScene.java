@@ -1,6 +1,7 @@
 package local.ui.vertexSetScene;
 
 import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
+import local.furthestpointoptimization.model.vertexSets.HardHexSet;
 import local.ui.view.TBIntInput;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
@@ -26,7 +27,7 @@ public class HardHexScene extends VertexSetScene {
         int pointCount = this.ptCountInput.getValue();
         int height = this.heightInput.getValue();
         int width = (int) (height * Math.sqrt(2));
-        vertexSet = VertexSet.newHexBorderedSet(width, height, pointCount);
+        vertexSet = new HardHexSet(width, height, pointCount);
         showVertexSet();
     }
 }

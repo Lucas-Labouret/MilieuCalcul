@@ -3,6 +3,7 @@ package local.furthestpointoptimization;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import local.furthestpointoptimization.controller.CanvasPopUp;
+import local.furthestpointoptimization.model.vertexSets.HardHexSet;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 public class App extends Application {
@@ -13,7 +14,7 @@ public class App extends Application {
         int hexCount = (int) ((hexWidth-1)*Math.ceil(hexHeight/2.) + (hexWidth-2)*Math.floor(hexHeight/2.));
         double convergenceTolerance = 0.7;
 
-        VertexSet vertexSet = VertexSet.newHexBorderedSet(hexWidth, hexHeight, 0);
+        VertexSet vertexSet = new HardHexSet(hexWidth, hexHeight, 0);
         vertexSet.optimize(convergenceTolerance);
 
         String fileName = "save/w20_p20.vtxs";

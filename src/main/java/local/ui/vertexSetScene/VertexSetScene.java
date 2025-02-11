@@ -6,7 +6,7 @@ import javafx.scene.layout.BorderPane;
 import local.furthestpointoptimization.model.miseEnBoite.Coord;
 import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
 import local.furthestpointoptimization.model.optimisation.FPOUtils;
-import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 import local.ui.view.InformationBar;
 import local.ui.view.PaneVertexSetDrawer;
@@ -59,7 +59,7 @@ public abstract class VertexSetScene extends BorderPane {
 
     protected void fpoIteration() {
         if (vertexSet != null) {
-            FPOUtils.fpoIteration(vertexSet);
+            for (int i=0; i<1; i++) FPOUtils.fpoIteration(vertexSet);
         }
         showVertexSet();
     }

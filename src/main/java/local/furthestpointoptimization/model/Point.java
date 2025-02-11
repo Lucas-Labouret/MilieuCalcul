@@ -1,4 +1,4 @@
-package local.furthestpointoptimization.model.vertexSets;
+package local.furthestpointoptimization.model;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -47,7 +47,7 @@ public class Point implements Serializable {
         return '(' + String.valueOf(getX()) + ',' + String.valueOf(getY()) + ')';
     }
 
-    public double distance_from(Point other) {
+    public double distanceFrom(Point other) {
         return Math.sqrt((this.x - other.x)*(this.x - other.x) + (this.y - other.y)*(this.y - other.y));
         
     }
@@ -171,22 +171,19 @@ public class Point implements Serializable {
         
         @Override
         public int compare(Point o1, Point o2) {
+            double d1 = 0;
+            double d2 = 0;
             if (clockwise) {
-                double d1 = Point.angleBetweenThreePoints(ref, center, o1);
-                double d2 = Point.angleBetweenThreePoints(ref, center, o2);
-                if (Double.compare(d1, d2)==0) {
-                    return Double.compare(o2.distance_from(center),o1.distance_from(center));
-                }
-                return Double.compare(d1, d2);
+                d1 = Point.angleBetweenThreePoints(ref, center, o1);
+                d2 = Point.angleBetweenThreePoints(ref, center, o2);
             } else {
-                double d1 = Point.angleBetweenThreePoints(o1, center, ref);
-                double d2 = Point.angleBetweenThreePoints(o2, center, ref);
-                if (Double.compare(d1, d2)==0) {
-                    return Double.compare(o2.distance_from(center),o1.distance_from(center));
-                }
-                return Double.compare(d1, d2);
+                d1 = Point.angleBetweenThreePoints(o1, center, ref);
+                d2 = Point.angleBetweenThreePoints(o2, center, ref);
             }
-
+            if (Double.compare(d1, d2)==0) {
+                return Double.compare(o2.distanceFrom(center),o1.distanceFrom(center));
+            }
+            return Double.compare(d1, d2);
         }
     }
 }

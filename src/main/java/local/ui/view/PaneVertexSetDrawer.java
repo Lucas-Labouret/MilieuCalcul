@@ -13,9 +13,9 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import local.furthestpointoptimization.model.vertexSets.Point;
+import local.furthestpointoptimization.model.Point;
 import local.furthestpointoptimization.model.optimisation.Triangle;
-import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 public class PaneVertexSetDrawer extends Pane {
@@ -93,7 +93,7 @@ public class PaneVertexSetDrawer extends Pane {
         selectionCircle.setStrokeWidth(4);
         int neighborCount = v.getNeighbors().size();
 
-        if (v.isBorder()) {
+        if (tmpvertexSet.partOfBorder(v)) {
             circle.setFill(Color.GREEN);
         } else {
             Color color = getColorFromNeighborCount(neighborCount); // Couleur opaque
@@ -138,7 +138,7 @@ public class PaneVertexSetDrawer extends Pane {
     }
 
     private void drawPoints() {
-        forAllVertex(vertex -> drawPoint(vertex));
+        forAllVertex(this::drawPoint);
     }
 
     private void drawLine(Vertex v) {

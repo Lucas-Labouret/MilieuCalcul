@@ -1,7 +1,7 @@
 package local.furthestpointoptimization.model.optimisation;
 
-import local.furthestpointoptimization.model.vertexSets.Point;
-import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.Point;
+import local.furthestpointoptimization.model.Vertex;
 
 import java.util.ArrayList;
 
@@ -119,4 +119,9 @@ public class GeometricPrimitives {
         return result;
     }
 
+    public static double getAngle(Point a, Point b, Point c) {
+        double angle = Math.atan2(c.getY() - b.getY(), c.getX() - b.getX()) - Math.atan2(a.getY() - b.getY(), a.getX() - b.getX());
+        if (angle < 0) angle += 2 * Math.PI;
+        return angle;
+    }
 }

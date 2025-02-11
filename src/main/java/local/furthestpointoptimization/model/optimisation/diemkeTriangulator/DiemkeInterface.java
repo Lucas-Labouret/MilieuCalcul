@@ -1,6 +1,6 @@
 package local.furthestpointoptimization.model.optimisation.diemkeTriangulator;
 
-import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 import java.util.ArrayList;

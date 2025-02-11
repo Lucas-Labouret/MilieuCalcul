@@ -1,5 +1,8 @@
 package local.furthestpointoptimization.model.vertexSets;
 
+import local.furthestpointoptimization.model.Point;
+import local.furthestpointoptimization.model.Vertex;
+import local.furthestpointoptimization.model.misc.LinkedList;
 import local.furthestpointoptimization.model.optimisation.*;
 
 import java.io.*;
@@ -8,53 +11,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 
 public class VertexSet extends HashSet<Vertex> implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 9168791764777148744L;
+    @Serial protected static final long serialVersionUID = 9168791764777148744L;
 
-    private double width = 1;
-    private double height = 1;
-
-    private ArrayList<Vertex> border = null;
-
-    public static VertexSet newHexBorderedSet(int borderWidth, int borderHeight, int count){
-        VertexSet vertices = new VertexSet();
-
-        borderHeight++;
-
-        final double largeHeight = 1/Math.tan(Math.PI/6);
-
-        vertices.width = borderWidth;
-        vertices.height = (borderHeight/2.)*largeHeight;
-
-        vertices.addBorder(
-                borderWidth, borderHeight,
-                largeHeight
-        );
-
-        for (int i = 0; i < count; i++){
-            Vertex v;
-            do v = new Vertex(Math.random()*vertices.width, Math.random()*vertices.height);
-            while (!GeometricPrimitives.insidePolygon(v, vertices.getBorder()));
-            vertices.add(v);
-        }
-        for (Vertex vertex : vertices){
-            vertex.setX(vertex.getX()/vertices.width);
-            vertex.setY(vertex.getY()/vertices.width);
-        }
-        vertices.width = 1;
-        vertices.height = vertices.height/vertices.width;
-
-        for (Vertex vertex : vertices){
-            for (Vertex other : vertices){
-                if (vertex == other) continue;
-                if (vertex.almostEquals(other, 1e-10)){
-                    throw new RuntimeException("Two vertices are too close");
-                }
-            }
-        }
-
-        return vertices;
+    static Random rd = new Random();
+    public static double randomEps() {
+        return rd.nextDouble(1e-5);
     }
+
+    protected double width = 1;
+    protected double height = 1;
+
+    protected ArrayList<Vertex> hardBorder = null;
+    protected LinkedList<Vertex> softBorder = null;
 
     public static VertexSet fromFile(String fileName) {
         VertexSet vertexSet = null;
@@ -81,55 +49,14 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
         }
     }
 
-    public VertexSet(int count) {
-        super();
-        for (int i = 0; i < count; i++) {
-            double x = Math.random();//*count;
-            double y = Math.random();//*count;
-            this.add(new Vertex(x,y));
-        }
-
-        // double minX = getMinX(), maxX = getMaxX();
-        // double minY = getMinY(), maxY = getMaxY();
-        // for (Vertex vertex : this){
-        //     double x = vertex.getX(), y = vertex.getY();
-        //     vertex.setX((x - minX)/(maxX - minX));
-        //     vertex.setY((y - minY)/(maxY - minY));
-        // }
-    }
-
     public VertexSet(Set<Vertex> sv) {
-        super();
         this.addAll(sv);
     }
 
-    static  Random rd = new Random();
-    
-    public static double randomEps() {
-        return rd.nextDouble(1e-5);
-    }
-
-    public static VertexSet cristal(int width, int height) {
-        VertexSet vs = new VertexSet();
-        double w = 1/(double)(width+1);
-        for (int i = 1; i<=height; ++i) {
-            for (int j = 1; j<=width; ++j) {
-                double x = w*(j+0.5*(1-i%2));
-                double y = (i-0.5)*w*(double)(Math.sqrt(3)/(double)2);
-                
-                Vertex v = new Vertex((x+randomEps()), (y+randomEps()));
-                vs.add(v);
-            }
-        }
-        return vs;
-    }
-
     public VertexSet(VertexSet vertices) {
-        super();
-
         this.width = vertices.width;
         this.height = vertices.height;
-        this.border = vertices.border;
+        this.hardBorder = vertices.hardBorder;
 
         HashMap<Vertex, Vertex> originalToClone = new HashMap<>();
         for (Vertex vertex : vertices){
@@ -149,92 +76,18 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
         this.addAll(Arrays.asList(vertices));
     }
 
-    public VertexSet(){
-        super();
-    }
-
     public double getWidth() { return width; }
     public double getHeight() { return height; }
 
-    public ArrayList<Vertex> getBorder() { return border; }
-
-    private void addBorder(int totalWidth, int totalHeight, double hexHeight){
-        ArrayList<Vertex> border = new ArrayList<>();
-
-        for (int i = 0; i < totalWidth; i++){
-            Vertex vertex = new Vertex(i+0.5, 0, true, true, i == 0, i == totalWidth-1, false);
-            if (!border.isEmpty())
-                border.getLast().addNeighbor(vertex);
-            border.add(vertex);
-        }
-        for (int i = 0; i < totalHeight-1; i++){
-            Vertex vertex;
-            if (i%2 == 0) vertex = new Vertex(totalWidth, (i+1)*hexHeight/2, true, false, false, true, i == totalHeight-2);
-            else vertex = new Vertex(totalWidth-0.5, (i+1)*hexHeight/2, true, false, false, true, i == totalHeight-2);
-            border.getLast().addNeighbor(vertex);
-            border.add(vertex);
-        }
-        for (int i = totalWidth - (totalHeight%2 == 0 ? 1 : 0); i >= 0; i--){
-            Vertex vertex;
-            if (totalHeight%2 == 1) vertex = new Vertex(i, this.height, true, false, i == 0, i == totalWidth, true);
-            else vertex = new Vertex(i+0.5, this.height, true, false, i == 0, i == totalWidth, true);
-            border.getLast().addNeighbor(vertex);
-            border.add(vertex);
-        }
-        for (int i = totalHeight-1; i > 0; i--){
-            Vertex vertex;
-            if (i%2 == 0) vertex = new Vertex(0.5, i*hexHeight/2, true, false, true, false, false);
-            else vertex = new Vertex(0, i*hexHeight/2, true, false, true, false, false);
-            border.getLast().addNeighbor(vertex);
-            border.add(vertex);
-        }
-        border.getLast().addNeighbor(border.getFirst());
-
-        this.addAll(border);
-        this.border = border;
+    protected ArrayList<Vertex> getHardBorder() { return hardBorder; }
+    protected LinkedList<Vertex> getSoftBorder() { return softBorder; }
+    public boolean partOfBorder(Vertex vertex) {
+        if (hardBorder != null && hardBorder.contains(vertex)) return true;
+        if (softBorder != null && softBorder.contains(vertex)) return true;
+        return false;
     }
-    public void bandageBorderFix(){
-        for (Vertex v1 : border) for (Vertex v2 : border){
-            if (v1 == v2) continue;
-            if (Math.abs(v1.getX() - v2.getX()) < 1e-4){
-                v1.removeNeighbor(v2);
-            }
-        }
-        border.getFirst().addNeighbor(border.getLast());
 
-        /*for (int i = 0; i < border.size(); i+=1){
-            Vertex v0 = border.get(i);
-            Vertex v1 = border.get((i+1)%border.size());
-            Vertex v2 = border.get((i+2)%border.size());
-
-            System.out.println("1");
-
-            if (!(v0.isLeftBorder() && v2.isLeftBorder()) && !(v0.isRightBorder() && v2.isRightBorder()))
-                continue;
-
-            System.out.println("2");
-            if (v0.isLeftBorder() && v0.getX() < v1.getX()) continue;
-            if (v0.isRightBorder() && v0.getX() > v1.getX()) continue;
-
-            boolean hasTriangle = false;
-            for (Vertex neighbor : v0.getNeighbors()){
-                if (neighbor.isBorder()) continue;
-                if (neighbor.getNeighbors().contains(v1)){
-                    hasTriangle = true;
-                    break;
-                }
-            }
-            for (Vertex neighbor : v2.getNeighbors()){
-                if (neighbor.isBorder()) continue;
-                if (neighbor.getNeighbors().contains(v1)){
-                    hasTriangle = true;
-                    break;
-                }
-            }
-            System.out.println(v0 + " " + v1 + " " + v2 + " " + hasTriangle);
-            if (!hasTriangle) v0.addNeighbor(v2);
-        }*/
-    }
+    public boolean isInBorder(Vertex vertex) { return false; }
 
     public Vertex getVertex(Point p) {
         for (Vertex v : this) {
@@ -248,7 +101,6 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
         DelaunayUtils.buildDT(this);
-        //if (this.border != null) bandageBorderFix();
     }
 
     public void optimize(double convergenceTolerance){
@@ -293,7 +145,6 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
         DelaunayTriangulation triangulator = new DelaunayTriangulation(this.toArray(new Vertex[0]));
         triangulator.triangulate();
     }
-    
 
     public double getLocalMinDist(Vertex x){
         double minDistance = Double.POSITIVE_INFINITY;
@@ -372,7 +223,7 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
 
     public static class ClockWise implements Comparator<Vertex> {
         private Vertex center;
-        ClockWise(Vertex center) {
+        public ClockWise(Vertex center) {
             this.center = center;
         }
 

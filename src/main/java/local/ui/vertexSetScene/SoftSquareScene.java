@@ -2,6 +2,7 @@ package local.ui.vertexSetScene;
 
 import javafx.scene.control.*;
 import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
+import local.furthestpointoptimization.model.vertexSets.SoftSquareSet;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 public class SoftSquareScene extends VertexSetScene {
@@ -21,7 +22,7 @@ public class SoftSquareScene extends VertexSetScene {
 
     protected void generate() {
         int pointCount = Integer.parseInt(pointCountField.getText());
-        vertexSet = new VertexSet(pointCount);
+        vertexSet = new SoftSquareSet(pointCount);
         showVertexSet();
     }
 }

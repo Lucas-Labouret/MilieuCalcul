@@ -1,6 +1,6 @@
 package local.furthestpointoptimization.model.optimisation;
 
-import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 import java.util.HashSet;
@@ -35,12 +35,7 @@ public class FPOUtils {
             for (Triangle triangle : triangles){
                 Vertex circumcenter = triangle.getCircumcenter();
                 double circumradius = triangle.getCircumRadius();
-                if (
-                        circumcenter.getX() < 0 || circumcenter.getX() > vertices.getWidth() ||
-                        circumcenter.getY() < 0 || circumcenter.getY() > vertices.getHeight() ||
-                        vertices.contains(circumcenter) ||
-                        !GeometricPrimitives.insidePolygon(circumcenter, vertices.getBorder())
-                ) continue;
+                if (!vertices.isInBorder(circumcenter) || vertices.contains(circumcenter)) continue;
                 if (circumradius > rmax){
                     rmax = circumradius;
                     f = circumcenter;

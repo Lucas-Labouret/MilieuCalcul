@@ -1,6 +1,8 @@
-package local.furthestpointoptimization.model.vertexSets;
+package local.furthestpointoptimization.model;
 
 import local.furthestpointoptimization.model.optimisation.Triangle;
+import local.furthestpointoptimization.model.vertexSets.SoftSquareSet;
+import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -14,7 +16,7 @@ public class Vertex extends Point implements Serializable {
     private static final long serialVersionUID = 259046735400992602L;
 
     private final VertexSet neighbors = new VertexSet();
-    String id;
+    String id = "";
 
     private final boolean isBorder;
     private final boolean isTopBorder;
@@ -59,9 +61,7 @@ public class Vertex extends Point implements Serializable {
     }
 
     /**returns a reference*/
-    public VertexSet getNeighbors() {
-        return neighbors;
-    }
+    public VertexSet getNeighbors() { return neighbors; }
 
     public HashSet<Triangle> getSurroundTriangle() {
         HashSet<Triangle> t = new HashSet<>();
@@ -128,7 +128,7 @@ public class Vertex extends Point implements Serializable {
 //        }
 //        return identifiant + sb.toString();
 
-        //return "("+ getX() + ',' + getY() + ")";
+        //return "("+ String.valueOf(getX()).substring(2, 4) + ',' + String.valueOf(getY()).substring(2, 4) + ")";
         return id;
     }
 }

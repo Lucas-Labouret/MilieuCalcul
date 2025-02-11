@@ -9,6 +9,8 @@ import javafx.scene.layout.BorderPane;
 import local.furthestpointoptimization.model.miseEnBoite.RoundedCoordMeb;
 import local.furthestpointoptimization.model.miseEnBoite.TopDistanceXSortedLinesMeb;
 import local.ui.vertexSetScene.HardHexScene;
+import local.ui.vertexSetScene.HardSquareScene;
+import local.ui.vertexSetScene.SoftCircleScene;
 import local.ui.vertexSetScene.SoftSquareScene;
 import local.ui.view.SidePanel;
 
@@ -34,19 +36,24 @@ public class MasterScene extends BorderPane {
         this.sidePanel = new SidePanel();
         apps = new ArrayList<>();
 
-        SoftSquareScene triangulationView = new SoftSquareScene(new RoundedCoordMeb());
-        SubScene subScene = new SubScene(triangulationView, 500, 500);
-        addApp(subScene, "Soft Square");
-        setCenter(subScene);
+        SoftSquareScene softSquareScene = new SoftSquareScene(new RoundedCoordMeb());
+        addApp(new SubScene(softSquareScene, 500, 500), "Soft Square");
 
-        HardHexScene subapp2 = new HardHexScene(new TopDistanceXSortedLinesMeb());
-        addApp(new SubScene(subapp2, 500, 500), "Hard Hex");
+        SoftCircleScene softCircleScene = new SoftCircleScene(new RoundedCoordMeb());
+        addApp(new SubScene(softCircleScene, 500, 500), "Soft Circle");
+
+        HardHexScene hardHexScene = new HardHexScene(new TopDistanceXSortedLinesMeb());
+        addApp(new SubScene(hardHexScene, 500, 500), "Hard Hex");
+
+        HardSquareScene hardSquareScene = new HardSquareScene(new TopDistanceXSortedLinesMeb());
+        addApp(new SubScene(hardSquareScene, 500, 500), "Hard Square");
+
+        setCenter(apps.getFirst());
 
         widthProperty().addListener((obs, oldVal, newVal) -> {
             for (SubScene sbscene : apps)
                 sbscene.setWidth(newVal.doubleValue());
         });
-
         heightProperty().addListener((obs, oldVal, newVal) -> {
             for (SubScene sbscene : apps)
                 sbscene.setHeight(newVal.doubleValue() - toolBar.getHeight());

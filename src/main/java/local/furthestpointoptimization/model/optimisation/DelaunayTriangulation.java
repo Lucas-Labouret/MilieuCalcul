@@ -1,7 +1,7 @@
 package local.furthestpointoptimization.model.optimisation;
 
-import local.furthestpointoptimization.model.vertexSets.Point;
-import local.furthestpointoptimization.model.vertexSets.Vertex;
+import local.furthestpointoptimization.model.Point;
+import local.furthestpointoptimization.model.Vertex;
 
 import java.util.ArrayList;
 import java.util.Arrays;
