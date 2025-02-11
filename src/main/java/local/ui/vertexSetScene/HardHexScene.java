@@ -15,7 +15,7 @@ public class HardHexScene extends VertexSetScene {
         ptCountInput = new TBIntInput("Count", "20");
         heightInput = new TBIntInput("Height", "7");
 
-        toolbar.getItems().addAll(ptCountInput, heightInput, gen, tri, fpo, meb);
+        toolbar.getItems().addAll(ptCountInput, heightInput, gen, tri, fpo, fpoIterations, meb);
         setTop(toolbar);
     }
 

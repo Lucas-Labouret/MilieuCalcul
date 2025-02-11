@@ -13,7 +13,7 @@ public class SoftCircleScene extends VertexSetScene {
     public SoftCircleScene() {
         ptCountInput = new TBIntInput("Count", "20");
 
-        toolbar.getItems().addAll(ptCountInput, gen, tri, fpo, meb);
+        toolbar.getItems().addAll(ptCountInput, gen, tri, fpo, fpoIterations, meb);
         setTop(toolbar);
     }
 

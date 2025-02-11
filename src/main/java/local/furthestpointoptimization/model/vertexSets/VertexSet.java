@@ -146,11 +146,14 @@ public class VertexSet extends HashSet<Vertex> implements Serializable {
         triangulator.triangulate();
     }
 
+    public double getDist(Vertex x, Vertex y){
+        return Segment.length(x, y);
+    }
     public double getLocalMinDist(Vertex x){
         double minDistance = Double.POSITIVE_INFINITY;
         for (Vertex y : this)
             if (x != y){
-                double distance = Segment.length(x, y);
+                double distance = getDist(x, y);
                 if (distance < minDistance)
                     minDistance = distance;
             }

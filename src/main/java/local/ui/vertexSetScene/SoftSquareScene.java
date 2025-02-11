@@ -14,7 +14,7 @@ public class SoftSquareScene extends VertexSetScene {
         pointCountField = new TextField("20");
         pointCountField.setMaxWidth(40);
 
-        toolbar.getItems().addAll(pointCountField, gen, tri, fpo, meb);
+        toolbar.getItems().addAll(pointCountField, gen, tri, fpo, fpoIterations, meb);
         setTop(toolbar);
     }
 

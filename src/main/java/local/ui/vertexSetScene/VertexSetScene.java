@@ -10,6 +10,7 @@ import local.furthestpointoptimization.model.Vertex;
 import local.furthestpointoptimization.model.vertexSets.VertexSet;
 import local.ui.view.InformationBar;
 import local.ui.view.PaneVertexSetDrawer;
+import local.ui.view.TBIntInput;
 
 import java.util.HashMap;
 
@@ -24,6 +25,7 @@ public abstract class VertexSetScene extends BorderPane {
     MiseEnBoite miseEnBoite;
 
     Button gen, tri, fpo, meb;
+    TBIntInput fpoIterations;
 
     public VertexSetScene() {
         toolbar = new ToolBar();
@@ -43,6 +45,8 @@ public abstract class VertexSetScene extends BorderPane {
         meb = new Button("Met en boite");
         meb.setOnAction(e -> this.showMeb());
 
+        fpoIterations = new TBIntInput("FPO Iterations", "1");
+
         this.miseEnBoite = DEFAULT_MEB();
 
         widthProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
@@ -60,9 +64,9 @@ public abstract class VertexSetScene extends BorderPane {
     }
 
     protected void fpoIteration() {
-        if (vertexSet != null) {
-            for (int i=0; i<1; i++) FPOUtils.fpoIteration(vertexSet);
-        }
+        if (vertexSet != null)
+            for (int i=0; i<fpoIterations.getValue(); i++)
+                FPOUtils.fpoIteration(vertexSet);
         showVertexSet();
     }
 

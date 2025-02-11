@@ -15,7 +15,7 @@ public class HardSquareScene extends VertexSetScene {
         ptCountInput = new TBIntInput("Count", "16");
         widthInput = new TBIntInput("Width", "6");
 
-        toolbar.getItems().addAll(ptCountInput, widthInput, gen, tri, fpo, meb);
+        toolbar.getItems().addAll(ptCountInput, widthInput, gen, tri, fpo, fpoIterations, meb);
         setTop(toolbar);
     }
 
