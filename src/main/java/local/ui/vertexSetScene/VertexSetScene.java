@@ -14,6 +14,8 @@ import local.ui.view.PaneVertexSetDrawer;
 import java.util.HashMap;
 
 public abstract class VertexSetScene extends BorderPane {
+    public abstract MiseEnBoite DEFAULT_MEB();
+
     ToolBar toolbar;
     InformationBar infoBar;
     PaneVertexSetDrawer drawPane;
@@ -23,7 +25,7 @@ public abstract class VertexSetScene extends BorderPane {
 
     Button gen, tri, fpo, meb;
 
-    VertexSetScene(MiseEnBoite miseEnBoite) {
+    public VertexSetScene() {
         toolbar = new ToolBar();
         infoBar = new InformationBar("Information");
         drawPane = new PaneVertexSetDrawer(infoBar, null);
@@ -31,8 +33,6 @@ public abstract class VertexSetScene extends BorderPane {
         setTop(toolbar);
         setCenter(drawPane);
         setBottom(infoBar);
-
-        this.miseEnBoite = miseEnBoite;
 
         gen = new Button("Generate");
         gen.setOnAction((event) -> generate());
@@ -42,6 +42,8 @@ public abstract class VertexSetScene extends BorderPane {
         fpo.setOnAction(event -> fpoIteration());
         meb = new Button("Met en boite");
         meb.setOnAction(e -> this.showMeb());
+
+        this.miseEnBoite = DEFAULT_MEB();
 
         widthProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
         heightProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());

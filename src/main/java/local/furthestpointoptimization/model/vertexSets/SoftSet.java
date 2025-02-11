@@ -58,14 +58,17 @@ public class SoftSet extends VertexSet {
             currentNode.addNext(sortedNeighbors.get(nextIndex));
         }
 
-        //correctHull();
+        correctHull();
     }
+
     private void correctHull() {
         Node<Vertex> current = softBorder.head;
-        while (current.next != null) {
+        while (current != null) {
+            Node<Vertex> next = current.next;
+            if (next == null) next = softBorder.head;
             Vertex commonNeighbor = null;
             for (Vertex neighbor : current.value.getNeighbors()) {
-                if (current.next.value.getNeighbors().contains(neighbor)) {
+                if (next.value.getNeighbors().contains(neighbor)) {
                     System.out.println("Common neighbor found : " + neighbor);
                     commonNeighbor = neighbor;
                     System.out.println("Common neighbor: " + commonNeighbor);
@@ -73,8 +76,9 @@ public class SoftSet extends VertexSet {
                 }
             }
             if (commonNeighbor == null) {System.out.println("No common neighbor found");}
-            if (GeometricPrimitives.getAngle(current.value, commonNeighbor, current.next.value) < 9*Math.PI/10) {
-                current.value.removeNeighbor(current.next.value);
+            double angle = GeometricPrimitives.getAngle(current.value, commonNeighbor, next.value);
+            if (0.75 * Math.PI < angle && angle < 1.25 * Math.PI) {
+                current.value.removeNeighbor(next.value);
                 current.addNext(commonNeighbor);
             } else {
                 current = current.next;

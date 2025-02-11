@@ -36,16 +36,16 @@ public class MasterScene extends BorderPane {
         this.sidePanel = new SidePanel();
         apps = new ArrayList<>();
 
-        SoftSquareScene softSquareScene = new SoftSquareScene(new RoundedCoordMeb());
+        SoftSquareScene softSquareScene = new SoftSquareScene();
         addApp(new SubScene(softSquareScene, 500, 500), "Soft Square");
 
-        SoftCircleScene softCircleScene = new SoftCircleScene(new RoundedCoordMeb());
+        SoftCircleScene softCircleScene = new SoftCircleScene();
         addApp(new SubScene(softCircleScene, 500, 500), "Soft Circle");
 
-        HardHexScene hardHexScene = new HardHexScene(new TopDistanceXSortedLinesMeb());
+        HardHexScene hardHexScene = new HardHexScene();
         addApp(new SubScene(hardHexScene, 500, 500), "Hard Hex");
 
-        HardSquareScene hardSquareScene = new HardSquareScene(new TopDistanceXSortedLinesMeb());
+        HardSquareScene hardSquareScene = new HardSquareScene();
         addApp(new SubScene(hardSquareScene, 500, 500), "Hard Square");
 
         setCenter(apps.getFirst());

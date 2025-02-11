@@ -1,22 +1,27 @@
 package local.ui.vertexSetScene;
 
 import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
+import local.furthestpointoptimization.model.miseEnBoite.TopDistanceXSortedLinesMeb;
 import local.furthestpointoptimization.model.vertexSets.HardHexSet;
 import local.ui.view.TBIntInput;
-import local.furthestpointoptimization.model.vertexSets.VertexSet;
 
 public class HardHexScene extends VertexSetScene {
+    @Override public MiseEnBoite DEFAULT_MEB() { return new TopDistanceXSortedLinesMeb(); }
+
     private final TBIntInput ptCountInput;
     private final TBIntInput heightInput;
 
-    public HardHexScene(MiseEnBoite miseEnBoite) {
-        super(miseEnBoite);
-
+    public HardHexScene() {
         ptCountInput = new TBIntInput("Count", "20");
         heightInput = new TBIntInput("Height", "7");
 
         toolbar.getItems().addAll(ptCountInput, heightInput, gen, tri, fpo, meb);
         setTop(toolbar);
+    }
+
+    public HardHexScene(MiseEnBoite miseEnBoite) {
+        this();
+        this.miseEnBoite = miseEnBoite;
     }
 
     void showVertexSet() {
