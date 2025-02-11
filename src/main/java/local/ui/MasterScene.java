@@ -3,15 +3,11 @@ package local.ui;
 import java.util.ArrayList;
 
 import javafx.scene.SubScene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import local.furthestpointoptimization.model.miseEnBoite.RoundedCoordMeb;
 import local.furthestpointoptimization.model.miseEnBoite.TopDistanceXSortedLinesMeb;
-import local.ui.vertexSetScene.HardHexScene;
-import local.ui.vertexSetScene.HardSquareScene;
-import local.ui.vertexSetScene.SoftCircleScene;
-import local.ui.vertexSetScene.SoftSquareScene;
+import local.ui.vertexSetScene.*;
 import local.ui.view.SidePanel;
 
 // Singleton
@@ -23,45 +19,80 @@ public class MasterScene extends BorderPane {
         return instance;
     }
 
-    // TOP
     ToolBar toolBar;
-    // LEFT
     SidePanel sidePanel;
-    // Center
     ArrayList<SubScene> apps;
+    ArrayList<VertexSetScene> vertexSetScenes;
 
     private MasterScene() {
-        this.toolBar = new ToolBar();
-        setTop(this.toolBar);
-        this.sidePanel = new SidePanel();
+        toolBar = new ToolBar();
+        sidePanel = new SidePanel();
         apps = new ArrayList<>();
+        vertexSetScenes = new ArrayList<>();
 
-        SoftSquareScene softSquareScene = new SoftSquareScene();
-        addApp(new SubScene(softSquareScene, 500, 500), "Soft Square");
+        addApp(new SoftSquareScene(), "Soft Square");
+        addApp(new SoftCircleScene(), "Soft Circle");
+        addApp(new HardHexScene(), "Hard Hex");
+        addApp(new HardSquareScene(), "Hard Square");
 
-        SoftCircleScene softCircleScene = new SoftCircleScene();
-        addApp(new SubScene(softCircleScene, 500, 500), "Soft Circle");
+        fillSidePanel();
 
-        HardHexScene hardHexScene = new HardHexScene();
-        addApp(new SubScene(hardHexScene, 500, 500), "Hard Hex");
-
-        HardSquareScene hardSquareScene = new HardSquareScene();
-        addApp(new SubScene(hardSquareScene, 500, 500), "Hard Square");
-
+        setTop(toolBar);
         setCenter(apps.getFirst());
+        setRight(sidePanel);
 
         widthProperty().addListener((obs, oldVal, newVal) -> {
-            for (SubScene sbscene : apps)
-                sbscene.setWidth(newVal.doubleValue());
+            updateWidth(newVal);
         });
         heightProperty().addListener((obs, oldVal, newVal) -> {
-            for (SubScene sbscene : apps)
-                sbscene.setHeight(newVal.doubleValue() - toolBar.getHeight());
+            updateHeight(newVal);
         });
+
+        updateWidth(getWidth()-1);
+        updateHeight(getHeight()-1);
     }
 
-    public void addApp(SubScene subApp, String name) {
-        this.apps.add(subApp);
+    private void updateWidth(Number newVal) {
+        sidePanel.setPrefWidth(Math.min(200, newVal.doubleValue() / 3));
+        for (SubScene sbscene : apps)
+            sbscene.setWidth(newVal.doubleValue() - sidePanel.getWidth());
+    }
+    private void updateHeight(Number newVal) {
+        for (SubScene sbscene : apps)
+            sbscene.setHeight(newVal.doubleValue() - toolBar.getHeight());
+    }
+
+    private void fillSidePanel() {
+        ToggleGroup mebGroup = new ToggleGroup();
+
+        RadioButton defaultMeb = new RadioButton("Default");
+        RadioButton roundedCoordMeb = new RadioButton("Rounded Coordinates");
+        RadioButton topDistanceXSorted = new RadioButton("Top Distance X Sorted");
+
+        defaultMeb.setToggleGroup(mebGroup);
+        roundedCoordMeb.setToggleGroup(mebGroup);
+        topDistanceXSorted.setToggleGroup(mebGroup);
+
+        defaultMeb.setSelected(true);
+
+        mebGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == defaultMeb) {
+                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(scene.DEFAULT_MEB());
+            } else if (newVal == roundedCoordMeb) {
+                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(new RoundedCoordMeb());
+            } else if (newVal == topDistanceXSorted) {
+                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(new TopDistanceXSortedLinesMeb());
+            }
+        });
+
+        sidePanel.getChildren().add(new Label("MEB"));
+        sidePanel.getChildren().addAll(defaultMeb, roundedCoordMeb, topDistanceXSorted);
+    }
+
+    public void addApp(VertexSetScene scene, String name) {
+        SubScene subApp = new SubScene(scene, 500, 500);
+        apps.add(subApp);
+        vertexSetScenes.add(scene);
         Button b = new Button(name);
         b.setOnAction((event) -> {
             System.out.println("Setted " + name + " in center");
