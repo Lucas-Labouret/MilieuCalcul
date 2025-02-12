@@ -1,8 +1,8 @@
 package local.ui.vertexSetScene;
 
-import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
-import local.furthestpointoptimization.model.miseEnBoite.TopDistanceXSortedLinesMeb;
-import local.furthestpointoptimization.model.vertexSets.HardHexSet;
+import local.computingMedium.miseEnBoite.MiseEnBoite;
+import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesMeb;
+import local.computingMedium.vertexSets.HardHexSet;
 import local.ui.view.TBIntInput;
 
 public class HardHexScene extends VertexSetScene {

@@ -1,8 +1,8 @@
 package local.ui.vertexSetScene;
 
-import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
-import local.furthestpointoptimization.model.miseEnBoite.RoundedCoordMeb;
-import local.furthestpointoptimization.model.vertexSets.SoftCircleSet;
+import local.computingMedium.miseEnBoite.MiseEnBoite;
+import local.computingMedium.miseEnBoite.RoundedCoordMeb;
+import local.computingMedium.vertexSets.SoftCircleSet;
 import local.ui.view.TBIntInput;
 
 public class SoftCircleScene extends VertexSetScene {

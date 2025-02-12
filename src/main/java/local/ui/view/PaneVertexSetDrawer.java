@@ -13,10 +13,10 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import local.furthestpointoptimization.model.Point;
-import local.furthestpointoptimization.model.optimisation.Triangle;
-import local.furthestpointoptimization.model.Vertex;
-import local.furthestpointoptimization.model.vertexSets.VertexSet;
+import local.misc.Point;
+import local.computingMedium.Vertex;
+import local.computingMedium.vertexSets.VertexSet;
+import local.misc.Triangle;
 
 public class PaneVertexSetDrawer extends Pane {
 

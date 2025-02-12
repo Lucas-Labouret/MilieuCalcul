@@ -4,12 +4,15 @@ module local.furthestpointoptimization {
     requires transitive javafx.graphics;
     requires java.desktop;
 
-
-    opens local.furthestpointoptimization to javafx.fxml;
-    exports local.furthestpointoptimization;
     opens local.ui to javafx.fxml;
-    // exports local.Ui to javafx.graphics;
+    opens local.ui.vertexSetScene to javafx.fxml;
+
+    exports local.computingMedium;
+    exports local.computingMedium.vertexSets;
+    exports local.computingMedium.miseEnBoite;
+
+    exports local.misc;
+    
     exports local.ui;
     exports local.ui.vertexSetScene;
-    opens local.ui.vertexSetScene to javafx.fxml;
 }

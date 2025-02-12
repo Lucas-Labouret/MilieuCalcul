@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import local.furthestpointoptimization.model.miseEnBoite.RoundedCoordMeb;
-import local.furthestpointoptimization.model.miseEnBoite.TopDistanceXSortedLinesMeb;
+import local.computingMedium.miseEnBoite.RoundedCoordMeb;
+import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesMeb;
 import local.ui.vertexSetScene.*;
 import local.ui.view.SidePanel;
 
@@ -34,6 +34,7 @@ public class MasterScene extends BorderPane {
         addApp(new SoftCircleScene(), "Soft Circle");
         addApp(new HardHexScene(), "Hard Hex");
         addApp(new HardSquareScene(), "Hard Square");
+        addApp(new SceneLoader(), "Load");
 
         fillSidePanel();
 

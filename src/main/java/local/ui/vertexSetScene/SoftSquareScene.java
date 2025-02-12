@@ -1,9 +1,9 @@
 package local.ui.vertexSetScene;
 
 import javafx.scene.control.*;
-import local.furthestpointoptimization.model.miseEnBoite.MiseEnBoite;
-import local.furthestpointoptimization.model.miseEnBoite.RoundedCoordMeb;
-import local.furthestpointoptimization.model.vertexSets.SoftSquareSet;
+import local.computingMedium.miseEnBoite.MiseEnBoite;
+import local.computingMedium.miseEnBoite.RoundedCoordMeb;
+import local.computingMedium.vertexSets.SoftSquareSet;
 
 public class SoftSquareScene extends VertexSetScene {
     public MiseEnBoite DEFAULT_MEB() { return new RoundedCoordMeb(); }
