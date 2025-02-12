@@ -11,7 +11,6 @@ import local.computingMedium.vertexSets.VertexSet;
 import local.furthestpointoptimization.FPOUtils;
 import local.ui.view.InformationBar;
 import local.ui.view.PaneVertexSetDrawer;
-import local.ui.view.TBIntInput;
 
 import java.util.HashMap;
 
@@ -27,11 +26,13 @@ public abstract class VertexSetScene extends BorderPane {
     MiseEnBoite miseEnBoite;
 
     Button gen, tri, fpo, meb;
-    TBIntInput fpoIterations;
 
     Button save;
     TextField saveName;
 
+    boolean fpoToConvergence = false;
+    int fpoIterations = 1;
+    double convergenceTolerance = 0.9;
 
     public VertexSetScene() {
         topToolBar = new ToolBar();
@@ -51,8 +52,6 @@ public abstract class VertexSetScene extends BorderPane {
         fpo.setOnAction(event -> fpoIteration());
         meb = new Button("Met en boite");
         meb.setOnAction(event -> this.showMeb());
-
-        fpoIterations = new TBIntInput("FPO Iterations", "1");
 
         miseEnBoite = DEFAULT_MEB();
 
@@ -77,10 +76,24 @@ public abstract class VertexSetScene extends BorderPane {
         showVertexSet();
     }
 
+    public void setFpoToConvergence(boolean fpoToConvergence) {
+        this.fpoToConvergence = fpoToConvergence;
+    }
+    public void setFpoIterations(int fpoIterations) {
+        this.fpoIterations = fpoIterations;
+    }
+    public void setConvergenceTolerance(double convergenceTolerance) {
+        this.convergenceTolerance = convergenceTolerance;
+    }
+
     protected void fpoIteration() {
-        if (vertexSet != null)
-            for (int i=0; i<fpoIterations.getValue(); i++)
-                FPOUtils.fpoIteration(vertexSet);
+        if (vertexSet == null) return;
+
+        if (fpoToConvergence) {
+            FPOUtils.buildFPO(vertexSet, convergenceTolerance);
+        } else {
+            for (int i=0; i<fpoIterations; i++) FPOUtils.fpoIteration(vertexSet);
+        }
         showVertexSet();
     }
 
@@ -96,7 +109,7 @@ public abstract class VertexSetScene extends BorderPane {
         this.miseEnBoite = miseEnBoite;
     }
 
-    void showVertexSet() {
+    public void showVertexSet() {
         drawPane.showVertexSet(vertexSet);
     }
 

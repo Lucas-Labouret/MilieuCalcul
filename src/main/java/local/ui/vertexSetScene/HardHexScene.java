@@ -15,17 +15,13 @@ public class HardHexScene extends VertexSetScene {
         ptCountInput = new TBIntInput("Count", "20");
         heightInput = new TBIntInput("Height", "7");
 
-        topToolBar.getItems().addAll(ptCountInput, heightInput, gen, tri, fpo, fpoIterations, meb);
+        topToolBar.getItems().addAll(ptCountInput, heightInput, gen, tri, fpo, meb);
         setTop(topToolBar);
     }
 
     public HardHexScene(MiseEnBoite miseEnBoite) {
         this();
         this.miseEnBoite = miseEnBoite;
-    }
-
-    void showVertexSet() {
-        drawPane.showVertexSet(vertexSet);
     }
 
     protected void generate() {

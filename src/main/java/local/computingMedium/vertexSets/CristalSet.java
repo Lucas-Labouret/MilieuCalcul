@@ -1,12 +1,8 @@
 package local.computingMedium.vertexSets;
 
-import java.io.Serial;
-
 import local.computingMedium.Vertex;
 
 public class CristalSet extends VertexSet{
-    @Serial private static final long serialVersionUID = -8691405397783044826L;
-
     public CristalSet(int width, int height) {
         double w = 1/(double)(width+1);
         for (int i = 1; i<=height; ++i) {

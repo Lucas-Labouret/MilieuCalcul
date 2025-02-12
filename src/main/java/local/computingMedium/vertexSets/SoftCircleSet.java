@@ -1,13 +1,9 @@
 package local.computingMedium.vertexSets;
 
-import java.io.Serial;
-
 import local.misc.Point;
 import local.computingMedium.Vertex;
 
 public class SoftCircleSet extends SoftSet {
-    @Serial private static final long serialVersionUID = -4971010843396509991L;
-
     public SoftCircleSet(int count) {
         for (int i = 0; i < count; i++) {
             double angle = Math.random() * 2 * Math.PI;

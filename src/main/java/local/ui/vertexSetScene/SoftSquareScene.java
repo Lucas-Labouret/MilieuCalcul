@@ -1,6 +1,5 @@
 package local.ui.vertexSetScene;
 
-import javafx.scene.control.*;
 import local.computingMedium.miseEnBoite.MiseEnBoite;
 import local.computingMedium.miseEnBoite.RoundedCoordMeb;
 import local.computingMedium.vertexSets.SoftSquareSet;
@@ -15,7 +14,7 @@ public class SoftSquareScene extends VertexSetScene {
         pointCountField = new TBIntInput("Cout", "20");
         pointCountField.setPrefWidth(50);
 
-        topToolBar.getItems().addAll(pointCountField, gen, tri, fpo, fpoIterations, meb);
+        topToolBar.getItems().addAll(pointCountField, gen, tri, fpo, meb);
         setTop(topToolBar);
     }
 

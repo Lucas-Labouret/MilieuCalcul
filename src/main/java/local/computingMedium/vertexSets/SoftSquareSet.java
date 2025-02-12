@@ -1,12 +1,8 @@
 package local.computingMedium.vertexSets;
 
-import java.io.Serial;
-
 import local.computingMedium.Vertex;
 
 public class SoftSquareSet extends SoftSet {
-    @Serial private static final long serialVersionUID = 3644071857588825726L;
-
     public SoftSquareSet(int count) {
         for (int i = 0; i < count; i++) {
             double x = Math.random();

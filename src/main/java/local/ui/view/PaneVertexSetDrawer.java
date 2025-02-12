@@ -12,13 +12,13 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
 import local.misc.Point;
 import local.computingMedium.Vertex;
 import local.computingMedium.vertexSets.VertexSet;
-import local.misc.Triangle;
 
 public class PaneVertexSetDrawer extends Pane {
+    public static boolean SHOW_POINTS = true;
+    public static boolean SHOW_LINES = true;
 
     InformationBar infoBar;
 
@@ -76,10 +76,8 @@ public class PaneVertexSetDrawer extends Pane {
         getChildren().clear();
         setStyle("-fx-background-color: #EEEEEE;");
 
-        // drawTriangles();
-        drawLines();
-        drawPoints();
-
+        if (SHOW_LINES) drawLines();
+        if (SHOW_POINTS) drawPoints();
     }
 
     private void drawPoint(Vertex v) {
@@ -180,30 +178,6 @@ public class PaneVertexSetDrawer extends Pane {
 
     private void drawLines() {
         forAllVertex(vertex -> drawLine(vertex));
-    }
-
-    private void drawTriangles() {
-        for (Triangle t : this.tmpvertexSet.getTriangles()) {
-            Point pa = t.getA();
-            Point pb = t.getB();
-            Point pc = t.getC();
-
-            Polygon triangle = new Polygon();
-            triangle.getPoints().addAll(
-                    (pa.getX() - xmin) * scale + offsetX, (pa.getY() - ymin) * scale + offsetY,
-                    (pb.getX() - xmin) * scale + offsetX, (pb.getY() - ymin) * scale + offsetY,
-                    (pc.getX() - xmin) * scale + offsetX, (pc.getY() - ymin) * scale + offsetY);
-
-            Color ca = this.getColorFromNeighborCount(this.tmpvertexSet.getVertex(pa).getNeighbors().size());
-            Color cb = this.getColorFromNeighborCount(this.tmpvertexSet.getVertex(pb).getNeighbors().size());
-            Color cc = this.getColorFromNeighborCount(this.tmpvertexSet.getVertex(pc).getNeighbors().size());
-
-            // Paint pain = createCustomImagePattern(pa, pb, pc, scale, offsetX, offsetY,
-            // ca, cb, cc);
-            triangle.setFill(Color.rgb(0, 0, 0, 0.1));
-
-            getChildren().add(triangle);
-        }
     }
 
     private void forAllVertex(Consumer<Vertex> action) {

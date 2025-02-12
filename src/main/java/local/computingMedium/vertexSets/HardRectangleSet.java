@@ -1,22 +1,21 @@
 package local.computingMedium.vertexSets;
 
-import java.io.Serial;
 import java.util.ArrayList;
 
 import local.computingMedium.Vertex;
 
-public class HardSquareSet extends VertexSet {
-    @Serial private static final long serialVersionUID = -4755063321120367500L;
-
-    public HardSquareSet(int vertexWidth, int count) {
+public class HardRectangleSet extends VertexSet {
+    public HardRectangleSet(double width, int vertexWidth, int count) {
         if (vertexWidth < 2) throw new IllegalArgumentException("Vertex width must be at least 2");
         vertexWidth--;
+
+        this.width = width;
 
         hardBorder = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
-            double x = Math.random();
-            double y = Math.random();
+            double x = Math.random()*width;
+            double y = Math.random()*height;
             add(new Vertex(x, y));
         }
 
@@ -26,15 +25,15 @@ public class HardSquareSet extends VertexSet {
         ArrayList<Vertex> rightBorder = new ArrayList<>();
 
         topBorder.add(new Vertex(0, 0, true, true, true, false, false));
-        rightBorder.add(new Vertex(1, 0, true, true, false, true, false));
-        bottomBorder.add(new Vertex(1, 1, true, false, false, true, true));
-        leftBorder.add(new Vertex(0, 1, true, false, true, false, true));
+        rightBorder.add(new Vertex(width, 0, true, true, false, true, false));
+        bottomBorder.add(new Vertex(width, height, true, false, false, true, true));
+        leftBorder.add(new Vertex(0, height, true, false, true, false, true));
 
         for (int i = 1; i < vertexWidth; i++) {
-            topBorder.add(new Vertex(i/(double)vertexWidth, 0, true, true, false, false, false));
-            rightBorder.add(new Vertex(1, i/(double)vertexWidth, true, false, false, true, false));
-            bottomBorder.add(new Vertex(1-i/(double)vertexWidth, 1, true, false, false, false, true));
-            leftBorder.add(new Vertex(0, 1-i/(double)vertexWidth, true, false, true, false, false));
+            topBorder.add(new Vertex(width*i/vertexWidth, 0, true, true, false, false, false));
+            rightBorder.add(new Vertex(width, height*i/vertexWidth, true, false, false, true, false));
+            bottomBorder.add(new Vertex(width*(1-i/(double)vertexWidth), height, true, false, false, false, true));
+            leftBorder.add(new Vertex(0, height*(1-i/(double)vertexWidth), true, false, true, false, false));
         }
 
         for (int i = 0; i < vertexWidth-1; i++) {
@@ -106,7 +105,7 @@ public class HardSquareSet extends VertexSet {
 
     @Override
     public boolean isInBorder(Vertex vertex) {
-        return 0 < vertex.getX() && vertex.getX() < getWidth()  &&
-               0 < vertex.getY() && vertex.getY() < getHeight();
+        return 0 < vertex.getX() && vertex.getX() < width  &&
+               0 < vertex.getY() && vertex.getY() < height;
     }
 }

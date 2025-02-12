@@ -16,7 +16,7 @@ public class SceneLoader extends VertexSetScene{
         fileName.setMaxWidth(100);
 
         gen.setText("Load");
-        topToolBar.getItems().addAll(fileName, gen, tri, fpo, fpoIterations, meb);
+        topToolBar.getItems().addAll(fileName, gen, tri, fpo, meb);
         setTop(topToolBar);
     }
 

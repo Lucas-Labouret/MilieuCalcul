@@ -5,12 +5,9 @@ import local.misc.GeometricPrimitives;
 import local.misc.LinkedList;
 import local.misc.Node;
 
-import java.io.Serial;
 import java.util.ArrayList;
 
 public class SoftSet extends VertexSet {
-    @Serial private static final long serialVersionUID = -6415337723224905147L;
-
     protected void setSoftBorder() {
         if (this.isEmpty()) return;
         softBorder = new LinkedList<>();

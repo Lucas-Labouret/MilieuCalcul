@@ -8,6 +8,7 @@ import javafx.scene.layout.BorderPane;
 import local.computingMedium.miseEnBoite.RoundedCoordMeb;
 import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesMeb;
 import local.ui.vertexSetScene.*;
+import local.ui.view.PaneVertexSetDrawer;
 import local.ui.view.SidePanel;
 
 // Singleton
@@ -33,7 +34,8 @@ public class MasterScene extends BorderPane {
         addApp(new SoftSquareScene(), "Soft Square");
         addApp(new SoftCircleScene(), "Soft Circle");
         addApp(new HardHexScene(), "Hard Hex");
-        addApp(new HardSquareScene(), "Hard Square");
+        addApp(new HardRectangleScene(1), "Hard Square");
+        addApp(new HardRectangleScene(Math.sqrt(3)), "Hard sqrt3:1 Rectangle");
         addApp(new SceneLoader(), "Load");
 
         fillSidePanel();
@@ -64,6 +66,26 @@ public class MasterScene extends BorderPane {
     }
 
     private void fillSidePanel() {
+        //Graphics
+        CheckBox showPoints = new CheckBox("Show Points");
+        CheckBox showLines = new CheckBox("Show Lines");
+
+        showPoints.setSelected(true);
+        showLines.setSelected(true);
+
+        showPoints.allowIndeterminateProperty().set(false);
+        showLines.allowIndeterminateProperty().set(false);
+
+        showPoints.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            PaneVertexSetDrawer.SHOW_POINTS = newVal;
+            for (VertexSetScene scene : vertexSetScenes) scene.showVertexSet();
+        });
+        showLines.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            PaneVertexSetDrawer.SHOW_LINES = newVal;
+            for (VertexSetScene scene : vertexSetScenes) scene.showVertexSet();
+        });
+
+        //MEB
         ToggleGroup mebGroup = new ToggleGroup();
 
         RadioButton defaultMeb = new RadioButton("Default");
@@ -85,9 +107,54 @@ public class MasterScene extends BorderPane {
                 for (VertexSetScene scene : vertexSetScenes) scene.setMeb(new TopDistanceXSortedLinesMeb());
             }
         });
+        
+        //FPO
+        ToggleGroup fpoGroup = new ToggleGroup();
+
+        RadioButton setIter = new RadioButton("Set iterations");
+        TextField iterInput = new TextField("1");
+
+        RadioButton toConvergence = new RadioButton("To convergence");
+        TextField convInput = new TextField("0.9");
+
+        setIter.setToggleGroup(fpoGroup);
+        toConvergence.setToggleGroup(fpoGroup);
+
+        setIter.setSelected(true);
+
+        fpoGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            for (VertexSetScene scene : vertexSetScenes) 
+                scene.setFpoToConvergence(newVal == toConvergence);
+        });
+
+        iterInput.textProperty().addListener((obs, oldVal, newVal) -> {
+            int iter;
+            try { iter = Integer.parseInt(newVal); } 
+            catch (NumberFormatException e) { return; }
+        
+            for (VertexSetScene scene : vertexSetScenes) 
+                scene.setFpoIterations(iter);
+        });
+
+        convInput.textProperty().addListener((obs, oldVal, newVal) -> {
+            double conv;
+            try { conv = Double.parseDouble(newVal); } 
+            catch (NumberFormatException e) { return; }
+        
+            for (VertexSetScene scene : vertexSetScenes) 
+                scene.setConvergenceTolerance(conv);
+        });
+
+
+        //Add to side panel
+        sidePanel.getChildren().add(new Label("Graphics"));
+        sidePanel.getChildren().addAll(showPoints, showLines);
 
         sidePanel.getChildren().add(new Label("MEB"));
         sidePanel.getChildren().addAll(defaultMeb, roundedCoordMeb, topDistanceXSorted);
+
+        sidePanel.getChildren().add(new Label("FPO"));
+        sidePanel.getChildren().addAll(setIter, iterInput, toConvergence, convInput);
     }
 
     public void addApp(VertexSetScene scene, String name) {

@@ -3,12 +3,9 @@ package local.computingMedium.vertexSets;
 import local.computingMedium.Vertex;
 import local.misc.GeometricPrimitives;
 
-import java.io.Serial;
 import java.util.ArrayList;
 
 public class HardHexSet extends VertexSet {
-    @Serial private static final long serialVersionUID = 7013344190774794238L;
-
     public HardHexSet(int borderWidth, int borderHeight, int count){
         borderHeight++;
 
