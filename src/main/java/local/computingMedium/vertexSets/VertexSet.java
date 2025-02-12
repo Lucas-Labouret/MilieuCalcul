@@ -185,8 +185,29 @@ public class VertexSet extends HashSet<Vertex> {
         }
         return maxDistance;
     }
-    public double getMaxDist(){
-        return Math.sqrt(2/(Math.sqrt(3)*this.size()));
+    public double getLocalNeighborhoodMaxDist(Vertex x){
+        double maxDistance = 0;
+        for (Vertex y : x.getNeighbors()){
+            double distance = getDist(x, y);
+            if (distance > maxDistance)
+                maxDistance = distance;
+        }
+        return maxDistance;
+    }
+    public double getAverageNeighborhoodMaxDist(){
+        double maxDistance = 0;
+        for (Vertex x : this){
+            maxDistance += getLocalNeighborhoodMaxDist(x);
+        }
+        return maxDistance/this.size();
+    }
+    public double getMaxNeighborhoodMaxDist(){
+        double maxDistance = 0;
+        for (Vertex x : this){
+            double distance = getLocalNeighborhoodMaxDist(x);
+            if (distance > maxDistance) maxDistance = distance;
+        }
+        return maxDistance;
     }
 
     public double getMinX(){
