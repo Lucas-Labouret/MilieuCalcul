@@ -2,7 +2,6 @@ package local.computingMedium.vertexSets;
 
 import local.misc.Point;
 import local.computingMedium.Vertex;
-import local.furthestpointoptimization.DelaunayTriangulation;
 import local.furthestpointoptimization.DelaunayUtils;
 import local.furthestpointoptimization.FPOUtils;
 import local.misc.LinkedList;
@@ -15,6 +14,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ForkJoinPool;
 
 public class VertexSet extends HashSet<Vertex> {
+    @Serial private static final long serialVersionUID = -7599751605461214830L;
+
     static Random rd = new Random();
     public static double randomEps() {
         return rd.nextDouble(1e-5);
@@ -27,7 +28,7 @@ public class VertexSet extends HashSet<Vertex> {
     protected LinkedList<Vertex> softBorder = null;
 
     public static VertexSet fromFile(String fileName) {
-        VertexSet vertexSet = null;
+        VertexSet vertexSet;
         try {
             FileInputStream fis = new FileInputStream(fileName);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -60,6 +61,7 @@ public class VertexSet extends HashSet<Vertex> {
         this.width = vertices.width;
         this.height = vertices.height;
         this.hardBorder = vertices.hardBorder;
+        this.softBorder = vertices.softBorder;
 
         HashMap<Vertex, Vertex> originalToClone = new HashMap<>();
         for (Vertex vertex : vertices){
@@ -116,37 +118,6 @@ public class VertexSet extends HashSet<Vertex> {
             vertex.getSurroundTriangleIn(triangles);
         }
         return triangles;
-    }
-
-    public HashSet<Triangle> getTrianglesParallel(){
-        int nb_threads = Runtime.getRuntime().availableProcessors();
-        return getTriangles(nb_threads);
-    }
-
-    /** Version parallele de getTriangles() */
-    public HashSet<Triangle> getTriangles(int nb_threads) {
-        try (ForkJoinPool forkJoinPool = new ForkJoinPool(nb_threads)) {
-            Set<Triangle> triangles = ConcurrentHashMap.newKeySet();
-
-            forkJoinPool.submit(() ->
-                this.parallelStream().forEach(vertex ->
-                    vertex.getSurroundTriangleIn(triangles)
-                )
-            ).get();
-            // Créer un nouvel HashSet et y ajouter tous les triangles (conversion)
-            HashSet<Triangle> triangleHashSet = new HashSet<>(triangles);
-            return triangleHashSet;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new HashSet<>();
-        }
-    }
-
-    /** @deprecated use delaunayTriangulate, Its faster */
-    @Deprecated
-    public void triangulate() {
-        DelaunayTriangulation triangulator = new DelaunayTriangulation(this.toArray(new Vertex[0]));
-        triangulator.triangulate();
     }
 
     public double getDist(Vertex x, Vertex y){
@@ -249,7 +220,7 @@ public class VertexSet extends HashSet<Vertex> {
     }
 
     public static class ClockWise implements Comparator<Vertex> {
-        private Vertex center;
+        private final Vertex center;
         public ClockWise(Vertex center) {
             this.center = center;
         }

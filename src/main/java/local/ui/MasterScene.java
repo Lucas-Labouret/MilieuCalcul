@@ -44,12 +44,8 @@ public class MasterScene extends BorderPane {
         setCenter(apps.getFirst());
         setRight(sidePanel);
 
-        widthProperty().addListener((obs, oldVal, newVal) -> {
-            updateWidth(newVal);
-        });
-        heightProperty().addListener((obs, oldVal, newVal) -> {
-            updateHeight(newVal);
-        });
+        widthProperty().addListener((obs, oldVal, newVal) -> updateWidth(newVal));
+        heightProperty().addListener((obs, oldVal, newVal) -> updateHeight(newVal));
 
         updateWidth(getWidth()-1);
         updateHeight(getHeight()-1);
@@ -57,12 +53,12 @@ public class MasterScene extends BorderPane {
 
     private void updateWidth(Number newVal) {
         sidePanel.setPrefWidth(Math.min(200, newVal.doubleValue() / 3));
-        for (SubScene sbscene : apps)
-            sbscene.setWidth(newVal.doubleValue() - sidePanel.getWidth());
+        for (SubScene subScene : apps)
+            subScene.setWidth(newVal.doubleValue() - sidePanel.getWidth());
     }
     private void updateHeight(Number newVal) {
-        for (SubScene sbscene : apps)
-            sbscene.setHeight(newVal.doubleValue() - toolBar.getHeight());
+        for (SubScene subScene : apps)
+            subScene.setHeight(newVal.doubleValue() - toolBar.getHeight());
     }
 
     private void fillSidePanel() {
@@ -163,7 +159,7 @@ public class MasterScene extends BorderPane {
         vertexSetScenes.add(scene);
         Button b = new Button(name);
         b.setOnAction((event) -> {
-            System.out.println("Setted " + name + " in center");
+            System.out.println("Set " + name + " in center");
             setCenter(subApp);
         });
         this.toolBar.getItems().add(b);
