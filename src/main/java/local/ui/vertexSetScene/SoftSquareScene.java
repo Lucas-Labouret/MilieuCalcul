@@ -4,18 +4,19 @@ import javafx.scene.control.*;
 import local.computingMedium.miseEnBoite.MiseEnBoite;
 import local.computingMedium.miseEnBoite.RoundedCoordMeb;
 import local.computingMedium.vertexSets.SoftSquareSet;
+import local.ui.view.TBIntInput;
 
 public class SoftSquareScene extends VertexSetScene {
     public MiseEnBoite DEFAULT_MEB() { return new RoundedCoordMeb(); }
 
-    TextField pointCountField;
+    TBIntInput pointCountField;
 
     public SoftSquareScene() {
-        pointCountField = new TextField("20");
-        pointCountField.setMaxWidth(40);
+        pointCountField = new TBIntInput("Cout", "20");
+        pointCountField.setPrefWidth(50);
 
-        toolbar.getItems().addAll(pointCountField, gen, tri, fpo, fpoIterations, meb);
-        setTop(toolbar);
+        topToolBar.getItems().addAll(pointCountField, gen, tri, fpo, fpoIterations, meb);
+        setTop(topToolBar);
     }
 
     public SoftSquareScene(MiseEnBoite miseEnBoite) {
@@ -24,7 +25,7 @@ public class SoftSquareScene extends VertexSetScene {
     }
 
     protected void generate() {
-        int pointCount = Integer.parseInt(pointCountField.getText());
+        int pointCount = pointCountField.getValue();
         vertexSet = new SoftSquareSet(pointCount);
         showVertexSet();
     }

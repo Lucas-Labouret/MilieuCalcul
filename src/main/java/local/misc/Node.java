@@ -1,6 +1,8 @@
 package local.misc;
 
-public class Node<T> {
+import java.io.Serializable;
+
+public class Node<T> implements Serializable {
     public Node<T> next = null;
     public T value;
 

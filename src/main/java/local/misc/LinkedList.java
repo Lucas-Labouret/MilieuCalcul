@@ -1,6 +1,8 @@
 package local.misc;
 
-public class LinkedList<T> {
+import java.io.Serializable;
+
+public class LinkedList<T> implements Serializable {
     public Node<T> head;
 
     public void addFirst(T t) {

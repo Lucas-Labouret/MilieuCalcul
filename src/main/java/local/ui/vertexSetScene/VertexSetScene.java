@@ -1,6 +1,7 @@
 package local.ui.vertexSetScene;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import local.computingMedium.Vertex;
@@ -17,7 +18,8 @@ import java.util.HashMap;
 public abstract class VertexSetScene extends BorderPane {
     public abstract MiseEnBoite DEFAULT_MEB();
 
-    ToolBar toolbar;
+    ToolBar topToolBar;
+    ToolBar botToolBar;
     InformationBar infoBar;
     PaneVertexSetDrawer drawPane;
 
@@ -27,14 +29,19 @@ public abstract class VertexSetScene extends BorderPane {
     Button gen, tri, fpo, meb;
     TBIntInput fpoIterations;
 
+    Button save;
+    TextField saveName;
+
+
     public VertexSetScene() {
-        toolbar = new ToolBar();
+        topToolBar = new ToolBar();
+        botToolBar = new ToolBar();
         infoBar = new InformationBar("Information");
         drawPane = new PaneVertexSetDrawer(infoBar, null);
 
-        setTop(toolbar);
+        setTop(topToolBar);
         setCenter(drawPane);
-        setBottom(infoBar);
+        setBottom(botToolBar);
 
         gen = new Button("Generate");
         gen.setOnAction((event) -> generate());
@@ -43,11 +50,18 @@ public abstract class VertexSetScene extends BorderPane {
         fpo = new Button("FPO");
         fpo.setOnAction(event -> fpoIteration());
         meb = new Button("Met en boite");
-        meb.setOnAction(e -> this.showMeb());
+        meb.setOnAction(event -> this.showMeb());
 
         fpoIterations = new TBIntInput("FPO Iterations", "1");
 
-        this.miseEnBoite = DEFAULT_MEB();
+        miseEnBoite = DEFAULT_MEB();
+
+        save = new Button("Save");
+        saveName = new TextField();
+        save.setOnAction(event -> {
+            if (vertexSet != null) VertexSet.toFile(vertexSet, "save/" + saveName.getText() + ".vtxs");
+        });
+        botToolBar.getItems().addAll(save, saveName);
 
         widthProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
         heightProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
@@ -88,7 +102,7 @@ public abstract class VertexSetScene extends BorderPane {
 
     private void updateDrawPaneSize() {
         drawPane.setPrefWidth(getWidth());
-        drawPane.setPrefHeight(getHeight() - toolbar.getHeight() - infoBar.getHeight());
+        drawPane.setPrefHeight(getHeight() - topToolBar.getHeight() - botToolBar.getHeight());
         if (vertexSet != null) {
             showVertexSet();
         }
