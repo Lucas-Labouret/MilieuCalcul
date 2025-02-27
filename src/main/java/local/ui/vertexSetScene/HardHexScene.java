@@ -3,6 +3,8 @@ package local.ui.vertexSetScene;
 import local.computingMedium.miseEnBoite.MiseEnBoite;
 import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesMeb;
 import local.computingMedium.vertexSets.HardHexSet;
+import local.ui.savefileManager.HardHexManager;
+import local.ui.savefileManager.SavefileManager;
 import local.ui.view.TBIntInput;
 
 public class HardHexScene extends VertexSetScene {
@@ -17,6 +19,8 @@ public class HardHexScene extends VertexSetScene {
 
         topToolBar.getItems().addAll(ptCountInput, heightInput, gen, tri, fpo, meb);
         setTop(topToolBar);
+
+        savefileManager = new HardHexManager(this, savefileInfo);
     }
 
     public HardHexScene(MiseEnBoite miseEnBoite) {

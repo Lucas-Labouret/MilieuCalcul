@@ -1,14 +1,17 @@
-package local.ui.view;
+package local.ui.savefileManager;
 
 import local.computingMedium.Vertex;
 import local.computingMedium.vertexSets.VertexSet;
+import local.misc.LinkedList;
 import local.misc.Node;
 import local.ui.vertexSetScene.VertexSetScene;
+import local.ui.view.InformationBar;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class SavefileManager {
+public abstract class SavefileManager<T extends VertexSet> {
     public static String DEFAULT_LOCATION  = "save/";
     public static String DEFAULT_EXTENSION = ".vtxs";
 
@@ -19,6 +22,8 @@ public class SavefileManager {
         this.vertexSetScene = vertexSetScene;
         this.info = info;
     }
+
+    protected abstract T makeVertexSet();
 
     public void save() {
         if (vertexSetScene == null) return;
@@ -83,7 +88,7 @@ public class SavefileManager {
         saveStr.append("\n-- Neighbors --\n");
         for (int index = 0; index < counter; index++) {
             saveStr.append(index).append(": ");
-            for (Vertex neighbor: vertexSet){
+            for (Vertex neighbor: indexToVertex.get(index).getNeighbors()) {
                 int neighborIndex = vertexToIndex.get(neighbor);
                 saveStr.append(neighborIndex).append(" ");
             }
@@ -100,7 +105,7 @@ public class SavefileManager {
             saveStr.append("\n");
         }
 
-        saveStr.append("\n-- Soft-Border --\n");
+        saveStr.append("\n-- Soft Border --\n");
         if ( vertexSet.getSoftBorder() == null ) saveStr.append("null\n");
         else {
             for (Node<Vertex> current = vertexSet.getSoftBorder().head; current != null; current = current.next) {
@@ -121,26 +126,27 @@ public class SavefileManager {
     public void load() {
         if (vertexSetScene == null) return;
 
-        String name = vertexSetScene.getFileName();
-        if (name == null || name.isEmpty()) {
+        String tmpName = vertexSetScene.getFileName();
+        if (tmpName == null || tmpName.isEmpty()) {
             info.setText("Please enter a file name.");
             return;
         }
+        String name = DEFAULT_LOCATION + tmpName + DEFAULT_EXTENSION;
 
-        VertexSet vertexSet = new VertexSet();
+        T vertexSet = makeVertexSet();
         HashMap<Integer, Vertex> indexToVertex = new HashMap<>();
-        HashMap<Vertex, Integer> vertexToIndex = new HashMap<>();
 
         try {
             BufferedReader reader = new BufferedReader(new FileReader(name));
             int lineCounter = 0;
             String line = reader.readLine();
             lineCounter++;
-            if (!line.equals("-- Dimensions --")) {
-                throw new IOException("Expected '-- Dimensions --' but got '" + line + "' on line " + lineCounter);
-            }
             if(line == null) {
                 throw new IOException("Empty file");
+            }
+            line = line.trim();
+            if (!line.equals("-- Dimensions --")) {
+                throw new IOException("Expected '-- Dimensions --' but got '" + line + "' on line " + lineCounter);
             }
 
             line = reader.readLine();
@@ -148,6 +154,8 @@ public class SavefileManager {
             if (line == null) {
                 throw new IOException("Unexpected end of file");
             }
+            line = line.trim();
+
             String[] dimensions = line.split(" ");
             if (dimensions.length != 2) {
                 throw new IOException("Expected dimensions but got '" + line + "' on line " + lineCounter);
@@ -160,23 +168,30 @@ public class SavefileManager {
                 throw new IOException("Expected dimensions but got '" + line + "' on line " + lineCounter);
             }
 
-            reader.readLine();
+            line = reader.readLine();
             lineCounter++;
             if (line == null){
                 throw new IOException("Unexpected end of file");
             }
+            line = line.trim();
             if (!line.isEmpty()) {
                 throw new IOException("Expected an empty line but got '" + line + "' on line " + lineCounter);
             }
             
             line = reader.readLine();
             lineCounter++;
+            if (line == null){
+                throw new IOException("Unexpected end of file");
+            }
+            line = line.trim();
             if (!line.equals("-- Vertices --")) {
                 throw new IOException("Expected '-- Vertices --' but got '" + line + "' on line " + lineCounter);
             }
+
             try {
                 while (!(line = reader.readLine()).isEmpty()) {
                     lineCounter++;
+                    line = line.trim();
 
                     String[] vertexLine = line.split(" ");
                     if (vertexLine.length != 8) {
@@ -189,7 +204,6 @@ public class SavefileManager {
                         int index = Integer.parseInt(vertexLine[0].substring(0, vertexLine[0].length() - 1));
                         Vertex vertex = getVertex(vertexLine);
                         indexToVertex.put(index, vertex);
-                        vertexToIndex.put(vertex, index);
                         vertexSet.add(vertex);
                     } catch (NumberFormatException e) {
                         throw new IOException(
@@ -208,18 +222,20 @@ public class SavefileManager {
             if (line == null){
                 throw new IOException("Unexpected end of file");
             }
+            line = line.trim();
             if (!line.equals("-- Neighbors --")) {
                 throw  new IOException("Expected '-- Neighbors --' but got '" + line + "' on line " + lineCounter);
             }
             try {
                 while (!(line = reader.readLine()).isEmpty()) {
                     lineCounter++;
+                    line = line.trim();
 
                     String[] neighborLine = line.split(" ");
                     try {
                         int index = Integer.parseInt(neighborLine[0].substring(0, neighborLine[0].length() - 1));
                         for (int i = 1; i < neighborLine.length; i++) {
-                            int neighborIndex = Integer.parseInt(neighborLine[i].substring(0, neighborLine[i].length() - 1));
+                            int neighborIndex = Integer.parseInt(neighborLine[i]);
                             indexToVertex.get(index).addNeighbor(indexToVertex.get(neighborIndex));
                         }
                     } catch (NumberFormatException e) {
@@ -233,6 +249,107 @@ public class SavefileManager {
             catch (NullPointerException e) {
                 throw new IOException("Unexpected end of file");
             }
+
+            line = reader.readLine();
+            lineCounter++;
+
+            if (line == null){
+                throw new IOException("Unexpected end of file");
+            }
+            line = line.trim();
+            if (!line.equals("-- Hard Border --")) {
+                throw new IOException("Expected '-- Hard Border --' but got '" + line + "' on line " + lineCounter);
+            }
+
+            line = reader.readLine();
+            lineCounter++;
+
+            if (line == null){
+                throw new IOException("Unexpected end of file");
+            }
+            line = line.trim();
+            if (line.isEmpty()) {
+                throw new IOException(
+                        "Expected line of the form '<index 1> <index 2> ...' " +
+                        "but got '" + line + "' on line " + lineCounter
+                );
+            }
+
+            if (line.equals("null")) vertexSet.setHardBorder(null);
+            else try {
+                String[] borderLine = line.split(" ");
+                ArrayList<Vertex> hardBorder = new ArrayList<>(borderLine.length);
+                for (String stringIndex: borderLine) {
+                    int index = Integer.parseInt(stringIndex);
+                    hardBorder.add(indexToVertex.get(index));
+                }
+                vertexSet.setHardBorder(hardBorder);
+            } catch (NumberFormatException e) {
+                throw new IOException(
+                        "Expected line of the form '<index 1> <index 2> ...' " +
+                        "but got '" + line + "' on line " + lineCounter
+                );
+            }
+
+            line = reader.readLine();
+            lineCounter++;
+
+            if (line == null){
+                throw new IOException("Unexpected end of file");
+            }
+            if (!line.isEmpty()) {
+                throw new IOException("Expected an empty line but got '" + line + "' on line " + lineCounter);
+            }
+
+            line = reader.readLine();
+            lineCounter++;
+            if (line == null){
+                throw new IOException("Unexpected end of file");
+            }
+            line = line.trim();
+            if (!line.equals("-- Soft Border --")) {
+                throw new IOException("Expected '-- Soft Border --' but got '" + line + "' on line " + lineCounter);
+            }
+
+            line = reader.readLine();
+            lineCounter++;
+            if (line == null){
+                throw new IOException("Unexpected end of file");
+            }
+            line = line.trim();
+            if (line.isEmpty()) {
+                throw new IOException(
+                        "Expected line of the form '<index 1> <index 2> ...' " +
+                        "but got '" + line + "' on line " + lineCounter
+                );
+            }
+
+            if (line.equals("null")) vertexSet.setSoftBorder(null);
+            else try {
+                String[] borderLine = line.split(" ");
+                LinkedList<Vertex> softBorder = new LinkedList<>();
+                Node<Vertex> current = null;
+                for (String stringIndex: borderLine) {
+                    int index = Integer.parseInt(stringIndex);
+                    Node<Vertex> node = new Node<>(indexToVertex.get(index));
+                    if (current == null) {
+                        current = node;
+                        softBorder.head = current;
+                    }
+                    else {
+                        current.next = node;
+                        current = current.next;
+                    }
+                }
+                vertexSet.setSoftBorder(softBorder);
+            } catch (NumberFormatException e) {
+                throw new IOException(
+                        "Expected line of the form '<index 1> <index 2> ...' " +
+                        "but got '" + line + "' on line " + lineCounter
+                );
+            }
+
+            reader.close();
         }
         catch (FileNotFoundException e) { info.setText("File not found."); }
         catch (IOException e) {
@@ -244,8 +361,8 @@ public class SavefileManager {
     }
 
     private static Vertex getVertex(String[] vertexLine) {
-        int x = Integer.parseInt(vertexLine[1]);
-        int y = Integer.parseInt(vertexLine[2]);
+        double x = Double.parseDouble(vertexLine[1]);
+        double y = Double.parseDouble(vertexLine[2]);
 
         boolean border = Boolean.parseBoolean(vertexLine[3]);
         boolean topBorder = Boolean.parseBoolean(vertexLine[4]);

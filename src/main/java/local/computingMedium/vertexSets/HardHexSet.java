@@ -7,6 +7,8 @@ import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public class HardHexSet extends VertexSet {
+    public HardHexSet() {}
+
     public HardHexSet(int borderWidth, int borderHeight, int count){
         borderHeight++;
 

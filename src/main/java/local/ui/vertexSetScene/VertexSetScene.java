@@ -11,7 +11,7 @@ import local.computingMedium.vertexSets.VertexSet;
 import local.furthestpointoptimization.FPOUtils;
 import local.ui.view.InformationBar;
 import local.ui.view.PaneVertexSetDrawer;
-import local.ui.view.SavefileManager;
+import local.ui.savefileManager.SavefileManager;
 
 import java.util.HashMap;
 
@@ -59,12 +59,11 @@ public abstract class VertexSetScene extends BorderPane {
         miseEnBoite = DEFAULT_MEB();
 
         savefileInfo = new InformationBar();
-        savefileManager = new SavefileManager(this, savefileInfo);
         fileName = new TextField();
         saveButton = new Button("Save");
-        saveButton.setOnAction(event -> savefileManager.save());
+        saveButton.setOnAction(event -> save());
         loadButton = new Button("Load");
-        loadButton.setOnAction(event -> savefileManager.load());
+        loadButton.setOnAction(event -> load());
         botToolBar.getItems().addAll(fileName, saveButton, loadButton, savefileInfo);
 
         widthProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
@@ -99,6 +98,14 @@ public abstract class VertexSetScene extends BorderPane {
         } else {
             for (int i=0; i<fpoIterations; i++) FPOUtils.fpoIteration(vertexSet);
         }
+        showVertexSet();
+    }
+
+    private void save(){
+        savefileManager.save();
+    }
+    private void load(){
+        savefileManager.load();
         showVertexSet();
     }
 

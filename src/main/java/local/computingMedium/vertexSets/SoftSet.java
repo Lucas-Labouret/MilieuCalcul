@@ -8,7 +8,7 @@ import local.misc.Node;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class SoftSet extends VertexSet {
+public abstract class SoftSet extends VertexSet {
     protected void setSoftBorder() {
         if (this.isEmpty()) return;
         softBorder = new LinkedList<>();

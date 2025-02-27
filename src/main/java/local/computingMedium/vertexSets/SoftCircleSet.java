@@ -5,6 +5,8 @@ import local.computingMedium.Vertex;
 
 @SuppressWarnings("serial")
 public class SoftCircleSet extends SoftSet {
+    public SoftCircleSet() {}
+
     public SoftCircleSet(int count) {
         for (int i = 0; i < count; i++) {
             double angle = Math.random() * 2 * Math.PI;

@@ -4,6 +4,8 @@ import local.computingMedium.Vertex;
 
 @SuppressWarnings("serial")
 public class SoftSquareSet extends SoftSet {
+    public SoftSquareSet() {}
+
     public SoftSquareSet(int count) {
         for (int i = 0; i < count; i++) {
             double x = Math.random();

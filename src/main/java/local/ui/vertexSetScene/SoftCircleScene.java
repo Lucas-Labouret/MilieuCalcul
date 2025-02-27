@@ -3,6 +3,8 @@ package local.ui.vertexSetScene;
 import local.computingMedium.miseEnBoite.MiseEnBoite;
 import local.computingMedium.miseEnBoite.RoundedCoordMeb;
 import local.computingMedium.vertexSets.SoftCircleSet;
+import local.ui.savefileManager.SavefileManager;
+import local.ui.savefileManager.SoftCircleManager;
 import local.ui.view.TBIntInput;
 
 public class SoftCircleScene extends VertexSetScene {
@@ -15,6 +17,8 @@ public class SoftCircleScene extends VertexSetScene {
 
         topToolBar.getItems().addAll(ptCountInput, gen, tri, fpo, meb);
         setTop(topToolBar);
+
+        savefileManager = new SoftCircleManager(this, savefileInfo);
     }
 
     public SoftCircleScene(MiseEnBoite miseEnBoite) {

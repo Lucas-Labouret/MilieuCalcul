@@ -3,6 +3,8 @@ package local.ui.vertexSetScene;
 import local.computingMedium.miseEnBoite.MiseEnBoite;
 import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesMeb;
 import local.computingMedium.vertexSets.HardRectangleSet;
+import local.ui.savefileManager.HardRectangleManager;
+import local.ui.savefileManager.SavefileManager;
 import local.ui.view.TBIntInput;
 
 public class HardRectangleScene extends VertexSetScene {
@@ -21,6 +23,8 @@ public class HardRectangleScene extends VertexSetScene {
 
         topToolBar.getItems().addAll(ptCountInput, widthInput, gen, tri, fpo, meb);
         setTop(topToolBar);
+
+        savefileManager = new HardRectangleManager(this, savefileInfo);
     }
 
     public HardRectangleScene(double width, MiseEnBoite miseEnBoite) {

@@ -15,4 +15,7 @@ module local.furthestpointoptimization {
     
     exports local.ui;
     exports local.ui.vertexSetScene;
+    exports local.ui.savefileManager;
+    exports local.ui.view;
+    opens local.ui.savefileManager to javafx.fxml;
 }

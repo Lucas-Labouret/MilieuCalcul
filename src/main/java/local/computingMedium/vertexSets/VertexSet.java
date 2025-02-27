@@ -58,7 +58,9 @@ public class VertexSet extends HashSet<Vertex> {
     public void setHeight(double height) { this.height = height; }
     public double getHeight() { return height; }
 
+    public void setHardBorder(ArrayList<Vertex> hardBorder) { this.hardBorder = hardBorder; }
     public ArrayList<Vertex> getHardBorder() { return hardBorder; }
+    public void setSoftBorder(LinkedList<Vertex> softBorder) { this.softBorder = softBorder; }
     public LinkedList<Vertex> getSoftBorder() { return softBorder; }
     public boolean partOfBorder(Vertex vertex) {
         return (hardBorder != null && hardBorder.contains(vertex)) ||

@@ -6,6 +6,8 @@ import local.computingMedium.Vertex;
 
 @SuppressWarnings("serial")
 public class HardRectangleSet extends VertexSet {
+    public HardRectangleSet() {}
+
     public HardRectangleSet(double width, int vertexWidth, int count) {
         if (vertexWidth < 2) throw new IllegalArgumentException("Vertex width must be at least 2");
         vertexWidth--;
