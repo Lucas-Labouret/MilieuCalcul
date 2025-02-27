@@ -8,14 +8,12 @@ import local.misc.LinkedList;
 import local.misc.Segment;
 import local.misc.Triangle;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Serial;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ForkJoinPool;
 
+@SuppressWarnings("serial")
 public class VertexSet extends HashSet<Vertex> {
-    @Serial private static final long serialVersionUID = -7599751605461214830L;
-
     static Random rd = new Random();
     public static double randomEps() {
         return rd.nextDouble(1e-5);
@@ -26,32 +24,6 @@ public class VertexSet extends HashSet<Vertex> {
 
     protected ArrayList<Vertex> hardBorder = null;
     protected LinkedList<Vertex> softBorder = null;
-
-    public static VertexSet fromFile(String fileName) {
-        VertexSet vertexSet;
-        try {
-            FileInputStream fis = new FileInputStream(fileName);
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            vertexSet = (VertexSet) ois.readObject();
-            ois.close();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-        vertexSet.delaunayTriangulate();
-
-        return vertexSet;
-    }
-    public static void toFile(VertexSet vertexSet, String fileName) {
-        try {
-            FileOutputStream fos = new FileOutputStream(fileName);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(vertexSet);
-            oos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public VertexSet(Set<Vertex> sv) {
         this.addAll(sv);
@@ -87,9 +59,8 @@ public class VertexSet extends HashSet<Vertex> {
     protected ArrayList<Vertex> getHardBorder() { return hardBorder; }
     protected LinkedList<Vertex> getSoftBorder() { return softBorder; }
     public boolean partOfBorder(Vertex vertex) {
-        if (hardBorder != null && hardBorder.contains(vertex)) return true;
-        if (softBorder != null && softBorder.contains(vertex)) return true;
-        return false;
+        return (hardBorder != null && hardBorder.contains(vertex)) ||
+               (softBorder != null && softBorder.contains(vertex));
     }
 
     public boolean isInBorder(Vertex vertex) { return false; }
@@ -236,5 +207,10 @@ public class VertexSet extends HashSet<Vertex> {
                 return Double.compare(v1.getX(), v2.getX());
             }
         }
+    }
+
+    @Serial
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        throw new IOException("Use a SavefileManager instead");
     }
 }

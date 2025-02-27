@@ -3,6 +3,7 @@ package local.computingMedium.vertexSets;
 import local.misc.Point;
 import local.computingMedium.Vertex;
 
+@SuppressWarnings("serial")
 public class SoftCircleSet extends SoftSet {
     public SoftCircleSet(int count) {
         for (int i = 0; i < count; i++) {

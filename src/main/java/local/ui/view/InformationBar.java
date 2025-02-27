@@ -5,33 +5,24 @@ import javafx.scene.layout.Pane;
 
 public class InformationBar extends Pane {
 
-    private String defaultText;
+    private final String defaultText;
     private Label text;
 
-    public InformationBar() {
-        this("");
-    }
+    public InformationBar() { this(""); }
 
     public InformationBar(String defaultText) {
-        this.defaultText = defaultText;
+        this.defaultText = " " + defaultText + " ";
         build();
     }
 
     private void build() {
         this.text = new Label(this.defaultText);
-        setStyle("-fx-background-color: #CCCCCC;");
+        setStyle("-fx-background-color: #EEEEEE;");
         getChildren().add(this.text);
     }
 
-    public void setLabel(String text) {
-        this.text.setText(text);
-    }
+    private void setLabel(String text) { this.text.setText(text); }
 
-    public void setText(String text) {
-        this.setLabel(text);
-    }
-
-    public void removeText() {
-        setLabel(this.defaultText);
-    }
+    public void setText(String text) { this.setLabel(" " + text + " "); }
+    public void removeText() { setLabel(this.defaultText); }
 }

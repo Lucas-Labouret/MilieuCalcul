@@ -11,6 +11,7 @@ import local.computingMedium.vertexSets.VertexSet;
 import local.furthestpointoptimization.FPOUtils;
 import local.ui.view.InformationBar;
 import local.ui.view.PaneVertexSetDrawer;
+import local.ui.view.SavefileManager;
 
 import java.util.HashMap;
 
@@ -27,6 +28,8 @@ public abstract class VertexSetScene extends BorderPane {
 
     Button gen, tri, fpo, meb;
 
+    InformationBar savefileInfo;
+    SavefileManager savefileManager;
     TextField fileName;
     Button saveButton, loadButton;
 
@@ -55,12 +58,14 @@ public abstract class VertexSetScene extends BorderPane {
 
         miseEnBoite = DEFAULT_MEB();
 
+        savefileInfo = new InformationBar();
+        savefileManager = new SavefileManager(this, savefileInfo);
         fileName = new TextField();
         saveButton = new Button("Save");
-        saveButton.setOnAction(event -> save());
+        saveButton.setOnAction(event -> savefileManager.save());
         loadButton = new Button("Load");
-        loadButton.setOnAction(event -> load());
-        botToolBar.getItems().addAll(fileName, saveButton, loadButton);
+        loadButton.setOnAction(event -> savefileManager.load());
+        botToolBar.getItems().addAll(fileName, saveButton, loadButton, savefileInfo);
 
         widthProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
         heightProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
@@ -97,14 +102,6 @@ public abstract class VertexSetScene extends BorderPane {
         showVertexSet();
     }
 
-    protected void save(){
-        if (vertexSet != null) VertexSet.toFile(vertexSet, "save/" + fileName.getText() + ".vtxs");
-    }
-    protected void load(){
-        try { vertexSet = VertexSet.fromFile("save/" + fileName.getText() + ".vtxs"); }
-        catch (Exception e) { e.printStackTrace(); }
-    }
-
     protected void showMeb() {
         HashMap<Vertex, Coord> miseEnBoiteResult = miseEnBoite.miseEnBoite(vertexSet);
         for (Vertex vertex : miseEnBoiteResult.keySet()) {
@@ -113,9 +110,12 @@ public abstract class VertexSetScene extends BorderPane {
         showVertexSet();
     }
 
-    public void setMeb(MiseEnBoite miseEnBoite) {
-        this.miseEnBoite = miseEnBoite;
-    }
+    public void setMeb(MiseEnBoite miseEnBoite) { this.miseEnBoite = miseEnBoite; }
+
+    public void setVertexSet(VertexSet vertexSet) { this.vertexSet = vertexSet; }
+    public VertexSet getVertexSet() { return vertexSet; }
+
+    public String getFileName() { return fileName.getText(); }
 
     public void showVertexSet() {
         drawPane.showVertexSet(vertexSet);
