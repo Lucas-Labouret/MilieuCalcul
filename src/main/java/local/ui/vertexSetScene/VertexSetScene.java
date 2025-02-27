@@ -27,8 +27,8 @@ public abstract class VertexSetScene extends BorderPane {
 
     Button gen, tri, fpo, meb;
 
-    Button save;
-    TextField saveName;
+    TextField fileName;
+    Button saveButton, loadButton;
 
     boolean fpoToConvergence = false;
     int fpoIterations = 1;
@@ -55,12 +55,12 @@ public abstract class VertexSetScene extends BorderPane {
 
         miseEnBoite = DEFAULT_MEB();
 
-        save = new Button("Save");
-        saveName = new TextField();
-        save.setOnAction(event -> {
-            if (vertexSet != null) VertexSet.toFile(vertexSet, "save/" + saveName.getText() + ".vtxs");
-        });
-        botToolBar.getItems().addAll(save, saveName);
+        fileName = new TextField();
+        saveButton = new Button("Save");
+        saveButton.setOnAction(event -> save());
+        loadButton = new Button("Load");
+        loadButton.setOnAction(event -> load());
+        botToolBar.getItems().addAll(fileName, saveButton, loadButton);
 
         widthProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
         heightProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
@@ -95,6 +95,14 @@ public abstract class VertexSetScene extends BorderPane {
             for (int i=0; i<fpoIterations; i++) FPOUtils.fpoIteration(vertexSet);
         }
         showVertexSet();
+    }
+
+    protected void save(){
+        if (vertexSet != null) VertexSet.toFile(vertexSet, "save/" + fileName.getText() + ".vtxs");
+    }
+    protected void load(){
+        try { vertexSet = VertexSet.fromFile("save/" + fileName.getText() + ".vtxs"); }
+        catch (Exception e) { e.printStackTrace(); }
     }
 
     protected void showMeb() {

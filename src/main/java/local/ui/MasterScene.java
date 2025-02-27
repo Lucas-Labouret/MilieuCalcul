@@ -22,26 +22,25 @@ public class MasterScene extends BorderPane {
 
     ToolBar toolBar;
     SidePanel sidePanel;
-    ArrayList<SubScene> apps;
+    ArrayList<SubScene> scenes;
     ArrayList<VertexSetScene> vertexSetScenes;
 
     private MasterScene() {
         toolBar = new ToolBar();
         sidePanel = new SidePanel();
-        apps = new ArrayList<>();
+        scenes = new ArrayList<>();
         vertexSetScenes = new ArrayList<>();
 
-        addApp(new SoftSquareScene(), "Soft Square");
-        addApp(new SoftCircleScene(), "Soft Circle");
-        addApp(new HardHexScene(), "Hard Hex");
-        addApp(new HardRectangleScene(1), "Hard Square");
-        addApp(new HardRectangleScene(Math.sqrt(3)), "Hard sqrt3:1 Rectangle");
-        addApp(new SceneLoader(), "Load");
+        addScene(new SoftSquareScene(), "Soft Square");
+        addScene(new SoftCircleScene(), "Soft Circle");
+        addScene(new HardHexScene(), "Hard Hex");
+        addScene(new HardRectangleScene(1), "Hard Square");
+        addScene(new HardRectangleScene(Math.sqrt(3)), "Hard sqrt3:1 Rectangle");
 
         fillSidePanel();
 
         setTop(toolBar);
-        setCenter(apps.getFirst());
+        setCenter(scenes.getFirst());
         setRight(sidePanel);
 
         widthProperty().addListener((obs, oldVal, newVal) -> updateWidth(newVal));
@@ -53,11 +52,11 @@ public class MasterScene extends BorderPane {
 
     private void updateWidth(Number newVal) {
         sidePanel.setPrefWidth(Math.min(200, newVal.doubleValue() / 3));
-        for (SubScene subScene : apps)
+        for (SubScene subScene : scenes)
             subScene.setWidth(newVal.doubleValue() - sidePanel.getWidth());
     }
     private void updateHeight(Number newVal) {
-        for (SubScene subScene : apps)
+        for (SubScene subScene : scenes)
             subScene.setHeight(newVal.doubleValue() - toolBar.getHeight());
     }
 
@@ -153,14 +152,14 @@ public class MasterScene extends BorderPane {
         sidePanel.getChildren().addAll(setIter, iterInput, toConvergence, convInput);
     }
 
-    public void addApp(VertexSetScene scene, String name) {
-        SubScene subApp = new SubScene(scene, 500, 500);
-        apps.add(subApp);
+    public void addScene(VertexSetScene scene, String name) {
+        SubScene subScene = new SubScene(scene, 500, 500);
+        scenes.add(subScene);
         vertexSetScenes.add(scene);
         Button b = new Button(name);
         b.setOnAction((event) -> {
             System.out.println("Set " + name + " in center");
-            setCenter(subApp);
+            setCenter(subScene);
         });
         this.toolBar.getItems().add(b);
     }
