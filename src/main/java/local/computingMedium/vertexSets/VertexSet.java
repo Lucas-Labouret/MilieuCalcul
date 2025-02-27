@@ -37,7 +37,7 @@ public class VertexSet extends HashSet<Vertex> {
 
         HashMap<Vertex, Vertex> originalToClone = new HashMap<>();
         for (Vertex vertex : vertices){
-            Vertex clone = new Vertex(vertex.getX(), vertex.getY(), vertex.isBorder());
+            Vertex clone = new Vertex(vertex);
             originalToClone.put(vertex, clone);
             this.add(clone);
         }
@@ -53,11 +53,13 @@ public class VertexSet extends HashSet<Vertex> {
         this.addAll(Arrays.asList(vertices));
     }
 
+    public void setWidth(double width) { this.width = width; }
     public double getWidth() { return width; }
+    public void setHeight(double height) { this.height = height; }
     public double getHeight() { return height; }
 
-    protected ArrayList<Vertex> getHardBorder() { return hardBorder; }
-    protected LinkedList<Vertex> getSoftBorder() { return softBorder; }
+    public ArrayList<Vertex> getHardBorder() { return hardBorder; }
+    public LinkedList<Vertex> getSoftBorder() { return softBorder; }
     public boolean partOfBorder(Vertex vertex) {
         return (hardBorder != null && hardBorder.contains(vertex)) ||
                (softBorder != null && softBorder.contains(vertex));

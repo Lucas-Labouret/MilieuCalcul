@@ -41,6 +41,15 @@ public class Vertex extends Point {
         this.isBottomBorder = isBottomBorder;
     }
 
+    public Vertex(Vertex vertex) {
+        this(
+                vertex.getX(), vertex.getY(),
+                vertex.isBorder(),
+                vertex.isTopBorder(), vertex.isLeftBorder(), vertex.isRightBorder(), vertex.isBottomBorder()
+        );
+        this.id = vertex.id;
+    }
+
     public boolean isBorder() { return isBorder; }
     public boolean isTopBorder() { return isTopBorder; }
     public boolean isLeftBorder() { return isLeftBorder; }
@@ -65,8 +74,7 @@ public class Vertex extends Point {
     }
 
     public Optional<Vertex> getKNeighbor(int k) {
-        ArrayList<Vertex> vs = new ArrayList<>();
-        vs.addAll(getNeighbors());
+        ArrayList<Vertex> vs = new ArrayList<>(getNeighbors());
 
         Vertex maxX = vs.getFirst();
         for (Vertex v : vs) {
