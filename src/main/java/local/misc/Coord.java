@@ -26,7 +26,7 @@ public class Coord {
         return i == b.i && j == b.j;
     }
 
-    @Override  public int hashCode() {
+    @Override public int hashCode() {
         return j < i ? i * i + j : j * j + i + j;
     }
 

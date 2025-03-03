@@ -7,7 +7,7 @@ import local.misc.Coord;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TopDistanceXSortedLinesMeb implements MiseEnBoite {
+public class TopDistanceXSortedLinesVMeb implements VertexMeB {
     @Override
     public HashMap<Vertex, Coord> miseEnBoite(VertexSet vertexSet) {
         DistanceToSideGetter distanceToSideGetter = new DistanceToSideGetter();

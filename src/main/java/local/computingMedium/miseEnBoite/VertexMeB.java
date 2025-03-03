@@ -7,6 +7,6 @@ import local.misc.Coord;
 import java.util.HashMap;
 
 @FunctionalInterface
-public interface MiseEnBoite {
+public interface VertexMeB {
     HashMap<Vertex, Coord> miseEnBoite(VertexSet vs);
 }

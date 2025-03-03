@@ -30,7 +30,7 @@ public class GeometricPrimitives {
     public enum Orientation {
         CoLineaire, // 0
         ClockWise, // 1
-        CounterClockWise; // 2
+        CounterClockWise // 2
     }
 
     public static Orientation orientation(Point a, Point b, Point c){

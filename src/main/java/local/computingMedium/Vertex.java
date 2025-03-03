@@ -67,9 +67,9 @@ public class Vertex extends Point {
     /**returns a reference*/
     public VertexSet getNeighbors() { return neighbors; }
 
-    public HashSet<Triangle> getSurroundTriangle() {
-        HashSet<Triangle> t = new HashSet<>();
-        getSurroundTriangleIn(t);
+    public HashSet<Face> getSurroundingFaces() {
+        HashSet<Face> t = new HashSet<>();
+        getSurroundingFacesIn(t);
         return t;
     }
 
@@ -90,7 +90,7 @@ public class Vertex extends Point {
         }
     }
 
-    public void getSurroundTriangleIn(Set<Triangle> triangleSet) {
+    public void getSurroundingFacesIn(Set<Face> faces) {
         ArrayList<Vertex> sortedNeighbors = new ArrayList<>(this.getNeighbors());
         sortedNeighbors.sort(new VertexSet.ClockWise(this));
         int nbNeighbours = sortedNeighbors.size();
@@ -98,7 +98,7 @@ public class Vertex extends Point {
             Vertex neighbor1 = sortedNeighbors.get(i % nbNeighbours);
             Vertex neighbor2 = sortedNeighbors.get((i + 1) % nbNeighbours);
             if (neighbor1.hasNeighbors(neighbor2)) {
-                triangleSet.add(new Triangle(this, neighbor1, neighbor2));
+                faces.add(new Face(this, neighbor1, neighbor2));
             }
         }
     }

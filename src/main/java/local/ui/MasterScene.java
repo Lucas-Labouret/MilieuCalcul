@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import local.computingMedium.miseEnBoite.RoundedCoordMeb;
-import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesMeb;
+import local.computingMedium.miseEnBoite.RoundedCoordVMeb;
+import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesVMeb;
 import local.ui.vertexSetScene.*;
 import local.ui.view.PaneVertexSetDrawer;
 import local.ui.view.SidePanel;
@@ -97,9 +97,9 @@ public class MasterScene extends BorderPane {
             if (newVal == defaultMeb) {
                 for (VertexSetScene scene : vertexSetScenes) scene.setMeb(scene.DEFAULT_MEB());
             } else if (newVal == roundedCoordMeb) {
-                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(new RoundedCoordMeb());
+                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(new RoundedCoordVMeb());
             } else if (newVal == topDistanceXSorted) {
-                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(new TopDistanceXSortedLinesMeb());
+                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(new TopDistanceXSortedLinesVMeb());
             }
         });
         

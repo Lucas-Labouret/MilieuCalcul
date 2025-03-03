@@ -1,9 +1,12 @@
 package local.furthestpointoptimization;
 
+import local.computingMedium.Face;
 import local.computingMedium.Vertex;
 import local.computingMedium.vertexSets.VertexSet;
 import local.misc.Triangle;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.HashSet;
 
 public class FPOUtils {
@@ -13,6 +16,8 @@ public class FPOUtils {
         int nbIterations = 0;
         double oldFpo = 0;
         double newFpo = 0;
+
+        Instant start = Instant.now();
         do {
             double fpo = fpoIteration(vertexSet);
             oldFpo = newFpo;
@@ -23,6 +28,8 @@ public class FPOUtils {
             System.out.println("Average min dist: " + vertexSet.getAverageMinDist() + ", max dist: " + vertexSet.getMaxNeighborhoodMaxDist());
             System.out.println("FPO: " + fpo + ", Progress: " + (newFpo - oldFpo));
         } while (newFpo < convergenceTolerance && newFpo - oldFpo > 1e-6);
+        Instant end = Instant.now();
+        System.out.println("FPO done in " + Duration.between(start, end).toMinutes() + "min");
     }
 
     public static double fpoIteration(VertexSet vertices){
@@ -32,10 +39,10 @@ public class FPOUtils {
             Vertex f = vertex;
             double rmax = vertices.getLocalMinDist(vertex);
             delaunayRemove(vertices, vertex);
-            HashSet<Triangle> triangles = vertices.getTriangles();
-            for (Triangle triangle : triangles){
-                Vertex circumcenter = triangle.getCircumcenter();
-                double circumradius = triangle.getCircumRadius();
+            HashSet<Face> faces = vertices.getFaces();
+            for (Face face : faces){
+                Vertex circumcenter = face.getCircumcenter();
+                double circumradius = face.getCircumRadius();
                 if (!vertices.isInBorder(circumcenter) || vertices.contains(circumcenter)) continue;
                 if (circumradius > rmax){
                     rmax = circumradius;

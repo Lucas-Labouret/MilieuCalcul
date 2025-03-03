@@ -6,7 +6,7 @@ import local.misc.Coord;
 
 import java.util.HashMap;
 
-public class RoundedCoordMeb implements MiseEnBoite {
+public class RoundedCoordVMeb implements VertexMeB {
     private HashMap<Coord, Vertex> getCoordVertexMap(VertexSet vertexSet){
         HashMap<Coord, Vertex> coordVertexMap = new HashMap<>();
 

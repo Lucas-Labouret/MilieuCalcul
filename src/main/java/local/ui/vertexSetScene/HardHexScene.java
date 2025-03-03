@@ -1,14 +1,13 @@
 package local.ui.vertexSetScene;
 
-import local.computingMedium.miseEnBoite.MiseEnBoite;
-import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesMeb;
+import local.computingMedium.miseEnBoite.VertexMeB;
+import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesVMeb;
 import local.computingMedium.vertexSets.HardHexSet;
 import local.ui.savefileManager.HardHexManager;
-import local.ui.savefileManager.SavefileManager;
 import local.ui.view.TBIntInput;
 
 public class HardHexScene extends VertexSetScene {
-    @Override public MiseEnBoite DEFAULT_MEB() { return new TopDistanceXSortedLinesMeb(); }
+    @Override public VertexMeB DEFAULT_MEB() { return new TopDistanceXSortedLinesVMeb(); }
 
     private final TBIntInput ptCountInput;
     private final TBIntInput heightInput;
@@ -23,7 +22,7 @@ public class HardHexScene extends VertexSetScene {
         savefileManager = new HardHexManager(this, savefileInfo);
     }
 
-    public HardHexScene(MiseEnBoite miseEnBoite) {
+    public HardHexScene(VertexMeB miseEnBoite) {
         this();
         this.miseEnBoite = miseEnBoite;
     }

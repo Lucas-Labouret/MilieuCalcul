@@ -5,7 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import local.computingMedium.Vertex;
-import local.computingMedium.miseEnBoite.MiseEnBoite;
+import local.computingMedium.miseEnBoite.VertexMeB;
 import local.misc.Coord;
 import local.computingMedium.vertexSets.VertexSet;
 import local.furthestpointoptimization.FPOUtils;
@@ -16,7 +16,7 @@ import local.ui.savefileManager.SavefileManager;
 import java.util.HashMap;
 
 public abstract class VertexSetScene extends BorderPane {
-    public abstract MiseEnBoite DEFAULT_MEB();
+    public abstract VertexMeB DEFAULT_MEB();
 
     ToolBar topToolBar;
     ToolBar botToolBar;
@@ -24,7 +24,7 @@ public abstract class VertexSetScene extends BorderPane {
     PaneVertexSetDrawer drawPane;
 
     VertexSet vertexSet;
-    MiseEnBoite miseEnBoite;
+    VertexMeB miseEnBoite;
 
     Button gen, tri, fpo, meb;
 
@@ -117,7 +117,7 @@ public abstract class VertexSetScene extends BorderPane {
         showVertexSet();
     }
 
-    public void setMeb(MiseEnBoite miseEnBoite) { this.miseEnBoite = miseEnBoite; }
+    public void setMeb(VertexMeB miseEnBoite) { this.miseEnBoite = miseEnBoite; }
 
     public void setVertexSet(VertexSet vertexSet) { this.vertexSet = vertexSet; }
     public VertexSet getVertexSet() { return vertexSet; }

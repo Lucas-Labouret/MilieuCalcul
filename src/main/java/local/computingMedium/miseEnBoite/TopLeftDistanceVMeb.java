@@ -7,7 +7,7 @@ import local.misc.Coord;
 import java.util.HashMap;
 
 @Deprecated //Gave the same coord to multiple vertices
-public class TopLeftDistanceMeb implements MiseEnBoite {
+public class TopLeftDistanceVMeb implements VertexMeB {
     @Override
     public HashMap<Vertex, Coord> miseEnBoite(VertexSet vs) {
         DistanceToSideGetter distanceToSideGetter = new DistanceToSideGetter();

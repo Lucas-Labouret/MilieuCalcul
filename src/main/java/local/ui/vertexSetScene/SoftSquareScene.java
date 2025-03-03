@@ -1,14 +1,13 @@
 package local.ui.vertexSetScene;
 
-import local.computingMedium.miseEnBoite.MiseEnBoite;
-import local.computingMedium.miseEnBoite.RoundedCoordMeb;
+import local.computingMedium.miseEnBoite.VertexMeB;
+import local.computingMedium.miseEnBoite.RoundedCoordVMeb;
 import local.computingMedium.vertexSets.SoftSquareSet;
-import local.ui.savefileManager.SavefileManager;
 import local.ui.savefileManager.SoftSquareManager;
 import local.ui.view.TBIntInput;
 
 public class SoftSquareScene extends VertexSetScene {
-    public MiseEnBoite DEFAULT_MEB() { return new RoundedCoordMeb(); }
+    public VertexMeB DEFAULT_MEB() { return new RoundedCoordVMeb(); }
 
     TBIntInput pointCountField;
 
@@ -22,7 +21,7 @@ public class SoftSquareScene extends VertexSetScene {
         savefileManager = new SoftSquareManager(this, savefileInfo);
     }
 
-    public SoftSquareScene(MiseEnBoite miseEnBoite) {
+    public SoftSquareScene(VertexMeB miseEnBoite) {
         this();
         this.miseEnBoite = miseEnBoite;
     }

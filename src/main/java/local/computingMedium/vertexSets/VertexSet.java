@@ -1,12 +1,12 @@
 package local.computingMedium.vertexSets;
 
+import local.computingMedium.Face;
 import local.misc.Point;
 import local.computingMedium.Vertex;
 import local.furthestpointoptimization.DelaunayUtils;
 import local.furthestpointoptimization.FPOUtils;
 import local.misc.LinkedList;
-import local.misc.Segment;
-import local.misc.Triangle;
+import local.misc.GenericSegment;
 
 import java.io.IOException;
 import java.io.Serial;
@@ -87,16 +87,16 @@ public class VertexSet extends HashSet<Vertex> {
         FPOUtils.buildFPO(this, convergenceTolerance);
     }
 
-    public HashSet<Triangle> getTriangles(){
-        HashSet<Triangle> triangles = new HashSet<>();
+    public HashSet<Face> getFaces(){
+        HashSet<Face> faces = new HashSet<>();
         for (Vertex vertex : this){
-            vertex.getSurroundTriangleIn(triangles);
+            vertex.getSurroundingFacesIn(faces);
         }
-        return triangles;
+        return faces;
     }
 
     public double getDist(Vertex x, Vertex y){
-        return Segment.length(x, y);
+        return GenericSegment.length(x, y);
     }
     public double getLocalMinDist(Vertex x){
         double minDistance = Double.POSITIVE_INFINITY;

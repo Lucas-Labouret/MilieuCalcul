@@ -38,7 +38,9 @@ public class Point implements Serializable {
 
     @Override
     public int hashCode() {
-        return 0;
+        Long _x = Double.doubleToLongBits(x);
+        Long _y = Double.doubleToLongBits(y);
+        return (int) ((_x < _y ? _y * _y + _x : _x * _x + _x + _y)%Integer.MAX_VALUE);
     }
 
     @Override
