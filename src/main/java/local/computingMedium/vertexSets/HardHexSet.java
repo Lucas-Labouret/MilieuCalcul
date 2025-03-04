@@ -9,6 +9,14 @@ import java.util.ArrayList;
 public class HardHexSet extends VertexSet {
     public HardHexSet() {}
 
+    public HardHexSet(Vertex... vertices) {
+        super(vertices);
+    }
+
+    public HardHexSet copy() {
+        return new HardHexSet(this.toArray(new Vertex[0]));
+    }
+
     public HardHexSet(int borderWidth, int borderHeight, int count){
         borderHeight++;
 

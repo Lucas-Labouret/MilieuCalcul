@@ -1,16 +1,17 @@
 package local.computingMedium;
 
+import local.computingMedium.vertexSets.HardHexSet;
 import local.computingMedium.vertexSets.VertexSet;
 import local.misc.Point;
-import local.misc.Triangle;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+@SuppressWarnings("serial")
 public class Vertex extends Point {
-    private final VertexSet neighbors = new VertexSet();
+    private final HashSet<Vertex> neighbors = new HashSet<>();
     String id = "";
 
     private final boolean isBorder;
@@ -65,7 +66,7 @@ public class Vertex extends Point {
     }
 
     /**returns a reference*/
-    public VertexSet getNeighbors() { return neighbors; }
+    public HashSet<Vertex> getNeighbors() { return neighbors; }
 
     public HashSet<Face> getSurroundingFaces() {
         HashSet<Face> t = new HashSet<>();

@@ -9,6 +9,12 @@ import java.util.ArrayList;
 
 @SuppressWarnings("serial")
 public abstract class SoftSet extends VertexSet {
+    public SoftSet() {}
+
+    public SoftSet(Vertex... vertices) {
+        super(vertices);
+    }
+
     protected void setSoftBorder() {
         if (this.isEmpty()) return;
         softBorder = new LinkedList<>();

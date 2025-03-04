@@ -13,7 +13,7 @@ import java.io.Serial;
 import java.util.*;
 
 @SuppressWarnings("serial")
-public class VertexSet extends HashSet<Vertex> {
+public abstract class VertexSet extends HashSet<Vertex> {
     static Random rd = new Random();
     public static double randomEps() {
         return rd.nextDouble(1e-5);
@@ -48,6 +48,8 @@ public class VertexSet extends HashSet<Vertex> {
             }
         }
     }
+
+    public abstract VertexSet copy();
 
     public VertexSet(Vertex... vertices) {
         this.addAll(Arrays.asList(vertices));

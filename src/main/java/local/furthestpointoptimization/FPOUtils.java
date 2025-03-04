@@ -3,7 +3,6 @@ package local.furthestpointoptimization;
 import local.computingMedium.Face;
 import local.computingMedium.Vertex;
 import local.computingMedium.vertexSets.VertexSet;
-import local.misc.Triangle;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -33,7 +32,7 @@ public class FPOUtils {
     }
 
     public static double fpoIteration(VertexSet vertices){
-        VertexSet vertexSet = new VertexSet(vertices.toArray(new Vertex[0]));
+        VertexSet vertexSet = vertices.copy();
         for (Vertex vertex : vertexSet){
             if (vertex.isBorder()) continue;
             Vertex f = vertex;

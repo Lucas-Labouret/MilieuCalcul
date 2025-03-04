@@ -8,6 +8,14 @@ import local.computingMedium.Vertex;
 public class HardRectangleSet extends VertexSet {
     public HardRectangleSet() {}
 
+    public HardRectangleSet(Vertex... vertices) {
+        super(vertices);
+    }
+
+    public HardRectangleSet copy() {
+        return new HardRectangleSet(this.toArray(new Vertex[0]));
+    }
+
     public HardRectangleSet(double width, int vertexWidth, int count) {
         if (vertexWidth < 2) throw new IllegalArgumentException("Vertex width must be at least 2");
         vertexWidth--;

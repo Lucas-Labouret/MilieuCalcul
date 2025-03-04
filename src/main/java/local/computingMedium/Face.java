@@ -2,8 +2,9 @@ package local.computingMedium;
 
 import local.computingMedium.vertexSets.VertexSet;
 import local.misc.GenericTriangle;
-import local.misc.Triangle;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 
 public class Face extends GenericTriangle<Vertex> {
@@ -17,8 +18,8 @@ public class Face extends GenericTriangle<Vertex> {
     }
 
     @Override
-    public VertexSet getVertices() {
-        return new VertexSet(a, b, c);
+    public HashSet<Vertex> getVertices() {
+        return new HashSet<>(List.of(a, b, c));
     }
 
     @Override

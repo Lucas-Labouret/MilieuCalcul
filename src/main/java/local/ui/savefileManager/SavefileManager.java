@@ -11,7 +11,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class SavefileManager<T extends VertexSet> {
+public abstract class SavefileManager {
     public static String DEFAULT_LOCATION  = "save/";
     public static String DEFAULT_EXTENSION = ".vtxs";
 
@@ -23,7 +23,7 @@ public abstract class SavefileManager<T extends VertexSet> {
         this.info = info;
     }
 
-    protected abstract T makeVertexSet();
+    protected abstract VertexSet makeVertexSet();
 
     public void save() {
         if (vertexSetScene == null) return;
@@ -133,7 +133,7 @@ public abstract class SavefileManager<T extends VertexSet> {
         }
         String name = DEFAULT_LOCATION + tmpName + DEFAULT_EXTENSION;
 
-        T vertexSet = makeVertexSet();
+        VertexSet vertexSet = makeVertexSet();
         HashMap<Integer, Vertex> indexToVertex = new HashMap<>();
 
         try {

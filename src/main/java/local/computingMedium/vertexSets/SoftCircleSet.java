@@ -7,6 +7,14 @@ import local.computingMedium.Vertex;
 public class SoftCircleSet extends SoftSet {
     public SoftCircleSet() {}
 
+    public SoftCircleSet(Vertex... vertices) {
+        super(vertices);
+    }
+
+    public SoftCircleSet copy() {
+        return new SoftCircleSet(this.toArray(new Vertex[0]));
+    }
+
     public SoftCircleSet(int count) {
         for (int i = 0; i < count; i++) {
             double angle = Math.random() * 2 * Math.PI;

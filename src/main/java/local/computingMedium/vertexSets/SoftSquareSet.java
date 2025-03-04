@@ -6,6 +6,14 @@ import local.computingMedium.Vertex;
 public class SoftSquareSet extends SoftSet {
     public SoftSquareSet() {}
 
+    public SoftSquareSet(Vertex... vertices) {
+        super(vertices);
+    }
+
+    public SoftSquareSet copy() {
+        return new SoftSquareSet(this.toArray(new Vertex[0]));
+    }
+
     public SoftSquareSet(int count) {
         for (int i = 0; i < count; i++) {
             double x = Math.random();
