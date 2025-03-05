@@ -1,20 +1,20 @@
-package local.misc;
+package local.misc.geometry;
 
-import local.computingMedium.vertexSets.VertexSet;
-
-import java.util.Objects;
+import java.util.HashSet;
 import java.util.Set;
 
-public abstract class GenericTriangle<T extends Point> {
+public class Triangle<T extends Point> {
     // VOIR https://www.geogebra.org/m/gqxh5a8x
     
     protected final T a;
     protected final T b;
     protected final T c;
 
-    protected abstract T makePoint(double x, double y);
+    protected T makePoint(double x, double y) {
+        return (T) new Point(x, y);
+    }
 
-    public GenericTriangle(T a, T b, T c) {
+    public Triangle(T a, T b, T c) {
         // if (a.equals(b) || b.equals(c) || c.equals(a)) {
             // throw new IllegalArgumentException("Les points d'un triangle ne peuvent pas etre identiques");
         // }
@@ -59,8 +59,8 @@ public abstract class GenericTriangle<T extends Point> {
         return makePoint(Ux, Uy);
     }
     public double getCircumRadius() {
-        T circumcenter = getCircumcenter();
-        return Math.sqrt(GenericSegment.length2(a, circumcenter));
+        Point circumcenter = getCircumcenter();
+        return Math.sqrt(Segment.length2(a, circumcenter));
     }
 
     /** centre de masse ou centroïde | intersection des droite passant par sommet et milieu opposé */
@@ -71,10 +71,10 @@ public abstract class GenericTriangle<T extends Point> {
     }
     public double getCentroidDist() {
         return Math.min(
-            GenericSegment.length(a, getCentroid()),
+            Segment.length(a, getCentroid()),
             Math.min(
-                GenericSegment.length(b, getCentroid()),
-                GenericSegment.length(c, getCentroid())
+                Segment.length(b, getCentroid()),
+                Segment.length(c, getCentroid())
             )
         );
     }
@@ -103,20 +103,12 @@ public abstract class GenericTriangle<T extends Point> {
     }
     public double getOrthocenterDist() {
         return Math.min(
-            GenericSegment.length(a, getOrthocenter()),
+            Segment.length(a, getOrthocenter()),
             Math.min(
-                GenericSegment.length(b, getOrthocenter()),
-                GenericSegment.length(c, getOrthocenter())
+                Segment.length(b, getOrthocenter()),
+                Segment.length(c, getOrthocenter())
             )
         );
-    }
-
-
-    public T getBarycenter() {
-        return this.getCentroid();
-    }
-    public double getBarycenterDist() {
-        return getCentroidDist();
     }
 
     /** Centre du cercle incrit */
@@ -134,24 +126,24 @@ public abstract class GenericTriangle<T extends Point> {
         double y = (a * ya + b * yb + c * yc) / perimeter;
         return makePoint(x, y);
     }
-
     public double getIncenterDist() {
         return Math.min(
-            GenericSegment.length(a, getIncenter()),
+            Segment.length(a, getIncenter()),
             Math.min(
-                GenericSegment.length(b, getIncenter()),
-                GenericSegment.length(c, getIncenter())
+                Segment.length(b, getIncenter()),
+                Segment.length(c, getIncenter())
             )
         );
     }
 
-    public abstract Set<T> getVertices();
+    public Set<T> getVertices(){
+        return new HashSet<>(Set.of(a, b, c));
+    }
 
     public boolean _contains(Point p) {
         Point center = this.getCircumcenter();
         return Double.compare(p.distanceFrom(center), this.getCircumRadius()) < 0;
     }
-
     public boolean contains(T v) {
         double denominator = ((b.getY() - c.getY()) * (a.getX() - c.getX()) + (c.getX() - b.getX()) * (a.getY() - c.getY()));
         if (denominator == 0) return false;
@@ -163,7 +155,13 @@ public abstract class GenericTriangle<T extends Point> {
     }
 
     @Override
-    public abstract boolean equals(Object obj);
+    public boolean equals(Object obj){
+        if (this == obj) return true;
+        if (obj instanceof Triangle<?> triangle){
+            return this.getVertices().equals(triangle.getVertices());
+        }
+        return false;
+    }
 
     @Override
     public String toString() {

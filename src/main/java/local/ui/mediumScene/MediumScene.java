@@ -1,4 +1,4 @@
-package local.ui.vertexSetScene;
+package local.ui.mediumScene;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -6,24 +6,24 @@ import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import local.computingMedium.Vertex;
 import local.computingMedium.miseEnBoite.VertexMeB;
-import local.misc.Coord;
-import local.computingMedium.vertexSets.VertexSet;
+import local.computingMedium.miseEnBoite.Coord;
+import local.computingMedium.media.Medium;
 import local.furthestpointoptimization.FPOUtils;
 import local.ui.view.InformationBar;
-import local.ui.view.PaneVertexSetDrawer;
+import local.ui.view.PaneMediumDrawer;
 import local.ui.savefileManager.SavefileManager;
 
 import java.util.HashMap;
 
-public abstract class VertexSetScene extends BorderPane {
+public abstract class MediumScene extends BorderPane {
     public abstract VertexMeB DEFAULT_MEB();
 
     ToolBar topToolBar;
     ToolBar botToolBar;
     InformationBar infoBar;
-    PaneVertexSetDrawer drawPane;
+    PaneMediumDrawer drawPane;
 
-    VertexSet vertexSet;
+    Medium medium;
     VertexMeB miseEnBoite;
 
     Button gen, tri, fpo, meb;
@@ -37,11 +37,11 @@ public abstract class VertexSetScene extends BorderPane {
     int fpoIterations = 1;
     double convergenceTolerance = 0.9;
 
-    public VertexSetScene() {
+    public MediumScene() {
         topToolBar = new ToolBar();
         botToolBar = new ToolBar();
         infoBar = new InformationBar("Information");
-        drawPane = new PaneVertexSetDrawer(infoBar, null);
+        drawPane = new PaneMediumDrawer(infoBar, null);
 
         setTop(topToolBar);
         setCenter(drawPane);
@@ -74,8 +74,8 @@ public abstract class VertexSetScene extends BorderPane {
     abstract protected void generate();
 
     protected void triangulate() {
-        if (vertexSet != null) {
-            vertexSet.delaunayTriangulate();
+        if (medium != null) {
+            medium.delaunayTriangulate();
         }
         showVertexSet();
     }
@@ -91,12 +91,12 @@ public abstract class VertexSetScene extends BorderPane {
     }
 
     protected void fpoIteration() {
-        if (vertexSet == null) return;
+        if (medium == null) return;
 
         if (fpoToConvergence) {
-            FPOUtils.buildFPO(vertexSet, convergenceTolerance);
+            FPOUtils.buildFPO(medium, convergenceTolerance);
         } else {
-            for (int i=0; i<fpoIterations; i++) FPOUtils.fpoIteration(vertexSet);
+            for (int i=0; i<fpoIterations; i++) FPOUtils.fpoIteration(medium);
         }
         showVertexSet();
     }
@@ -110,7 +110,7 @@ public abstract class VertexSetScene extends BorderPane {
     }
 
     protected void showMeb() {
-        HashMap<Vertex, Coord> miseEnBoiteResult = miseEnBoite.miseEnBoite(vertexSet);
+        HashMap<Vertex, Coord> miseEnBoiteResult = miseEnBoite.miseEnBoite(medium);
         for (Vertex vertex : miseEnBoiteResult.keySet()) {
             vertex.setId(miseEnBoiteResult.get(vertex).toString());
         }
@@ -119,19 +119,19 @@ public abstract class VertexSetScene extends BorderPane {
 
     public void setMeb(VertexMeB miseEnBoite) { this.miseEnBoite = miseEnBoite; }
 
-    public void setVertexSet(VertexSet vertexSet) { this.vertexSet = vertexSet; }
-    public VertexSet getVertexSet() { return vertexSet; }
+    public void setVertexSet(Medium medium) { this.medium = medium; }
+    public Medium getVertexSet() { return medium; }
 
     public String getFileName() { return fileName.getText(); }
 
     public void showVertexSet() {
-        drawPane.showVertexSet(vertexSet);
+        drawPane.showMedium(medium);
     }
 
     private void updateDrawPaneSize() {
         drawPane.setPrefWidth(getWidth());
         drawPane.setPrefHeight(getHeight() - topToolBar.getHeight() - botToolBar.getHeight());
-        if (vertexSet != null) {
+        if (medium != null) {
             showVertexSet();
         }
     }

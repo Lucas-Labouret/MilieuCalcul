@@ -1,23 +1,23 @@
-package local.computingMedium.vertexSets;
+package local.computingMedium.media;
 
 import local.computingMedium.Vertex;
-import local.misc.GeometricPrimitives;
+import local.misc.geometry.GeometricPrimitives;
 
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class HardHexSet extends VertexSet {
-    public HardHexSet() {}
+public class HardHexMedium extends HardBorderedMedium {
+    public HardHexMedium() {}
 
-    public HardHexSet(Vertex... vertices) {
+    public HardHexMedium(Vertex... vertices) {
         super(vertices);
     }
 
-    public HardHexSet copy() {
-        return new HardHexSet(this.toArray(new Vertex[0]));
+    public HardHexMedium copy() {
+        return new HardHexMedium(this.toArray(new Vertex[0]));
     }
 
-    public HardHexSet(int borderWidth, int borderHeight, int count){
+    public HardHexMedium(int borderWidth, int borderHeight, int count){
         borderHeight++;
 
         final double largeHeight = 1/Math.tan(Math.PI/6);

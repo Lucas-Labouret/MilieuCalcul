@@ -1,22 +1,22 @@
-package local.computingMedium.vertexSets;
+package local.computingMedium.media;
 
 import java.util.ArrayList;
 
 import local.computingMedium.Vertex;
 
 @SuppressWarnings("serial")
-public class HardRectangleSet extends VertexSet {
-    public HardRectangleSet() {}
+public class HardRectangleMedium extends HardBorderedMedium {
+    public HardRectangleMedium() {}
 
-    public HardRectangleSet(Vertex... vertices) {
+    public HardRectangleMedium(Vertex... vertices) {
         super(vertices);
     }
 
-    public HardRectangleSet copy() {
-        return new HardRectangleSet(this.toArray(new Vertex[0]));
+    public HardRectangleMedium copy() {
+        return new HardRectangleMedium(this.toArray(new Vertex[0]));
     }
 
-    public HardRectangleSet(double width, int vertexWidth, int count) {
+    public HardRectangleMedium(double width, int vertexWidth, int count) {
         if (vertexWidth < 2) throw new IllegalArgumentException("Vertex width must be at least 2");
         vertexWidth--;
 

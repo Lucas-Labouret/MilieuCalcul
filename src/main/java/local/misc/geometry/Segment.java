@@ -1,10 +1,10 @@
-package local.misc;
+package local.misc.geometry;
 
-public abstract class GenericSegment<T extends Point> {
+public class Segment<T extends Point> {
     protected final T start;
     protected final T end;
 
-    public GenericSegment(T start, T end) {
+    public Segment(T start, T end) {
         if (start.equals(end)) {
             throw new IllegalArgumentException("Les points de début et de fin ne peuvent pas être identiques pour creer un segment");
         }

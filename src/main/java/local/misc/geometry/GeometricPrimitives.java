@@ -1,4 +1,4 @@
-package local.misc;
+package local.misc.geometry;
 
 import java.util.ArrayList;
 
@@ -64,7 +64,7 @@ public class GeometricPrimitives {
         return Double.compare(angleA, angleB);
     }
 
-    public static boolean intersect(Segment s1, Segment s2){
+    public static boolean intersect(Segment<Point> s1, Segment<Point> s2){
         return orientation(s1.getStart(), s1.getEnd(), s2.getStart()) != orientation(s1.getStart(), s1.getEnd(), s2.getEnd()) &&
                 orientation(s2.getStart(), s2.getEnd(), s1.getStart()) != orientation(s2.getStart(), s2.getEnd(), s1.getEnd());
     }
@@ -91,14 +91,14 @@ public class GeometricPrimitives {
         for (int i = 0; i < polygon.size(); i++) {
             Point a = polygon.get(i);
             Point b = polygon.get((i + 1) % polygon.size());
-            Segment edge = new Segment(a, b);
+            Segment<Point> edge = new Segment<>(a, b);
             if (edge.contains(point)) {
                 return true;
             }
         }
         return false;
     }
-    public static boolean insidePolygonOrOnBorder(Segment segment, ArrayList<Vertex> polygon) {
+    public static boolean insidePolygonOrOnBorder(Segment<Point> segment, ArrayList<Vertex> polygon) {
         Point start = segment.getStart();
         Point end = segment.getEnd();
 
@@ -107,7 +107,7 @@ public class GeometricPrimitives {
         for (int i = 0; i < polygon.size(); i++) {
             Point a = polygon.get(i);
             Point b = polygon.get((i + 1) % polygon.size());
-            Segment edge = new Segment(a, b);
+            Segment<Point> edge = new Segment<>(a, b);
             if (segment.equals(edge)) return true;
             if (
                 GeometricPrimitives.intersect(segment, edge) &&

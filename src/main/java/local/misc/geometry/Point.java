@@ -1,13 +1,9 @@
-package local.misc;
+package local.misc.geometry;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Comparator;
 import java.util.List;
 
-public class Point implements Serializable {
-    @Serial private static final long serialVersionUID = -5217163308210341910L;
-
+public class Point {
     private double x;
     private double y;
 
@@ -45,7 +41,7 @@ public class Point implements Serializable {
 
     @Override
     public String toString() {
-        return '(' + String.valueOf(getX()) + ',' + String.valueOf(getY()) + ')';
+        return "(" + getX() + "," + getY() + ")";
     }
 
     public double distanceFrom(Point other) {
@@ -128,7 +124,7 @@ public class Point implements Serializable {
     }
 
     public static class CompareByAngle implements Comparator<Point> {
-        private AngleCalculator calculator;
+        private final AngleCalculator calculator;
 
         CompareByAngle(AngleCalculator calculator) {
             this.calculator = calculator;
@@ -143,8 +139,8 @@ public class Point implements Serializable {
     }
 
     public static class CompareByAngleDistance implements Comparator<Point> {
-        private Point center, ref;
-        private boolean clockwise;
+        private final Point center, ref;
+        private final boolean clockwise;
 
         public CompareByAngleDistance(Point center, Point ref, boolean clockwise) {
             this.center=center;
@@ -156,8 +152,7 @@ public class Point implements Serializable {
         
         @Override
         public int compare(Point o1, Point o2) {
-            double d1 = 0;
-            double d2 = 0;
+            double d1, d2;
             if (clockwise) {
                 d1 = GeometricPrimitives.getAngle(ref, center, o1);
                 d2 = GeometricPrimitives.getAngle(ref, center, o2);

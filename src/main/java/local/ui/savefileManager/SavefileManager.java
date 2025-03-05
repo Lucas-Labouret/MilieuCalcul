@@ -1,10 +1,10 @@
 package local.ui.savefileManager;
 
 import local.computingMedium.Vertex;
-import local.computingMedium.vertexSets.VertexSet;
+import local.computingMedium.media.Medium;
 import local.misc.LinkedList;
 import local.misc.Node;
-import local.ui.vertexSetScene.VertexSetScene;
+import local.ui.mediumScene.MediumScene;
 import local.ui.view.InformationBar;
 
 import java.io.*;
@@ -15,28 +15,28 @@ public abstract class SavefileManager {
     public static String DEFAULT_LOCATION  = "save/";
     public static String DEFAULT_EXTENSION = ".vtxs";
 
-    private final VertexSetScene vertexSetScene;
+    private final MediumScene mediumScene;
     private final InformationBar info;
 
-    public SavefileManager(VertexSetScene vertexSetScene, InformationBar info) {
-        this.vertexSetScene = vertexSetScene;
+    public SavefileManager(MediumScene mediumScene, InformationBar info) {
+        this.mediumScene = mediumScene;
         this.info = info;
     }
 
-    protected abstract VertexSet makeVertexSet();
+    protected abstract Medium makeVertexSet();
 
     public void save() {
-        if (vertexSetScene == null) return;
+        if (mediumScene == null) return;
 
-        String tmpName = vertexSetScene.getFileName();
+        String tmpName = mediumScene.getFileName();
         if (tmpName == null || tmpName.isEmpty()) {
             info.setText("Please enter a file name.");
             return;
         }
         String name = DEFAULT_LOCATION + tmpName + DEFAULT_EXTENSION;
 
-        VertexSet vertexSet = vertexSetScene.getVertexSet();
-        if (vertexSet == null){
+        Medium medium = mediumScene.getVertexSet();
+        if (medium == null){
             info.setText("Noting to save.");
             return;
         }
@@ -45,7 +45,7 @@ public abstract class SavefileManager {
         HashMap<Vertex, Integer> vertexToIndex = new HashMap<>();
 
         int counter = 0;
-        for (Vertex v : vertexSet) {
+        for (Vertex v : medium) {
             indexToVertex.put(counter, v);
             vertexToIndex.put(v, counter);
             counter++;
@@ -53,8 +53,8 @@ public abstract class SavefileManager {
 
         StringBuilder saveStr = new StringBuilder("-- Dimensions --\n");
 
-        String width = Double.toString(vertexSet.getWidth());
-        String height = Double.toString(vertexSet.getHeight());
+        String width = Double.toString(medium.getWidth());
+        String height = Double.toString(medium.getHeight());
         saveStr.append(width) .append(" ")
                .append(height).append("\n");
 
@@ -96,9 +96,9 @@ public abstract class SavefileManager {
         }
 
         saveStr.append("\n-- Hard Border --\n");
-        if ( vertexSet.getHardBorder() == null ) saveStr.append("null\n");
+        if ( medium.getHardBorder() == null ) saveStr.append("null\n");
         else {
-            for (Vertex vertex: vertexSet.getHardBorder()) {
+            for (Vertex vertex: medium.getHardBorder()) {
                 int index = vertexToIndex.get(vertex);
                 saveStr.append(index).append(" ");
             }
@@ -106,9 +106,9 @@ public abstract class SavefileManager {
         }
 
         saveStr.append("\n-- Soft Border --\n");
-        if ( vertexSet.getSoftBorder() == null ) saveStr.append("null\n");
+        if ( medium.getSoftBorder() == null ) saveStr.append("null\n");
         else {
-            for (Node<Vertex> current = vertexSet.getSoftBorder().head; current != null; current = current.next) {
+            for (Node<Vertex> current = medium.getSoftBorder().head; current != null; current = current.next) {
                 int index = vertexToIndex.get(current.value);
                 saveStr.append(index).append(" ");
             }
@@ -124,16 +124,16 @@ public abstract class SavefileManager {
     }
 
     public void load() {
-        if (vertexSetScene == null) return;
+        if (mediumScene == null) return;
 
-        String tmpName = vertexSetScene.getFileName();
+        String tmpName = mediumScene.getFileName();
         if (tmpName == null || tmpName.isEmpty()) {
             info.setText("Please enter a file name.");
             return;
         }
         String name = DEFAULT_LOCATION + tmpName + DEFAULT_EXTENSION;
 
-        VertexSet vertexSet = makeVertexSet();
+        Medium medium = makeVertexSet();
         HashMap<Integer, Vertex> indexToVertex = new HashMap<>();
 
         try {
@@ -161,8 +161,8 @@ public abstract class SavefileManager {
                 throw new IOException("Expected dimensions but got '" + line + "' on line " + lineCounter);
             }
             try { 
-                vertexSet.setWidth(Double.parseDouble(dimensions[0]));
-                vertexSet.setHeight(Double.parseDouble(dimensions[1]));
+                medium.setWidth(Double.parseDouble(dimensions[0]));
+                medium.setHeight(Double.parseDouble(dimensions[1]));
             }
             catch (NumberFormatException e) {
                 throw new IOException("Expected dimensions but got '" + line + "' on line " + lineCounter);
@@ -204,7 +204,7 @@ public abstract class SavefileManager {
                         int index = Integer.parseInt(vertexLine[0].substring(0, vertexLine[0].length() - 1));
                         Vertex vertex = getVertex(vertexLine);
                         indexToVertex.put(index, vertex);
-                        vertexSet.add(vertex);
+                        medium.add(vertex);
                     } catch (NumberFormatException e) {
                         throw new IOException(
                                 "Expected a line of the form '<index>: <x> <y> <border> <top> <left> <right> <bottom>' " +
@@ -275,7 +275,7 @@ public abstract class SavefileManager {
                 );
             }
 
-            if (line.equals("null")) vertexSet.setHardBorder(null);
+            if (line.equals("null")) medium.setHardBorder(null);
             else try {
                 String[] borderLine = line.split(" ");
                 ArrayList<Vertex> hardBorder = new ArrayList<>(borderLine.length);
@@ -283,7 +283,7 @@ public abstract class SavefileManager {
                     int index = Integer.parseInt(stringIndex);
                     hardBorder.add(indexToVertex.get(index));
                 }
-                vertexSet.setHardBorder(hardBorder);
+                medium.setHardBorder(hardBorder);
             } catch (NumberFormatException e) {
                 throw new IOException(
                         "Expected line of the form '<index 1> <index 2> ...' " +
@@ -324,7 +324,7 @@ public abstract class SavefileManager {
                 );
             }
 
-            if (line.equals("null")) vertexSet.setSoftBorder(null);
+            if (line.equals("null")) medium.setSoftBorder(null);
             else try {
                 String[] borderLine = line.split(" ");
                 LinkedList<Vertex> softBorder = new LinkedList<>();
@@ -341,7 +341,7 @@ public abstract class SavefileManager {
                         current = current.next;
                     }
                 }
-                vertexSet.setSoftBorder(softBorder);
+                medium.setSoftBorder(softBorder);
             } catch (NumberFormatException e) {
                 throw new IOException(
                         "Expected line of the form '<index 1> <index 2> ...' " +
@@ -357,7 +357,7 @@ public abstract class SavefileManager {
             e.printStackTrace();
         }
 
-        vertexSetScene.setVertexSet(vertexSet);
+        mediumScene.setVertexSet(medium);
     }
 
     private static Vertex getVertex(String[] vertexLine) {

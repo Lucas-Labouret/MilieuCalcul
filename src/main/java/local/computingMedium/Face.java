@@ -1,13 +1,10 @@
 package local.computingMedium;
 
-import local.computingMedium.vertexSets.VertexSet;
-import local.misc.GenericTriangle;
+import local.misc.geometry.Triangle;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 
-public class Face extends GenericTriangle<Vertex> {
+public class Face extends Triangle<Vertex> {
     public Face(Vertex a, Vertex b, Vertex c) {
         super(a, b, c);
     }
@@ -15,11 +12,6 @@ public class Face extends GenericTriangle<Vertex> {
     @Override
     protected Vertex makePoint(double x, double y) {
         return new Vertex(x, y);
-    }
-
-    @Override
-    public HashSet<Vertex> getVertices() {
-        return new HashSet<>(List.of(a, b, c));
     }
 
     @Override

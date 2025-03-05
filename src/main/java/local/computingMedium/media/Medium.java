@@ -1,19 +1,19 @@
-package local.computingMedium.vertexSets;
+package local.computingMedium.media;
 
 import local.computingMedium.Face;
-import local.misc.Point;
+import local.misc.geometry.Point;
 import local.computingMedium.Vertex;
 import local.furthestpointoptimization.DelaunayUtils;
 import local.furthestpointoptimization.FPOUtils;
 import local.misc.LinkedList;
-import local.misc.GenericSegment;
+import local.misc.geometry.Segment;
 
 import java.io.IOException;
 import java.io.Serial;
 import java.util.*;
 
 @SuppressWarnings("serial")
-public abstract class VertexSet extends HashSet<Vertex> {
+public abstract class Medium extends HashSet<Vertex> {
     static Random rd = new Random();
     public static double randomEps() {
         return rd.nextDouble(1e-5);
@@ -25,11 +25,11 @@ public abstract class VertexSet extends HashSet<Vertex> {
     protected ArrayList<Vertex> hardBorder = null;
     protected LinkedList<Vertex> softBorder = null;
 
-    public VertexSet(Set<Vertex> sv) {
+    public Medium(Set<Vertex> sv) {
         this.addAll(sv);
     }
 
-    public VertexSet(VertexSet vertices) {
+    public Medium(Medium vertices) {
         this.width = vertices.width;
         this.height = vertices.height;
         this.hardBorder = vertices.hardBorder;
@@ -49,9 +49,9 @@ public abstract class VertexSet extends HashSet<Vertex> {
         }
     }
 
-    public abstract VertexSet copy();
+    public abstract Medium copy();
 
-    public VertexSet(Vertex... vertices) {
+    public Medium(Vertex... vertices) {
         this.addAll(Arrays.asList(vertices));
     }
 
@@ -98,7 +98,7 @@ public abstract class VertexSet extends HashSet<Vertex> {
     }
 
     public double getDist(Vertex x, Vertex y){
-        return GenericSegment.length(x, y);
+        return Segment.length(x, y);
     }
     public double getLocalMinDist(Vertex x){
         double minDistance = Double.POSITIVE_INFINITY;

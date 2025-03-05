@@ -1,7 +1,7 @@
 package local.computingMedium.miseEnBoite;
 
 import local.computingMedium.Vertex;
-import local.computingMedium.vertexSets.VertexSet;
+import local.computingMedium.media.Medium;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -13,8 +13,8 @@ public class DistanceToSideGetter {
         TOP, LEFT, RIGHT, BOTTOM
     }
 
-    private Vertex getStart(Set<Vertex> vs, SIDE side){
-        for (Vertex vertex : vs) {
+    private Vertex getStart(Set<Vertex> vertices, SIDE side){
+        for (Vertex vertex : vertices) {
             //System.out.println("isBorder: " + vertex.isBorder() + " side: " + side + " isTopBorder: " + vertex.isTopBorder() + " isLeftBorder: " + vertex.isLeftBorder() + " isRightBorder: " + vertex.isRightBorder() + " isBottomBorder: " + vertex.isBottomBorder());
             if (side == SIDE.TOP && vertex.isTopBorder()) return vertex;
             if (side == SIDE.LEFT && vertex.isLeftBorder()) return vertex;
@@ -45,10 +45,10 @@ public class DistanceToSideGetter {
         }
     }
 
-    private HashMap<Vertex, Integer> getDistanceToSide(VertexSet vs, SIDE side) {
+    private HashMap<Vertex, Integer> getDistanceToSide(Medium medium, SIDE side) {
         coords.clear();
 
-        for (Vertex vertex : vs)
+        for (Vertex vertex : medium)
             coords.put(vertex, null);
 
         Vertex start = getStart(coords.keySet(), side);
@@ -60,16 +60,16 @@ public class DistanceToSideGetter {
         return coords;
     }
 
-    public HashMap<Vertex, Integer> getDistanceToTop(VertexSet vs) {
-        return getDistanceToSide(vs, SIDE.TOP);
+    public HashMap<Vertex, Integer> getDistanceToTop(Medium medium) {
+        return getDistanceToSide(medium, SIDE.TOP);
     }
-    public HashMap<Vertex, Integer> getDistanceToLeft(VertexSet vs) {
-        return getDistanceToSide(vs, SIDE.LEFT);
+    public HashMap<Vertex, Integer> getDistanceToLeft(Medium medium) {
+        return getDistanceToSide(medium, SIDE.LEFT);
     }
-    public HashMap<Vertex, Integer> getDistanceToRight(VertexSet vs) {
-        return getDistanceToSide(vs, SIDE.RIGHT);
+    public HashMap<Vertex, Integer> getDistanceToRight(Medium medium) {
+        return getDistanceToSide(medium, SIDE.RIGHT);
     }
-    public HashMap<Vertex, Integer> getDistanceToBottom(VertexSet vs) {
-        return getDistanceToSide(vs, SIDE.BOTTOM);
+    public HashMap<Vertex, Integer> getDistanceToBottom(Medium medium) {
+        return getDistanceToSide(medium, SIDE.BOTTOM);
     }
 }

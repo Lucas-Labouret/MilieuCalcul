@@ -1,19 +1,18 @@
 package local.computingMedium.miseEnBoite;
 
 import local.computingMedium.Vertex;
-import local.computingMedium.vertexSets.VertexSet;
-import local.misc.Coord;
+import local.computingMedium.media.Medium;
 
 import java.util.HashMap;
 
 public class RoundedCoordVMeb implements VertexMeB {
-    private HashMap<Coord, Vertex> getCoordVertexMap(VertexSet vertexSet){
+    private HashMap<Coord, Vertex> getCoordVertexMap(Medium medium){
         HashMap<Coord, Vertex> coordVertexMap = new HashMap<>();
 
         int scale = 1;
         while (true){
             boolean exit = true;
-            for (Vertex vertex : vertexSet){
+            for (Vertex vertex : medium){
                 Coord coord = new Coord(
                     (int) Math.round(scale*vertex.getY()),
                     (int) Math.round(scale*vertex.getX())
@@ -68,8 +67,8 @@ public class RoundedCoordVMeb implements VertexMeB {
     }
     
     @Override
-    public HashMap<Vertex, Coord> miseEnBoite(VertexSet vertexSet){
-        HashMap<Coord, Vertex> coordVertexMap = getCoordVertexMap(vertexSet);
+    public HashMap<Vertex, Coord> miseEnBoite(Medium medium){
+        HashMap<Coord, Vertex> coordVertexMap = getCoordVertexMap(medium);
 
         int yMax = 0, xMax = 0;
         for (Coord coord : coordVertexMap.keySet()){

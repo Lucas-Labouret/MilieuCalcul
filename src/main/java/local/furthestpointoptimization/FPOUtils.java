@@ -2,7 +2,7 @@ package local.furthestpointoptimization;
 
 import local.computingMedium.Face;
 import local.computingMedium.Vertex;
-import local.computingMedium.vertexSets.VertexSet;
+import local.computingMedium.media.Medium;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -11,29 +11,29 @@ import java.util.HashSet;
 public class FPOUtils {
     private FPOUtils(){}
 
-    public static void buildFPO(VertexSet vertexSet, double convergenceTolerance){
+    public static void buildFPO(Medium medium, double convergenceTolerance){
         int nbIterations = 0;
         double oldFpo = 0;
         double newFpo = 0;
 
         Instant start = Instant.now();
         do {
-            double fpo = fpoIteration(vertexSet);
+            double fpo = fpoIteration(medium);
             oldFpo = newFpo;
             newFpo = fpo;
             nbIterations++;
             System.out.println("-------------------------------------");
-            System.out.println("Iteration " + nbIterations + ", " + vertexSet.size() + " vertices left");
-            System.out.println("Average min dist: " + vertexSet.getAverageMinDist() + ", max dist: " + vertexSet.getMaxNeighborhoodMaxDist());
+            System.out.println("Iteration " + nbIterations + ", " + medium.size() + " vertices left");
+            System.out.println("Average min dist: " + medium.getAverageMinDist() + ", max dist: " + medium.getMaxNeighborhoodMaxDist());
             System.out.println("FPO: " + fpo + ", Progress: " + (newFpo - oldFpo));
         } while (newFpo < convergenceTolerance && newFpo - oldFpo > 1e-6);
         Instant end = Instant.now();
         System.out.println("FPO done in " + Duration.between(start, end).toMinutes() + "min");
     }
 
-    public static double fpoIteration(VertexSet vertices){
-        VertexSet vertexSet = vertices.copy();
-        for (Vertex vertex : vertexSet){
+    public static double fpoIteration(Medium vertices){
+        Medium medium = vertices.copy();
+        for (Vertex vertex : medium){
             if (vertex.isBorder()) continue;
             Vertex f = vertex;
             double rmax = vertices.getLocalMinDist(vertex);
@@ -55,12 +55,12 @@ public class FPOUtils {
         return vertices.getAverageMinDist()/vertices.getMaxNeighborhoodMaxDist();
     }
 
-    private static void delaunayRemove(VertexSet vertices, Vertex vertex){
+    private static void delaunayRemove(Medium vertices, Vertex vertex){
         for (Vertex v : vertices) v.getNeighbors().clear();
         vertices.remove(vertex);
         vertices.delaunayTriangulate();
     }
-    private static void delaunayInsert(VertexSet vertices, Vertex vertex){
+    private static void delaunayInsert(Medium vertices, Vertex vertex){
         vertices.add(vertex);
         for (Vertex v : vertices) v.getNeighbors().clear();
         vertices.delaunayTriangulate();

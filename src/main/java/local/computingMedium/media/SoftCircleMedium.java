@@ -1,21 +1,21 @@
-package local.computingMedium.vertexSets;
+package local.computingMedium.media;
 
-import local.misc.Point;
+import local.misc.geometry.Point;
 import local.computingMedium.Vertex;
 
 @SuppressWarnings("serial")
-public class SoftCircleSet extends SoftSet {
-    public SoftCircleSet() {}
+public class SoftCircleMedium extends SoftBorderedMedium {
+    public SoftCircleMedium() {}
 
-    public SoftCircleSet(Vertex... vertices) {
+    public SoftCircleMedium(Vertex... vertices) {
         super(vertices);
     }
 
-    public SoftCircleSet copy() {
-        return new SoftCircleSet(this.toArray(new Vertex[0]));
+    public SoftCircleMedium copy() {
+        return new SoftCircleMedium(this.toArray(new Vertex[0]));
     }
 
-    public SoftCircleSet(int count) {
+    public SoftCircleMedium(int count) {
         for (int i = 0; i < count; i++) {
             double angle = Math.random() * 2 * Math.PI;
             double radius = Math.random()/4;

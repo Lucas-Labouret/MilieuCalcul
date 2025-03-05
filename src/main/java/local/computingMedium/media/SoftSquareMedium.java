@@ -1,20 +1,20 @@
-package local.computingMedium.vertexSets;
+package local.computingMedium.media;
 
 import local.computingMedium.Vertex;
 
 @SuppressWarnings("serial")
-public class SoftSquareSet extends SoftSet {
-    public SoftSquareSet() {}
+public class SoftSquareMedium extends SoftBorderedMedium {
+    public SoftSquareMedium() {}
 
-    public SoftSquareSet(Vertex... vertices) {
+    public SoftSquareMedium(Vertex... vertices) {
         super(vertices);
     }
 
-    public SoftSquareSet copy() {
-        return new SoftSquareSet(this.toArray(new Vertex[0]));
+    public SoftSquareMedium copy() {
+        return new SoftSquareMedium(this.toArray(new Vertex[0]));
     }
 
-    public SoftSquareSet(int count) {
+    public SoftSquareMedium(int count) {
         for (int i = 0; i < count; i++) {
             double x = Math.random();
             double y = Math.random();

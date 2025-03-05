@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-import local.computingMedium.vertexSets.VertexSet;
-import local.misc.GeometricPrimitives;
-import local.misc.GeometricPrimitives.Orientation;
-import local.misc.Point;
+import local.computingMedium.media.Medium;
+import local.misc.geometry.GeometricPrimitives;
+import local.misc.geometry.GeometricPrimitives.Orientation;
+import local.misc.geometry.Point;
 import local.computingMedium.Vertex;
 
 /** Lucas */
@@ -33,32 +33,32 @@ public class DelaunayUtils {
         }
     }
 
-    public static void buildDT(VertexSet vertexSet){
+    public static void buildDT(Medium medium){
     /*
-        HashMap<BucketKey, VertexSet> buckets = new HashMap<>();
-        double n = vertexSet.size();
+        HashMap<BucketKey, Medium> buckets = new HashMap<>();
+        double n = medium.size();
         int m = (int) Math.ceil(Math.sqrt(n/Math.log(n)));
 
-        for (Vertex v : vertexSet){
+        for (Vertex v : medium){
             int x = (int) v.getX() * m;
             int y = (int) v.getY() * m;
             BucketKey key = new BucketKey(x, y);
             if (!buckets.containsKey(key)){
-                buckets.put(key, new VertexSet());
+                buckets.put(key, new Medium());
             }
             buckets.get(key).add(v);
         }
 
-        for (VertexSet bucket : buckets.values()){
+        for (Medium bucket : buckets.values()){
             bucketDT(bucket);
         }
     */
-        bucketDT(vertexSet);
+        bucketDT(medium);
     }
 
     /** Premier appel */
-    private static void bucketDT(VertexSet vertexSet){
-        ArrayList<Vertex> vertices = new ArrayList<>(vertexSet);
+    private static void bucketDT(Medium medium){
+        ArrayList<Vertex> vertices = new ArrayList<>(medium);
         vertices.sort(new Point.CompareByXThenY());
         _r_bucketDT(vertices, 0, vertices.size());
     }

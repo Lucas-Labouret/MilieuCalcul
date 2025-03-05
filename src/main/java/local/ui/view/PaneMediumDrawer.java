@@ -12,11 +12,13 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import local.misc.Point;
+import local.computingMedium.media.Medium;
+import local.misc.geometry.Point;
 import local.computingMedium.Vertex;
-import local.computingMedium.vertexSets.VertexSet;
 
-public class PaneVertexSetDrawer extends Pane {
+public class PaneMediumDrawer extends Pane {
+    private static final String BG_STYLE = "-fx-background-color: #FFFFFF;";
+
     public static boolean SHOW_POINTS = true;
     public static boolean SHOW_LINES = true;
 
@@ -30,23 +32,23 @@ public class PaneVertexSetDrawer extends Pane {
             scale,
             offsetX, offsetY;
 
-    VertexSet tmpvertexSet;
+    Medium tmpMedium;
     HashSet<Vertex> visited;
     Vertex selection;
 
-    public PaneVertexSetDrawer(InformationBar infoBar, Vertex selection) {
+    public PaneMediumDrawer(InformationBar infoBar, Vertex selection) {
         super();
         this.infoBar = infoBar;
         this.selection = selection;
-        setStyle("-fx-background-color: #EEEEEE;");
+        setStyle(BG_STYLE);
     }
 
-    private void initEnv(VertexSet vertexSet) {
-        this.tmpvertexSet = vertexSet;
-        xmax = vertexSet.getMaxX();
-        xmin = vertexSet.getMinX();
-        ymax = vertexSet.getMaxY();
-        ymin = vertexSet.getMinY();
+    private void initEnv(Medium medium) {
+        this.tmpMedium = medium;
+        xmax = medium.getMaxX();
+        xmin = medium.getMinX();
+        ymax = medium.getMaxY();
+        ymin = medium.getMinY();
 
         width = xmax - xmin;
         height = ymax - ymin;
@@ -63,18 +65,18 @@ public class PaneVertexSetDrawer extends Pane {
         offsetY = (paneHeight - height * scale) / 2;
     }
 
-    public void showVertexSet(VertexSet vertexSet) {
-        if (vertexSet == null) {
+    public void showMedium(Medium medium) {
+        if (medium == null) {
             ObservableList<Node> c = getChildren();
             c.clear();
-            setStyle("-fx-background-color: #EEEEEE;");
+            setStyle(BG_STYLE);
             c.add(new Label("Nothing to show"));
             return;
         }
 
-        initEnv(vertexSet);
+        initEnv(medium);
         getChildren().clear();
-        setStyle("-fx-background-color: #EEEEEE;");
+        setStyle(BG_STYLE);
 
         if (SHOW_LINES) drawLines();
         if (SHOW_POINTS) drawPoints();
@@ -91,7 +93,7 @@ public class PaneVertexSetDrawer extends Pane {
         selectionCircle.setStrokeWidth(4);
         int neighborCount = v.getNeighbors().size();
 
-        if (tmpvertexSet.partOfBorder(v)) {
+        if (tmpMedium.partOfBorder(v)) {
             circle.setFill(Color.GREEN);
         } else {
             Color color = getColorFromNeighborCount(neighborCount); // Couleur opaque
@@ -177,12 +179,12 @@ public class PaneVertexSetDrawer extends Pane {
     }
 
     private void drawLines() {
-        forAllVertex(vertex -> drawLine(vertex));
+        forAllVertex(this::drawLine);
     }
 
     private void forAllVertex(Consumer<Vertex> action) {
         visited = new HashSet<>();
-        for (Vertex v : this.tmpvertexSet) {
+        for (Vertex v : this.tmpMedium) {
             action.accept(v);
             visited.add(v);
         }

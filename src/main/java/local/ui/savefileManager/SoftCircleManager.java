@@ -1,16 +1,16 @@
 package local.ui.savefileManager;
 
-import local.computingMedium.vertexSets.SoftCircleSet;
-import local.ui.vertexSetScene.VertexSetScene;
+import local.computingMedium.media.SoftCircleMedium;
+import local.ui.mediumScene.MediumScene;
 import local.ui.view.InformationBar;
 
 public class SoftCircleManager extends SavefileManager {
-    public SoftCircleManager(VertexSetScene scene, InformationBar info) {
+    public SoftCircleManager(MediumScene scene, InformationBar info) {
         super(scene, info);
     }
 
     @Override
-    public SoftCircleSet makeVertexSet() {
-        return new SoftCircleSet();
+    public SoftCircleMedium makeVertexSet() {
+        return new SoftCircleMedium();
     }
 }

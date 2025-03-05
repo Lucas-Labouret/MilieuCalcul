@@ -7,8 +7,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import local.computingMedium.miseEnBoite.RoundedCoordVMeb;
 import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesVMeb;
-import local.ui.vertexSetScene.*;
-import local.ui.view.PaneVertexSetDrawer;
+import local.ui.mediumScene.*;
+import local.ui.view.PaneMediumDrawer;
 import local.ui.view.SidePanel;
 
 // Singleton
@@ -23,13 +23,13 @@ public class MasterScene extends BorderPane {
     ToolBar toolBar;
     SidePanel sidePanel;
     ArrayList<SubScene> scenes;
-    ArrayList<VertexSetScene> vertexSetScenes;
+    ArrayList<MediumScene> mediumScenes;
 
     private MasterScene() {
         toolBar = new ToolBar();
         sidePanel = new SidePanel();
         scenes = new ArrayList<>();
-        vertexSetScenes = new ArrayList<>();
+        mediumScenes = new ArrayList<>();
 
         addScene(new SoftSquareScene(), "Soft Square");
         addScene(new SoftCircleScene(), "Soft Circle");
@@ -72,12 +72,12 @@ public class MasterScene extends BorderPane {
         showLines.allowIndeterminateProperty().set(false);
 
         showPoints.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            PaneVertexSetDrawer.SHOW_POINTS = newVal;
-            for (VertexSetScene scene : vertexSetScenes) scene.showVertexSet();
+            PaneMediumDrawer.SHOW_POINTS = newVal;
+            for (MediumScene scene : mediumScenes) scene.showVertexSet();
         });
         showLines.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            PaneVertexSetDrawer.SHOW_LINES = newVal;
-            for (VertexSetScene scene : vertexSetScenes) scene.showVertexSet();
+            PaneMediumDrawer.SHOW_LINES = newVal;
+            for (MediumScene scene : mediumScenes) scene.showVertexSet();
         });
 
         //MEB
@@ -95,11 +95,11 @@ public class MasterScene extends BorderPane {
 
         mebGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == defaultMeb) {
-                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(scene.DEFAULT_MEB());
+                for (MediumScene scene : mediumScenes) scene.setMeb(scene.DEFAULT_MEB());
             } else if (newVal == roundedCoordMeb) {
-                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(new RoundedCoordVMeb());
+                for (MediumScene scene : mediumScenes) scene.setMeb(new RoundedCoordVMeb());
             } else if (newVal == topDistanceXSorted) {
-                for (VertexSetScene scene : vertexSetScenes) scene.setMeb(new TopDistanceXSortedLinesVMeb());
+                for (MediumScene scene : mediumScenes) scene.setMeb(new TopDistanceXSortedLinesVMeb());
             }
         });
         
@@ -118,7 +118,7 @@ public class MasterScene extends BorderPane {
         setIter.setSelected(true);
 
         fpoGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
-            for (VertexSetScene scene : vertexSetScenes) 
+            for (MediumScene scene : mediumScenes)
                 scene.setFpoToConvergence(newVal == toConvergence);
         });
 
@@ -127,7 +127,7 @@ public class MasterScene extends BorderPane {
             try { iter = Integer.parseInt(newVal); } 
             catch (NumberFormatException e) { return; }
         
-            for (VertexSetScene scene : vertexSetScenes) 
+            for (MediumScene scene : mediumScenes)
                 scene.setFpoIterations(iter);
         });
 
@@ -136,7 +136,7 @@ public class MasterScene extends BorderPane {
             try { conv = Double.parseDouble(newVal); } 
             catch (NumberFormatException e) { return; }
         
-            for (VertexSetScene scene : vertexSetScenes) 
+            for (MediumScene scene : mediumScenes)
                 scene.setConvergenceTolerance(conv);
         });
 
@@ -152,10 +152,10 @@ public class MasterScene extends BorderPane {
         sidePanel.getChildren().addAll(setIter, iterInput, toConvergence, convInput);
     }
 
-    public void addScene(VertexSetScene scene, String name) {
+    public void addScene(MediumScene scene, String name) {
         SubScene subScene = new SubScene(scene, 500, 500);
         scenes.add(subScene);
-        vertexSetScenes.add(scene);
+        mediumScenes.add(scene);
         Button b = new Button(name);
         b.setOnAction((event) -> {
             System.out.println("Set " + name + " in center");

@@ -1,8 +1,7 @@
 package local.computingMedium;
 
-import local.computingMedium.vertexSets.HardHexSet;
-import local.computingMedium.vertexSets.VertexSet;
-import local.misc.Point;
+import local.computingMedium.media.Medium;
+import local.misc.geometry.Point;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -34,7 +33,7 @@ public class Vertex extends Point {
             boolean isBorder,
             boolean isTopBorder, boolean isLeftBorder, boolean isRightBorder, boolean isBottomBorder
     ) {
-        super(x+VertexSet.randomEps(), y+VertexSet.randomEps());
+        super(x+ Medium.randomEps(), y+ Medium.randomEps());
         this.isBorder = isBorder;
         this.isTopBorder = isTopBorder;
         this.isLeftBorder = isLeftBorder;
@@ -74,26 +73,9 @@ public class Vertex extends Point {
         return t;
     }
 
-    public Optional<Vertex> getKNeighbor(int k) {
-        ArrayList<Vertex> vs = new ArrayList<>(getNeighbors());
-
-        Vertex maxX = vs.getFirst();
-        for (Vertex v : vs) {
-            if (v.getX() > maxX.getX()) {
-                maxX=v;
-            }
-        }
-        vs.sort(new Point.CompareByAngleDistance(this, maxX, false));
-        try {
-            return Optional.of(vs.get(k));
-        } catch (IndexOutOfBoundsException e) {
-            return Optional.empty();
-        }
-    }
-
     public void getSurroundingFacesIn(Set<Face> faces) {
         ArrayList<Vertex> sortedNeighbors = new ArrayList<>(this.getNeighbors());
-        sortedNeighbors.sort(new VertexSet.ClockWise(this));
+        sortedNeighbors.sort(new Medium.ClockWise(this));
         int nbNeighbours = sortedNeighbors.size();
         for (int i = 0; i < nbNeighbours; i++) {
             Vertex neighbor1 = sortedNeighbors.get(i % nbNeighbours);

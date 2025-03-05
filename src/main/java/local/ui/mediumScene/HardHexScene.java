@@ -1,12 +1,12 @@
-package local.ui.vertexSetScene;
+package local.ui.mediumScene;
 
 import local.computingMedium.miseEnBoite.VertexMeB;
 import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesVMeb;
-import local.computingMedium.vertexSets.HardHexSet;
+import local.computingMedium.media.HardHexMedium;
 import local.ui.savefileManager.HardHexManager;
 import local.ui.view.TBIntInput;
 
-public class HardHexScene extends VertexSetScene {
+public class HardHexScene extends MediumScene {
     @Override public VertexMeB DEFAULT_MEB() { return new TopDistanceXSortedLinesVMeb(); }
 
     private final TBIntInput ptCountInput;
@@ -31,7 +31,7 @@ public class HardHexScene extends VertexSetScene {
         int pointCount = this.ptCountInput.getValue();
         int height = this.heightInput.getValue();
         int width = (int) (height * Math.sqrt(2));
-        vertexSet = new HardHexSet(width, height, pointCount);
+        medium = new HardHexMedium(width, height, pointCount);
         showVertexSet();
     }
 }

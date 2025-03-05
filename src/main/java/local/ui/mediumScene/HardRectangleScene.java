@@ -1,12 +1,12 @@
-package local.ui.vertexSetScene;
+package local.ui.mediumScene;
 
 import local.computingMedium.miseEnBoite.VertexMeB;
 import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesVMeb;
-import local.computingMedium.vertexSets.HardRectangleSet;
+import local.computingMedium.media.HardRectangleMedium;
 import local.ui.savefileManager.HardRectangleManager;
 import local.ui.view.TBIntInput;
 
-public class HardRectangleScene extends VertexSetScene {
+public class HardRectangleScene extends MediumScene {
     @Override public VertexMeB DEFAULT_MEB() { return new TopDistanceXSortedLinesVMeb(); }
 
     private final TBIntInput ptCountInput;
@@ -35,7 +35,7 @@ public class HardRectangleScene extends VertexSetScene {
     protected void generate() {
         int pointCount = this.ptCountInput.getValue();
         int vertexWidth = this.widthInput.getValue();
-        vertexSet = new HardRectangleSet(width, vertexWidth, pointCount);
+        medium = new HardRectangleMedium(width, vertexWidth, pointCount);
         showVertexSet();
     }
 }

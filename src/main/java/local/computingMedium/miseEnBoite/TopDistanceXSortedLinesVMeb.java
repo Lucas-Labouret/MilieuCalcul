@@ -1,17 +1,16 @@
 package local.computingMedium.miseEnBoite;
 
 import local.computingMedium.Vertex;
-import local.computingMedium.vertexSets.VertexSet;
-import local.misc.Coord;
+import local.computingMedium.media.Medium;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TopDistanceXSortedLinesVMeb implements VertexMeB {
     @Override
-    public HashMap<Vertex, Coord> miseEnBoite(VertexSet vertexSet) {
+    public HashMap<Vertex, Coord> miseEnBoite(Medium medium) {
         DistanceToSideGetter distanceToSideGetter = new DistanceToSideGetter();
-        HashMap<Vertex, Integer> topCoords = distanceToSideGetter.getDistanceToTop(vertexSet);
+        HashMap<Vertex, Integer> topCoords = distanceToSideGetter.getDistanceToTop(medium);
 
         HashMap<Integer, ArrayList<Vertex>> lines = new HashMap<>();
         for (Vertex vertex : topCoords.keySet()) {

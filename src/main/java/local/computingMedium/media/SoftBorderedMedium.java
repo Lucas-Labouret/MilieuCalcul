@@ -1,17 +1,17 @@
-package local.computingMedium.vertexSets;
+package local.computingMedium.media;
 
 import local.computingMedium.Vertex;
-import local.misc.GeometricPrimitives;
+import local.misc.geometry.GeometricPrimitives;
 import local.misc.LinkedList;
 import local.misc.Node;
 
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public abstract class SoftSet extends VertexSet {
-    public SoftSet() {}
+public abstract class SoftBorderedMedium extends Medium {
+    public SoftBorderedMedium() {}
 
-    public SoftSet(Vertex... vertices) {
+    public SoftBorderedMedium(Vertex... vertices) {
         super(vertices);
     }
 

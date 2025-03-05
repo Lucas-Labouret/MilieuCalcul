@@ -1,4 +1,4 @@
-package local.misc;
+package local.computingMedium.miseEnBoite;
 
 public class Coord {
     int i, j;

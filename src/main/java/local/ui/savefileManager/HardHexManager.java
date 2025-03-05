@@ -1,16 +1,16 @@
 package local.ui.savefileManager;
 
-import local.computingMedium.vertexSets.HardHexSet;
-import local.ui.vertexSetScene.VertexSetScene;
+import local.computingMedium.media.HardHexMedium;
+import local.ui.mediumScene.MediumScene;
 import local.ui.view.InformationBar;
 
 public class HardHexManager extends SavefileManager {
-    public HardHexManager(VertexSetScene scene, InformationBar info) {
+    public HardHexManager(MediumScene scene, InformationBar info) {
         super(scene, info);
     }
 
     @Override
-    protected HardHexSet makeVertexSet() {
-        return new HardHexSet();
+    protected HardHexMedium makeVertexSet() {
+        return new HardHexMedium();
     }
 }
