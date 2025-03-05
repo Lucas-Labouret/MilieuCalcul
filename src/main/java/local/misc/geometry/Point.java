@@ -92,12 +92,6 @@ public class Point {
         }
     }
 
-    private enum Orientation {
-        CoLineaire,
-        ClockWise,
-        CounterClockWise
-    }
-
     public static class CompareByXThenY implements Comparator<Point> {
         @Override
         public int compare(Point p1, Point p2) {

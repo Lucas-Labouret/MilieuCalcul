@@ -12,7 +12,7 @@ public class Main extends Application {
     public static final int HEIGHT = 450;
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         blobStaging(stage);
 
         MasterScene ms = MasterScene.getInstance();

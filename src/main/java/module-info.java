@@ -1,22 +1,21 @@
 module local.furthestpointoptimization {
     requires javafx.controls;
-    requires javafx.fxml;
+    requires javafx.base;
     requires transitive javafx.graphics;
-    requires java.desktop;
 
     opens local.ui to javafx.fxml;
-    opens local.ui.mediumScene to javafx.fxml;
+    opens local.ui.mediumApps to javafx.fxml;
 
-    exports local.computingMedium;
-    exports local.computingMedium.media;
-    exports local.computingMedium.miseEnBoite;
+    exports local.computingMedia;
+    exports local.computingMedia.media;
+    exports local.computingMedia.miseEnBoite;
 
     exports local.misc;
     
     exports local.ui;
-    exports local.ui.mediumScene;
-    exports local.ui.savefileManager;
-    exports local.ui.view;
-    opens local.ui.savefileManager to javafx.fxml;
+    exports local.ui.mediumApps;
+    exports local.savefileManagers;
+    exports local.ui.utils;
+    opens local.savefileManagers to javafx.fxml;
     exports local.misc.geometry;
 }

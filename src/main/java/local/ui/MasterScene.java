@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import local.computingMedium.miseEnBoite.RoundedCoordVMeb;
-import local.computingMedium.miseEnBoite.TopDistanceXSortedLinesVMeb;
-import local.ui.mediumScene.*;
-import local.ui.view.PaneMediumDrawer;
-import local.ui.view.SidePanel;
+import local.computingMedia.miseEnBoite.RoundedCoordVMeb;
+import local.computingMedia.miseEnBoite.TopDistanceXSortedLinesVMeb;
+import local.ui.mediumApps.*;
+import local.ui.utils.MediumDrawer;
+import local.ui.utils.SidePanel;
 
 // Singleton
 public class MasterScene extends BorderPane {
@@ -20,10 +20,10 @@ public class MasterScene extends BorderPane {
         return instance;
     }
 
-    ToolBar toolBar;
-    SidePanel sidePanel;
-    ArrayList<SubScene> scenes;
-    ArrayList<MediumScene> mediumScenes;
+    final ToolBar toolBar;
+    final SidePanel sidePanel;
+    final ArrayList<SubScene> scenes;
+    final ArrayList<MediumApp> mediumScenes;
 
     private MasterScene() {
         toolBar = new ToolBar();
@@ -31,11 +31,10 @@ public class MasterScene extends BorderPane {
         scenes = new ArrayList<>();
         mediumScenes = new ArrayList<>();
 
-        addScene(new SoftSquareScene(), "Soft Square");
-        addScene(new SoftCircleScene(), "Soft Circle");
-        addScene(new HardHexScene(), "Hard Hex");
-        addScene(new HardRectangleScene(1), "Hard Square");
-        addScene(new HardRectangleScene(Math.sqrt(3)), "Hard sqrt3:1 Rectangle");
+        addScene(new SoftSquareApp(), "Soft Square");
+        addScene(new SoftCircleApp(), "Soft Circle");
+        addScene(new HardRectangleApp(1), "Hard Square");
+        addScene(new HardRectangleApp(Math.sqrt(3)), "Hard sqrt3:1 Rectangle");
 
         fillSidePanel();
 
@@ -72,12 +71,12 @@ public class MasterScene extends BorderPane {
         showLines.allowIndeterminateProperty().set(false);
 
         showPoints.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            PaneMediumDrawer.SHOW_POINTS = newVal;
-            for (MediumScene scene : mediumScenes) scene.showVertexSet();
+            MediumDrawer.SHOW_POINTS = newVal;
+            for (MediumApp scene : mediumScenes) scene.showVertexSet();
         });
         showLines.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            PaneMediumDrawer.SHOW_LINES = newVal;
-            for (MediumScene scene : mediumScenes) scene.showVertexSet();
+            MediumDrawer.SHOW_LINES = newVal;
+            for (MediumApp scene : mediumScenes) scene.showVertexSet();
         });
 
         //MEB
@@ -95,11 +94,11 @@ public class MasterScene extends BorderPane {
 
         mebGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == defaultMeb) {
-                for (MediumScene scene : mediumScenes) scene.setMeb(scene.DEFAULT_MEB());
+                for (MediumApp scene : mediumScenes) scene.setMeb(scene.DEFAULT_MEB());
             } else if (newVal == roundedCoordMeb) {
-                for (MediumScene scene : mediumScenes) scene.setMeb(new RoundedCoordVMeb());
+                for (MediumApp scene : mediumScenes) scene.setMeb(new RoundedCoordVMeb());
             } else if (newVal == topDistanceXSorted) {
-                for (MediumScene scene : mediumScenes) scene.setMeb(new TopDistanceXSortedLinesVMeb());
+                for (MediumApp scene : mediumScenes) scene.setMeb(new TopDistanceXSortedLinesVMeb());
             }
         });
         
@@ -118,7 +117,7 @@ public class MasterScene extends BorderPane {
         setIter.setSelected(true);
 
         fpoGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
-            for (MediumScene scene : mediumScenes)
+            for (MediumApp scene : mediumScenes)
                 scene.setFpoToConvergence(newVal == toConvergence);
         });
 
@@ -127,7 +126,7 @@ public class MasterScene extends BorderPane {
             try { iter = Integer.parseInt(newVal); } 
             catch (NumberFormatException e) { return; }
         
-            for (MediumScene scene : mediumScenes)
+            for (MediumApp scene : mediumScenes)
                 scene.setFpoIterations(iter);
         });
 
@@ -136,7 +135,7 @@ public class MasterScene extends BorderPane {
             try { conv = Double.parseDouble(newVal); } 
             catch (NumberFormatException e) { return; }
         
-            for (MediumScene scene : mediumScenes)
+            for (MediumApp scene : mediumScenes)
                 scene.setConvergenceTolerance(conv);
         });
 
@@ -152,7 +151,7 @@ public class MasterScene extends BorderPane {
         sidePanel.getChildren().addAll(setIter, iterInput, toConvergence, convInput);
     }
 
-    public void addScene(MediumScene scene, String name) {
+    public void addScene(MediumApp scene, String name) {
         SubScene subScene = new SubScene(scene, 500, 500);
         scenes.add(subScene);
         mediumScenes.add(scene);

@@ -1,6 +1,7 @@
 package local.misc.geometry;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Triangle<T extends Point> {
@@ -15,24 +16,10 @@ public class Triangle<T extends Point> {
     }
 
     public Triangle(T a, T b, T c) {
-        // if (a.equals(b) || b.equals(c) || c.equals(a)) {
-            // throw new IllegalArgumentException("Les points d'un triangle ne peuvent pas etre identiques");
-        // }
-
-        // condition sur l'aire ?
-        // double area2 = Math.abs(a.getX() * (b.getY() - c.getY()) + b.getX() * (c.getY() - a.getY()) + c.getX() * (a.getY() - b.getY()));
-        // if (area2 == 0) {
-            // throw new IllegalArgumentException("Les points d'un triangle ne peuvent pas être alignés.");
-        // }
-
         this.a = a;
         this.b = b;
         this.c = c;
     }
-
-    public T getA() { return a; }
-    public T getB() { return b; }
-    public T getC() { return c; }
 
     /** centre du cercle circonscrit | centre du cercle passant par les 3 sommets */
     public T getCircumcenter() {
@@ -137,13 +124,9 @@ public class Triangle<T extends Point> {
     }
 
     public Set<T> getVertices(){
-        return new HashSet<>(Set.of(a, b, c));
+        return new HashSet<>(List.of(a, b, c));
     }
 
-    public boolean _contains(Point p) {
-        Point center = this.getCircumcenter();
-        return Double.compare(p.distanceFrom(center), this.getCircumRadius()) < 0;
-    }
     public boolean contains(T v) {
         double denominator = ((b.getY() - c.getY()) * (a.getX() - c.getX()) + (c.getX() - b.getX()) * (a.getY() - c.getY()));
         if (denominator == 0) return false;

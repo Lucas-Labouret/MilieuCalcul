@@ -2,7 +2,7 @@ package local.misc.geometry;
 
 import java.util.ArrayList;
 
-import local.computingMedium.Vertex;
+import local.computingMedia.Vertex;
 
 public class GeometricPrimitives {
     private GeometricPrimitives(){}
@@ -25,12 +25,6 @@ public class GeometricPrimitives {
     }
     private static double orientationPrimitive(Point a, Point b, Point c){
         return (b.getY() - a.getY()) * (c.getX() - b.getX()) - (b.getX() - a.getX()) * (c.getY() - b.getY());
-    }
-
-    public enum Orientation {
-        CoLineaire, // 0
-        ClockWise, // 1
-        CounterClockWise // 2
     }
 
     public static Orientation orientation(Point a, Point b, Point c){
