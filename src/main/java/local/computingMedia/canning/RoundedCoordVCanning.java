@@ -78,16 +78,16 @@ public class RoundedCoordVCanning implements VertexCanning {
 
         int yMax = 0, xMax = 0;
         for (Coord coord : coordVertexMap.keySet()){
-            if (coord.i() > yMax) yMax = coord.i();
-            if (coord.j() > xMax) xMax = coord.j();
+            if (coord.X() > yMax) yMax = coord.X();
+            if (coord.Y() > xMax) xMax = coord.Y();
         }
         yMax++; xMax++;
 
         Vertex[][] grid = new Vertex[yMax][xMax];
         for (Coord coord : coordVertexMap.keySet()){
-            grid[coord.i()][coord.j()] = coordVertexMap.get(coord);
+            grid[coord.X()][coord.Y()] = coordVertexMap.get(coord);
         }
-        collapse(grid, yMax, xMax);
+        //collapse(grid, yMax, xMax);
 
         HashMap<Vertex, Coord> result = new HashMap<>();
         for (int y = 0; y < yMax; y++) for (int x = 0; x < xMax; x++){

@@ -4,9 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
-import local.computingMedia.geometry.Vertex;
 import local.computingMedia.canning.VertexCanning;
-import local.computingMedia.canning.Coord;
 import local.computingMedia.media.Medium;
 import local.ui.utils.InformationBar;
 import local.ui.utils.MediumDrawer;
@@ -14,7 +12,6 @@ import local.savefileManagers.SavefileManager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 
 public abstract class MediumApp extends BorderPane {
     public abstract VertexCanning DEFAULT_CANNING();
@@ -46,7 +43,7 @@ public abstract class MediumApp extends BorderPane {
         topToolBar = new ToolBar();
         botToolBar = new ToolBar();
         infoBar = new InformationBar("Information");
-        drawPane = new MediumDrawer(infoBar, null);
+        drawPane = new MediumDrawer();
 
         setTop(topToolBar);
         setCenter(drawPane);
@@ -59,7 +56,7 @@ public abstract class MediumApp extends BorderPane {
         fpo = new Button("FPO");
         fpo.setOnAction(event -> fpoIteration());
         can = new Button("Can");
-        can.setOnAction(event -> this.showCanning());
+        can.setOnAction(event -> this.can());
 
         canning = DEFAULT_CANNING();
 
@@ -116,7 +113,11 @@ public abstract class MediumApp extends BorderPane {
         }
     }
     private void load(){
-        try { medium = savefileManager.load(getFileName()); }
+        try {
+            medium = savefileManager.load(getFileName());
+            canning.setMedium(medium);
+            needRecanning = true;
+        }
         catch (FileNotFoundException e) { savefileInfo.setText("File not found."); }
         catch (IOException e) {
             savefileInfo.setText("File exists but couldn't be read.");
@@ -126,25 +127,24 @@ public abstract class MediumApp extends BorderPane {
     }
 
     protected boolean needRecanning = true;
-    protected void showCanning() {
-        if (medium == null) return;
-        if (needRecanning) {
-            canning.can();
-            needRecanning = false;
-        }
-        HashMap<Vertex, Coord> canningResult = canning.getVertexCanning();
-        for (Vertex vertex : canningResult.keySet()) {
-            vertex.setId(canningResult.get(vertex).toString());
-        }
+    protected void can() {
+        if (medium == null || !needRecanning) return;
+        canning.can();
+        needRecanning = false;
         showVertexSet();
     }
 
-    public void setCanning(VertexCanning canning) { this.canning = canning; }
+    public void setCanning(VertexCanning canning) {
+        this.canning = canning;
+        this.canning.setMedium(medium);
+        needRecanning = true;
+    }
 
     public String getFileName() { return fileName.getText(); }
 
     public void showVertexSet() {
-        drawPane.showMedium(medium);
+        if (needRecanning) drawPane.showMedium(medium, null);
+        else drawPane.showMedium(medium, canning.getVertexCanning());
     }
 
     private void updateDrawPaneSize() {

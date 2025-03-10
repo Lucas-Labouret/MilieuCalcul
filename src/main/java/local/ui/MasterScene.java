@@ -63,12 +63,15 @@ public class MasterScene extends BorderPane {
         //Graphics
         CheckBox showPoints = new CheckBox("Show Points");
         CheckBox showLines = new CheckBox("Show Lines");
+        CheckBox showCanning = new CheckBox("Show Canning");
 
         showPoints.setSelected(true);
         showLines.setSelected(true);
+        showCanning.setSelected(false);
 
         showPoints.allowIndeterminateProperty().set(false);
         showLines.allowIndeterminateProperty().set(false);
+        showCanning.allowIndeterminateProperty().set(false);
 
         showPoints.selectedProperty().addListener((obs, oldVal, newVal) -> {
             MediumDrawer.SHOW_POINTS = newVal;
@@ -76,6 +79,10 @@ public class MasterScene extends BorderPane {
         });
         showLines.selectedProperty().addListener((obs, oldVal, newVal) -> {
             MediumDrawer.SHOW_LINES = newVal;
+            for (MediumApp scene : mediumScenes) scene.showVertexSet();
+        });
+        showCanning.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            MediumDrawer.SHOW_CANNING = newVal;
             for (MediumApp scene : mediumScenes) scene.showVertexSet();
         });
 
@@ -142,7 +149,7 @@ public class MasterScene extends BorderPane {
 
         //Add to side panel
         sidePanel.getChildren().add(new Label("Graphics"));
-        sidePanel.getChildren().addAll(showPoints, showLines);
+        sidePanel.getChildren().addAll(showPoints, showLines, showCanning);
 
         sidePanel.getChildren().add(new Label("Canning"));
         sidePanel.getChildren().addAll(defaultCanning, roundedCoordCanning, topDistanceXSortedCanning);
