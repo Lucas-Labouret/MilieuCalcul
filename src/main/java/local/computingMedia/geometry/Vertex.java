@@ -72,9 +72,6 @@ public class Vertex {
     public void addNeighbor(Vertex v) { if (neighbors.add(v)) v.addNeighbor(this); }
     public void removeNeighbor(Vertex v) { if (neighbors.remove(v)) v.removeNeighbor(this); }
 
-
-
-    /**returns a reference*/
     public HashSet<Vertex> getNeighbors() { return neighbors; }
 
     public HashSet<Face> getSurroundingFaces() {
@@ -133,14 +130,14 @@ public class Vertex {
     public static Orientation orientation(Vertex a, Vertex b, Vertex c) {
         double rawOrientation = (b.getY() - a.getY()) * (c.getX() - b.getX()) - (b.getX() - a.getX()) * (c.getY() - b.getY());
 
-        if (rawOrientation == 0) return Orientation.CoLineaire;
-        else if (rawOrientation > 0) return Orientation.CounterClockWise;
-        else return Orientation.ClockWise;
+        if (rawOrientation == 0) return Orientation.Collinear;
+        else if (rawOrientation > 0) return Orientation.CounterClockwise;
+        else return Orientation.Clockwise;
     }
 
     public static boolean allCollinear(List<Vertex> vertices) {
         if (vertices.size() < 3) {
-            return true; // Deux points ou moins sont toujours colinéaires
+            return true;
         }
 
         Vertex p1 = vertices.get(0);
@@ -148,7 +145,7 @@ public class Vertex {
 
         for (int i = 2; i < vertices.size(); i++) {
             Vertex p3 = vertices.get(i);
-            if (orientation(p1, p2, p3) != Orientation.CoLineaire) {
+            if (orientation(p1, p2, p3) != Orientation.Collinear) {
                 return false;
             }
         }
@@ -157,7 +154,7 @@ public class Vertex {
     }
 
     public static boolean ccw(Vertex a, Vertex b, Vertex c){
-        return orientation(a, b, c) == Orientation.CounterClockWise;
+        return orientation(a, b, c) == Orientation.CounterClockwise;
     }
 
     public static boolean insidePolygon(Vertex vertex, ArrayList<Vertex> polygon){

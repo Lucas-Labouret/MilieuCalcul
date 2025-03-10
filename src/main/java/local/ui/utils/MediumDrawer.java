@@ -86,7 +86,7 @@ public class MediumDrawer extends Pane {
         double y = (v.getY() - ymin) * scale + offsetY;
 
         Circle circle = new Circle(x, y, 5);
-        Circle selectionCircle = new Circle(x, y, 7); // Cercle pour entourer le point sélectionné
+        Circle selectionCircle = new Circle(x, y, 7); // Circle the selected point
         selectionCircle.setFill(null);
         selectionCircle.setStroke(Color.YELLOW);
         selectionCircle.setStrokeWidth(4);
@@ -95,7 +95,7 @@ public class MediumDrawer extends Pane {
         if (tmpMedium.partOfBorder(v)) {
             circle.setFill(Color.GREEN);
         } else {
-            Color color = getColorFromNeighborCount(neighborCount); // Couleur opaque
+            Color color = getColorFromNeighborCount(neighborCount);
             circle.setFill(color);
         }
 

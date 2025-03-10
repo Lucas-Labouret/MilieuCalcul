@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import local.computingMedia.miseEnBoite.RoundedCoordVMeb;
-import local.computingMedia.miseEnBoite.TopDistanceXSortedLinesVMeb;
+import local.computingMedia.canning.RoundedCoordVCanning;
+import local.computingMedia.canning.TopDistanceXSortedLinesVCanning;
 import local.ui.mediumApps.*;
 import local.ui.utils.MediumDrawer;
 import local.ui.utils.SidePanel;
@@ -79,26 +79,26 @@ public class MasterScene extends BorderPane {
             for (MediumApp scene : mediumScenes) scene.showVertexSet();
         });
 
-        //MEB
-        ToggleGroup mebGroup = new ToggleGroup();
+        //Canning
+        ToggleGroup canGroup = new ToggleGroup();
 
-        RadioButton defaultMeb = new RadioButton("Default");
-        RadioButton roundedCoordMeb = new RadioButton("Rounded Coordinates");
-        RadioButton topDistanceXSorted = new RadioButton("Top Distance X Sorted");
+        RadioButton defaultCanning = new RadioButton("Default");
+        RadioButton roundedCoordCanning = new RadioButton("Rounded Coordinates");
+        RadioButton topDistanceXSortedCanning = new RadioButton("Top Distance X Sorted");
 
-        defaultMeb.setToggleGroup(mebGroup);
-        roundedCoordMeb.setToggleGroup(mebGroup);
-        topDistanceXSorted.setToggleGroup(mebGroup);
+        defaultCanning.setToggleGroup(canGroup);
+        roundedCoordCanning.setToggleGroup(canGroup);
+        topDistanceXSortedCanning.setToggleGroup(canGroup);
 
-        defaultMeb.setSelected(true);
+        defaultCanning.setSelected(true);
 
-        mebGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal == defaultMeb) {
-                for (MediumApp scene : mediumScenes) scene.setMeb(scene.DEFAULT_MEB());
-            } else if (newVal == roundedCoordMeb) {
-                for (MediumApp scene : mediumScenes) scene.setMeb(new RoundedCoordVMeb());
-            } else if (newVal == topDistanceXSorted) {
-                for (MediumApp scene : mediumScenes) scene.setMeb(new TopDistanceXSortedLinesVMeb());
+        canGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == defaultCanning) {
+                for (MediumApp scene : mediumScenes) scene.setCanning(scene.DEFAULT_CANNING());
+            } else if (newVal == roundedCoordCanning) {
+                for (MediumApp scene : mediumScenes) scene.setCanning(new RoundedCoordVCanning());
+            } else if (newVal == topDistanceXSortedCanning) {
+                for (MediumApp scene : mediumScenes) scene.setCanning(new TopDistanceXSortedLinesVCanning());
             }
         });
         
@@ -144,8 +144,8 @@ public class MasterScene extends BorderPane {
         sidePanel.getChildren().add(new Label("Graphics"));
         sidePanel.getChildren().addAll(showPoints, showLines);
 
-        sidePanel.getChildren().add(new Label("MEB"));
-        sidePanel.getChildren().addAll(defaultMeb, roundedCoordMeb, topDistanceXSorted);
+        sidePanel.getChildren().add(new Label("Canning"));
+        sidePanel.getChildren().addAll(defaultCanning, roundedCoordCanning, topDistanceXSortedCanning);
 
         sidePanel.getChildren().add(new Label("FPO"));
         sidePanel.getChildren().addAll(setIter, iterInput, toConvergence, convInput);

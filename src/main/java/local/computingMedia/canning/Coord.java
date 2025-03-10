@@ -1,4 +1,4 @@
-package local.computingMedia.miseEnBoite;
+package local.computingMedia.canning;
 
 public record Coord(int i, int j) {
     public String toString() {

@@ -1,11 +1,17 @@
-package local.computingMedia.miseEnBoite;
+package local.computingMedia.canning;
 
 import local.computingMedia.geometry.Vertex;
 import local.computingMedia.media.Medium;
 
 import java.util.HashMap;
 
-public class RoundedCoordVMeb implements VertexMeB {
+public class RoundedCoordVCanning implements VertexCanning {
+    private HashMap<Vertex, Coord> vertexCanning = null;
+    private Medium medium;
+
+    public void setMedium(Medium medium) { this.medium = medium; }
+    public HashMap<Vertex, Coord> getVertexCanning() { return this.vertexCanning; }
+
     private HashMap<Coord, Vertex> getCoordVertexMap(Medium medium){
         HashMap<Coord, Vertex> coordVertexMap = new HashMap<>();
 
@@ -67,7 +73,7 @@ public class RoundedCoordVMeb implements VertexMeB {
     }
     
     @Override
-    public HashMap<Vertex, Coord> miseEnBoite(Medium medium){
+    public void can(){
         HashMap<Coord, Vertex> coordVertexMap = getCoordVertexMap(medium);
 
         int yMax = 0, xMax = 0;
@@ -87,6 +93,6 @@ public class RoundedCoordVMeb implements VertexMeB {
         for (int y = 0; y < yMax; y++) for (int x = 0; x < xMax; x++){
             if (grid[y][x] != null) result.put(grid[y][x], new Coord(y, x));
         }
-        return result;
+        vertexCanning = result;
     }
 }

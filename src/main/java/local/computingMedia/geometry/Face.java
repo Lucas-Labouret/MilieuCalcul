@@ -1,7 +1,5 @@
 package local.computingMedia.geometry;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -16,7 +14,7 @@ public class Face {
         this.c = c;
     }
     public Set<Vertex> getVertices(){
-        return new HashSet<>(List.of(a, b, c));
+        return Set.of(a, b, c);
     }
 
     public boolean contains(Vertex v) {
@@ -28,8 +26,7 @@ public class Face {
 
         return alpha >= 0 && beta >= 0 && gamma >= 0;
     }
-    
-    
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -47,6 +44,7 @@ public class Face {
         // return "(" + a + ", " + b + ", " + c + ")";
         return "(" + a.toString() + ", " + b.toString() + ", " + c.toString() + ")";
     }
+
     public Vertex getCircumcenter() {
         double xa = a.getX(), ya = a.getY();
         double xb = b.getX(), yb = b.getY();
@@ -56,26 +54,17 @@ public class Face {
         double b = (xb*xb+yb*yb);
         double c = (xc*xc+yc*yc);
 
-        // Formule de cramer
-        //     det(A_x)         a(yb-yc)+b(yc-ya)+c(ya-yb)
-        //x = ---------- = -------------------------------------
-        //      det(A)       2xa(yb-yc)+2xb(yc-ya)+2xc(ya-yb)
-        // où det(A) est l'equation catésienne de cercle circonscrit
-        // 
-
-        // Denominator
         double D = 2*(xa*(yb - yc)+xb*(yc - ya)+xc*(ya - yb));
         double Ux = (a*(yb-yc)+b*(yc-ya)+c*(ya-yb))/D;
         double Uy = (a*(xc-xb)+b*(xa-xc)+c*(xb-xa))/D;
 
         return new Vertex(Ux, Uy);
     }
-    public double getCircumRadius() {
+    public double getCircumradius() {
         Vertex circumcenter = getCircumcenter();
         return Math.sqrt(Edge.length2(a, circumcenter));
     }
 
-    /** centre de masse ou centroïde | intersection des droite passant par sommet et milieu opposé */
     public Vertex getCentroid() {
         double x = (a.getX() + b.getX() + c.getX()) / 3;
         double y = (a.getY() + b.getY() + c.getY()) / 3;
@@ -91,25 +80,21 @@ public class Face {
         );
     }
 
-    /** orthocentre | Intersection des hauteurs */
     public Vertex getOrthocenter() {
         double xa = a.getX(), ya = a.getY();
         double xb = b.getX(), yb = b.getY();
         double xc = c.getX(), yc = c.getY();
 
-        // Systeme de produit scalaire (deux hauteurs suffisent)
-        // { Ax + By = E
-        // { Cx + Dy = F
         double A = xc - xb;
         double B = yc - yb;
         double C = xc - xa;
         double D = yc - ya;
         double E = xa*A+ya*B;
         double F = xb*C+yb*D;
-        // Regle de cramer
-        double denom = (A * D - B * C);
-        double x = (E * D - B * F) / denom;
-        double y = (A * F - E * C) / denom;
+
+        double denominator = (A * D - B * C);
+        double x = (E * D - B * F) / denominator;
+        double y = (A * F - E * C) / denominator;
 
         return new Vertex(x, y);
     }
@@ -123,7 +108,6 @@ public class Face {
         );
     }
 
-    /** Centre du cercle incrit */
     public Vertex getIncenter() {
         double xa = a.getX(), ya = a.getY();
         double xb = b.getX(), yb = b.getY();

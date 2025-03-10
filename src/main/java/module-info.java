@@ -7,7 +7,7 @@ module local.furthestpointoptimization {
     opens local.ui.mediumApps to javafx.fxml;
 
     exports local.computingMedia.media;
-    exports local.computingMedia.miseEnBoite;
+    exports local.computingMedia.canning;
 
     exports local.misc;
     

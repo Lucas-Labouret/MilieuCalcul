@@ -5,8 +5,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
 import local.computingMedia.geometry.Vertex;
-import local.computingMedia.miseEnBoite.VertexMeB;
-import local.computingMedia.miseEnBoite.Coord;
+import local.computingMedia.canning.VertexCanning;
+import local.computingMedia.canning.Coord;
 import local.computingMedia.media.Medium;
 import local.ui.utils.InformationBar;
 import local.ui.utils.MediumDrawer;
@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public abstract class MediumApp extends BorderPane {
-    public abstract VertexMeB DEFAULT_MEB();
+    public abstract VertexCanning DEFAULT_CANNING();
 
     protected final ToolBar topToolBar;
     protected final ToolBar botToolBar;
@@ -25,12 +25,12 @@ public abstract class MediumApp extends BorderPane {
     protected final MediumDrawer drawPane;
 
     protected Medium medium;
-    protected VertexMeB miseEnBoite;
+    protected VertexCanning canning;
 
     protected final Button gen;
     protected final Button tri;
     protected final Button fpo;
-    protected final Button meb;
+    protected final Button can;
 
     protected final InformationBar savefileInfo;
     protected SavefileManager savefileManager;
@@ -58,10 +58,10 @@ public abstract class MediumApp extends BorderPane {
         tri.setOnAction(event -> triangulate());
         fpo = new Button("FPO");
         fpo.setOnAction(event -> fpoIteration());
-        meb = new Button("Met en boite");
-        meb.setOnAction(event -> this.showMeb());
+        can = new Button("Can");
+        can.setOnAction(event -> this.showCanning());
 
-        miseEnBoite = DEFAULT_MEB();
+        canning = DEFAULT_CANNING();
 
         savefileInfo = new InformationBar();
         fileName = new TextField();
@@ -97,6 +97,7 @@ public abstract class MediumApp extends BorderPane {
 
     protected void fpoIteration() {
         if (medium == null) return;
+        needRecanning = true;
 
         if (fpoToConvergence) medium.optimizeToConvergence(convergenceTolerance);
         else medium.optimizeToSetIterations(fpoIterations);
@@ -124,15 +125,21 @@ public abstract class MediumApp extends BorderPane {
         showVertexSet();
     }
 
-    protected void showMeb() {
-        HashMap<Vertex, Coord> miseEnBoiteResult = miseEnBoite.miseEnBoite(medium);
-        for (Vertex vertex : miseEnBoiteResult.keySet()) {
-            vertex.setId(miseEnBoiteResult.get(vertex).toString());
+    protected boolean needRecanning = true;
+    protected void showCanning() {
+        if (medium == null) return;
+        if (needRecanning) {
+            canning.can();
+            needRecanning = false;
+        }
+        HashMap<Vertex, Coord> canningResult = canning.getVertexCanning();
+        for (Vertex vertex : canningResult.keySet()) {
+            vertex.setId(canningResult.get(vertex).toString());
         }
         showVertexSet();
     }
 
-    public void setMeb(VertexMeB miseEnBoite) { this.miseEnBoite = miseEnBoite; }
+    public void setCanning(VertexCanning canning) { this.canning = canning; }
 
     public String getFileName() { return fileName.getText(); }
 

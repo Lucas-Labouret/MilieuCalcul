@@ -21,19 +21,19 @@ public abstract class Medium extends HashSet<Vertex> {
         this.addAll(sv);
     }
 
-    public Medium(Medium vertices) {
-        this.width = vertices.width;
-        this.height = vertices.height;
-        this.hardBorder = vertices.hardBorder;
-        this.softBorder = vertices.softBorder;
+    public Medium(Medium medium) {
+        this.width = medium.width;
+        this.height = medium.height;
+        this.hardBorder = medium.hardBorder;
+        this.softBorder = medium.softBorder;
 
         HashMap<Vertex, Vertex> originalToClone = new HashMap<>();
-        for (Vertex vertex : vertices){
+        for (Vertex vertex : medium){
             Vertex clone = new Vertex(vertex);
             originalToClone.put(vertex, clone);
             this.add(clone);
         }
-        for (Vertex vertex : vertices){
+        for (Vertex vertex : medium){
             Vertex clone = originalToClone.get(vertex);
             for (Vertex neighbor : vertex.getNeighbors()){
                 clone.addNeighbor(originalToClone.get(neighbor));

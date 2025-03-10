@@ -1,4 +1,4 @@
-package local.computingMedia.miseEnBoite;
+package local.computingMedia.canning;
 
 import local.computingMedia.geometry.Vertex;
 import local.computingMedia.media.Medium;
@@ -6,9 +6,15 @@ import local.computingMedia.media.Medium;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class TopDistanceXSortedLinesVMeb implements VertexMeB {
+public class TopDistanceXSortedLinesVCanning implements VertexCanning {
+    private HashMap<Vertex, Coord> vertexCanning = null;
+    private Medium medium;
+
+    public void setMedium(Medium medium) { this.medium = medium; }
+    public HashMap<Vertex, Coord> getVertexCanning() { return this.vertexCanning; }
+
     @Override
-    public HashMap<Vertex, Coord> miseEnBoite(Medium medium) {
+    public void can() {
         DistanceToSideGetter distanceToSideGetter = new DistanceToSideGetter();
         HashMap<Vertex, Integer> topCoords = distanceToSideGetter.getDistanceToTop(medium);
 
@@ -33,6 +39,6 @@ public class TopDistanceXSortedLinesVMeb implements VertexMeB {
                 result.put(line.get(x), new Coord(y, x));
             }
         }
-        return result;
+        vertexCanning = result;
     }
 }

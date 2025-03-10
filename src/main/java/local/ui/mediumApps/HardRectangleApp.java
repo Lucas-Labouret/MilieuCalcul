@@ -1,13 +1,13 @@
 package local.ui.mediumApps;
 
-import local.computingMedia.miseEnBoite.VertexMeB;
-import local.computingMedia.miseEnBoite.TopDistanceXSortedLinesVMeb;
+import local.computingMedia.canning.VertexCanning;
+import local.computingMedia.canning.TopDistanceXSortedLinesVCanning;
 import local.computingMedia.media.HardRectangleMedium;
 import local.savefileManagers.HardRectangleManager;
 import local.ui.utils.TBIntInput;
 
 public class HardRectangleApp extends MediumApp {
-    @Override public VertexMeB DEFAULT_MEB() { return new TopDistanceXSortedLinesVMeb(); }
+    @Override public VertexCanning DEFAULT_CANNING() { return new TopDistanceXSortedLinesVCanning(); }
 
     private final TBIntInput ptCountInput;
     private final TBIntInput widthInput;
@@ -20,7 +20,7 @@ public class HardRectangleApp extends MediumApp {
 
         this.width = width;
 
-        topToolBar.getItems().addAll(ptCountInput, widthInput, gen, tri, fpo, meb);
+        topToolBar.getItems().addAll(ptCountInput, widthInput, gen, tri, fpo, can);
         setTop(topToolBar);
 
         savefileManager = new HardRectangleManager();
@@ -31,6 +31,8 @@ public class HardRectangleApp extends MediumApp {
         int pointCount = this.ptCountInput.getValue();
         int vertexWidth = this.widthInput.getValue();
         medium = new HardRectangleMedium(width, vertexWidth, pointCount);
+        canning.setMedium(medium);
+        needRecanning = true;
         showVertexSet();
     }
 }

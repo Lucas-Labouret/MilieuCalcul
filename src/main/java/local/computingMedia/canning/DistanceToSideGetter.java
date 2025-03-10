@@ -1,4 +1,4 @@
-package local.computingMedia.miseEnBoite;
+package local.computingMedia.canning;
 
 import local.computingMedia.geometry.Vertex;
 import local.computingMedia.media.Medium;
@@ -60,16 +60,8 @@ public class DistanceToSideGetter {
         return coords;
     }
 
-    public HashMap<Vertex, Integer> getDistanceToTop(Medium medium) {
-        return getDistanceToSide(medium, SIDE.TOP);
-    }
-    public HashMap<Vertex, Integer> getDistanceToLeft(Medium medium) {
-        return getDistanceToSide(medium, SIDE.LEFT);
-    }
-    public HashMap<Vertex, Integer> getDistanceToRight(Medium medium) {
-        return getDistanceToSide(medium, SIDE.RIGHT);
-    }
-    public HashMap<Vertex, Integer> getDistanceToBottom(Medium medium) {
-        return getDistanceToSide(medium, SIDE.BOTTOM);
-    }
+    public HashMap<Vertex, Integer> getDistanceToTop(Medium medium) { return getDistanceToSide(medium, SIDE.TOP); }
+    public HashMap<Vertex, Integer> getDistanceToLeft(Medium medium) { return getDistanceToSide(medium, SIDE.LEFT); }
+    public HashMap<Vertex, Integer> getDistanceToRight(Medium medium) { return getDistanceToSide(medium, SIDE.RIGHT); }
+    public HashMap<Vertex, Integer> getDistanceToBottom(Medium medium) { return getDistanceToSide(medium, SIDE.BOTTOM); }
 }

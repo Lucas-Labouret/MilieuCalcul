@@ -6,7 +6,6 @@ import local.computingMedia.media.Medium;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.HashSet;
 
 public class FPO {
     private FPO(){}
@@ -31,18 +30,17 @@ public class FPO {
         System.out.println("FPO done in " + Duration.between(start, end).toMinutes() + "min");
     }
 
-    public static double fpoIteration(Medium vertices){
-        Medium medium = vertices.copy();
-        for (Vertex vertex : medium){
+    public static double fpoIteration(Medium medium){
+        Medium tmpMedium = medium.copy();
+        for (Vertex vertex : tmpMedium){
             if (vertex.isBorder()) continue;
             Vertex f = vertex;
-            double rmax = vertices.getLocalMinDist(vertex);
-            delaunayRemove(vertices, vertex);
-            HashSet<Face> faces = vertices.getFaces();
-            for (Face face : faces){
+            double rmax = medium.getLocalMinDist(vertex);
+            delaunayRemove(medium, vertex);
+            for (Face face : medium.getFaces()){
                 Vertex circumcenter = face.getCircumcenter();
-                double circumradius = face.getCircumRadius();
-                if (!vertices.isInBorder(circumcenter) || vertices.contains(circumcenter)) continue;
+                double circumradius = face.getCircumradius();
+                if (!medium.isInBorder(circumcenter) || medium.contains(circumcenter)) continue;
                 if (circumradius > rmax){
                     rmax = circumradius;
                     f = circumcenter;
@@ -50,9 +48,9 @@ public class FPO {
             }
             vertex.setX(f.getX());
             vertex.setY(f.getY());
-            delaunayInsert(vertices, vertex);
+            delaunayInsert(medium, vertex);
         }
-        return vertices.getAverageMinDist()/vertices.getMaxNeighborhoodMaxDist();
+        return medium.getAverageMinDist()/medium.getMaxNeighborhoodMaxDist();
     }
 
     private static void delaunayRemove(Medium vertices, Vertex vertex){

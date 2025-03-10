@@ -10,7 +10,6 @@ import local.computingMedia.geometry.Face;
 import local.computingMedia.geometry.Orientation;
 import local.computingMedia.geometry.Vertex;
 
-/** Lucas */
 public class Delaunay {
     private Delaunay(){}
 
@@ -55,7 +54,6 @@ public class Delaunay {
         bucketDT(medium);
     }
 
-    /** Premier appel */
     private static void bucketDT(Medium medium){
         ArrayList<Vertex> vertices = new ArrayList<>(medium);
         vertices.sort(new Vertex.CompareByXThenY());
@@ -80,19 +78,17 @@ public class Delaunay {
 
             Orientation sens = Vertex.orientation(v1, v2, v3);
             switch (sens) {
-                case CoLineaire -> { return new ArrayList<>(List.of(left, left+2)); }
-                case ClockWise -> {
+                case Collinear -> { return new ArrayList<>(List.of(left, left+2)); }
+                case Clockwise -> {
                     v1.addNeighbor(v3);
                     return new ArrayList<>(List.of(left, left+2, left+1));
                 }
-                case CounterClockWise -> {
+                case CounterClockwise -> {
                     v1.addNeighbor(v3);
                     return new ArrayList<>(List.of(left, left+1, left+2));
                 }
             }
         }
-
-        // recurence
 
         int mid = (left + right) / 2;
         ArrayList<Integer> leftHull = _r_bucketDT(vertices, left, mid);
@@ -127,11 +123,11 @@ public class Delaunay {
         boolean leftDone;
         boolean rightDone;
         do {
-            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, -1, Orientation.CounterClockWise);
+            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, -1, Orientation.CounterClockwise);
             rightDone = rightNext == right;
             right = rightNext;
 
-            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, 1, Orientation.ClockWise);
+            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, 1, Orientation.Clockwise);
             leftDone = leftNext == left;
             left = leftNext;
         } while (!leftDone || !rightDone);
@@ -141,11 +137,11 @@ public class Delaunay {
         left = leftStart;
         right = rightStart;
         do {
-            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, 1, Orientation.ClockWise);
+            int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, 1, Orientation.Clockwise);
             rightDone = rightNext == right;
             right = rightNext;
 
-            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, -1, Orientation.CounterClockWise);
+            int leftNext = getNextCandidate(vertices, leftHull, rightHull, left, right, -1, Orientation.CounterClockwise);
             leftDone = leftNext == left;
             left = leftNext;
         } while (!leftDone || !rightDone);
@@ -290,7 +286,7 @@ public class Delaunay {
                     vertices.get(candidates.getFirst()),
                     vertices.get(i),
                     vertices.get(j)
-            ) != Orientation.CoLineaire)
+            ) != Orientation.Collinear)
                 return false;
         }
         return true;
