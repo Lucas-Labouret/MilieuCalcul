@@ -1,25 +1,26 @@
-package local.computingMedia.canning;
+package local.computingMedia.cannings;
 
-import local.computingMedia.geometry.Vertex;
+import local.computingMedia.cannings.Coords.sCoords.VertexCoord;
+import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;
 
 import java.util.HashMap;
 
 public class RoundedCoordVCanning implements VertexCanning {
-    private HashMap<Vertex, Coord> vertexCanning = null;
+    private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;
 
     public void setMedium(Medium medium) { this.medium = medium; }
-    public HashMap<Vertex, Coord> getVertexCanning() { return this.vertexCanning; }
+    public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
 
-    private HashMap<Coord, Vertex> getCoordVertexMap(Medium medium){
-        HashMap<Coord, Vertex> coordVertexMap = new HashMap<>();
+    private HashMap<VertexCoord, Vertex> getCoordVertexMap(Medium medium){
+        HashMap<VertexCoord, Vertex> coordVertexMap = new HashMap<>();
 
         int scale = 1;
         while (true){
             boolean exit = true;
             for (Vertex vertex : medium){
-                Coord coord = new Coord(
+                VertexCoord coord = new VertexCoord(
                     (int) Math.round(scale*vertex.getY()),
                     (int) Math.round(scale*vertex.getX())
                 );
@@ -74,24 +75,24 @@ public class RoundedCoordVCanning implements VertexCanning {
     
     @Override
     public void can(){
-        HashMap<Coord, Vertex> coordVertexMap = getCoordVertexMap(medium);
+        HashMap<VertexCoord, Vertex> coordVertexMap = getCoordVertexMap(medium);
 
         int yMax = 0, xMax = 0;
-        for (Coord coord : coordVertexMap.keySet()){
+        for (VertexCoord coord : coordVertexMap.keySet()){
             if (coord.X() > yMax) yMax = coord.X();
             if (coord.Y() > xMax) xMax = coord.Y();
         }
         yMax++; xMax++;
 
         Vertex[][] grid = new Vertex[yMax][xMax];
-        for (Coord coord : coordVertexMap.keySet()){
+        for (VertexCoord coord : coordVertexMap.keySet()){
             grid[coord.X()][coord.Y()] = coordVertexMap.get(coord);
         }
         //collapse(grid, yMax, xMax);
 
-        HashMap<Vertex, Coord> result = new HashMap<>();
+        HashMap<Vertex, VertexCoord> result = new HashMap<>();
         for (int y = 0; y < yMax; y++) for (int x = 0; x < xMax; x++){
-            if (grid[y][x] != null) result.put(grid[y][x], new Coord(y, x));
+            if (grid[y][x] != null) result.put(grid[y][x], new VertexCoord(y, x));
         }
         vertexCanning = result;
     }

@@ -1,17 +1,18 @@
-package local.computingMedia.canning;
+package local.computingMedia.cannings;
 
-import local.computingMedia.geometry.Vertex;
+import local.computingMedia.cannings.Coords.sCoords.VertexCoord;
+import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class TopDistanceXSortedLinesVCanning implements VertexCanning {
-    private HashMap<Vertex, Coord> vertexCanning = null;
+    private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;
 
     public void setMedium(Medium medium) { this.medium = medium; }
-    public HashMap<Vertex, Coord> getVertexCanning() { return this.vertexCanning; }
+    public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
 
     @Override
     public void can() {
@@ -32,11 +33,11 @@ public class TopDistanceXSortedLinesVCanning implements VertexCanning {
             });
         }
 
-        HashMap<Vertex, Coord> result = new HashMap<>();
+        HashMap<Vertex, VertexCoord> result = new HashMap<>();
         for (int y : lines.keySet()) {
             ArrayList<Vertex> line = lines.get(y);
             for (int x = 0; x < line.size(); x++) {
-                result.put(line.get(x), new Coord(y, x));
+                result.put(line.get(x), new VertexCoord(y, x));
             }
         }
         vertexCanning = result;

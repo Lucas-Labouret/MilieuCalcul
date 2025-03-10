@@ -1,17 +1,18 @@
-package local.computingMedia.canning;
+package local.computingMedia.cannings;
 
-import local.computingMedia.geometry.Vertex;
+import local.computingMedia.cannings.Coords.sCoords.VertexCoord;
+import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;
 
 import java.util.HashMap;
 
 @Deprecated //Gave the same coord to multiple vertices
 public class TopLeftDistanceVCanning implements VertexCanning {
-    private HashMap<Vertex, Coord> vertexCanning = null;
+    private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;
 
     public void setMedium(Medium medium) { this.medium = medium; }
-    public HashMap<Vertex, Coord> getVertexCanning() { return this.vertexCanning; }
+    public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
 
     @Override
     public void can() {
@@ -19,9 +20,9 @@ public class TopLeftDistanceVCanning implements VertexCanning {
         HashMap<Vertex, Integer> topCoords = distanceToSideGetter.getDistanceToTop(medium);
         HashMap<Vertex, Integer> leftCoords = distanceToSideGetter.getDistanceToLeft(medium);
 
-        HashMap<Vertex, Coord> result = new HashMap<>();
+        HashMap<Vertex, VertexCoord> result = new HashMap<>();
         for (Vertex vertex : topCoords.keySet()) {
-            result.put(vertex, new Coord(topCoords.get(vertex), leftCoords.get(vertex)));
+            result.put(vertex, new VertexCoord(topCoords.get(vertex), leftCoords.get(vertex)));
         }
         vertexCanning = result;
     }

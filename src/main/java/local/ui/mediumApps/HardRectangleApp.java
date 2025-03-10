@@ -1,7 +1,7 @@
 package local.ui.mediumApps;
 
-import local.computingMedia.canning.VertexCanning;
-import local.computingMedia.canning.TopDistanceXSortedLinesVCanning;
+import local.computingMedia.cannings.VertexCanning;
+import local.computingMedia.cannings.TopDistanceXSortedLinesVCanning;
 import local.computingMedia.media.HardRectangleMedium;
 import local.savefileManagers.HardRectangleManager;
 import local.ui.utils.TBIntInput;

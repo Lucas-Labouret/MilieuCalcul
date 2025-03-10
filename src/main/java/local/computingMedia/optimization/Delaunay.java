@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.function.Function;
 
 import local.computingMedia.media.Medium;
-import local.computingMedia.geometry.Edge;
-import local.computingMedia.geometry.Face;
-import local.computingMedia.geometry.Orientation;
-import local.computingMedia.geometry.Vertex;
+import local.computingMedia.sLoci.Edge;
+import local.computingMedia.sLoci.Face;
+import local.misc.Orientation;
+import local.computingMedia.sLoci.Vertex;
 
 public class Delaunay {
     private Delaunay(){}

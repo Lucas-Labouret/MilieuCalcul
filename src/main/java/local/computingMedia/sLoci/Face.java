@@ -1,4 +1,4 @@
-package local.computingMedia.geometry;
+package local.computingMedia.sLoci;
 
 import java.util.Objects;
 import java.util.Set;

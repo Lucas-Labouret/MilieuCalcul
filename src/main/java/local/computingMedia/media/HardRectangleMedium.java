@@ -2,7 +2,7 @@ package local.computingMedia.media;
 
 import java.util.ArrayList;
 
-import local.computingMedia.geometry.Vertex;
+import local.computingMedia.sLoci.Vertex;
 
 @SuppressWarnings("serial")
 public class HardRectangleMedium extends HardBorderedMedium {

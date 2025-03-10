@@ -1,4 +1,4 @@
-package local.computingMedia.geometry;
+package local.misc;
 
 public enum Orientation {
     Collinear,

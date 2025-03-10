@@ -1,6 +1,6 @@
 package local.savefileManagers;
 
-import local.computingMedia.geometry.Vertex;
+import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;
 import local.misc.LinkedList;
 import local.misc.Node;

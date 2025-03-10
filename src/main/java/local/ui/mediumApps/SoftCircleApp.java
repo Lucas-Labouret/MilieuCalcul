@@ -1,7 +1,7 @@
 package local.ui.mediumApps;
 
-import local.computingMedia.canning.VertexCanning;
-import local.computingMedia.canning.RoundedCoordVCanning;
+import local.computingMedia.cannings.VertexCanning;
+import local.computingMedia.cannings.RoundedCoordVCanning;
 import local.computingMedia.media.SoftCircleMedium;
 import local.savefileManagers.SoftCircleManager;
 import local.ui.utils.TBIntInput;

@@ -1,6 +1,6 @@
 package local.computingMedia.media;
 
-import local.computingMedia.geometry.Vertex;
+import local.computingMedia.sLoci.Vertex;
 import local.misc.LinkedList;
 import local.misc.Node;
 

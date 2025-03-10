@@ -11,9 +11,9 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import local.computingMedia.canning.Coord;
+import local.computingMedia.cannings.Coords.sCoords.VertexCoord;
 import local.computingMedia.media.Medium;
-import local.computingMedia.geometry.Vertex;
+import local.computingMedia.sLoci.Vertex;
 
 public class MediumDrawer extends Pane {
     private static final String BG_STYLE = "-fx-background-color: #FFFFFF;";
@@ -35,7 +35,7 @@ public class MediumDrawer extends Pane {
 
 
     Medium tmpMedium;
-    HashMap<Vertex, Coord> tmpCanning;
+    HashMap<Vertex, VertexCoord> tmpCanning;
 
     HashSet<Vertex> visited;
     Vertex selection;
@@ -46,7 +46,7 @@ public class MediumDrawer extends Pane {
         setStyle(BG_STYLE);
     }
 
-    private void initEnv(Medium medium, HashMap<Vertex, Coord> canning) {
+    private void initEnv(Medium medium, HashMap<Vertex, VertexCoord> canning) {
         this.tmpMedium = medium;
 
         xmax = medium.getMaxX();
@@ -72,7 +72,7 @@ public class MediumDrawer extends Pane {
         System.out.println("canning: " + canning);
 
         this.tmpCanning = canning;
-        for (Coord coord : canning.values()) {
+        for (VertexCoord coord : canning.values()) {
             canningWidth = Math.max(canningWidth, coord.X());
             canningHeight = Math.max(canningHeight, coord.Y());
         }
@@ -81,12 +81,12 @@ public class MediumDrawer extends Pane {
 
         canningGrid = new Vertex[canningWidth][canningHeight];
         for (Vertex vertex : medium) {
-            Coord coord = canning.get(vertex);
+            VertexCoord coord = canning.get(vertex);
             canningGrid[coord.X()][coord.Y()] = vertex;
         }
     }
 
-    public void showMedium(Medium medium, HashMap<Vertex, Coord> canning) {
+    public void showMedium(Medium medium, HashMap<Vertex, VertexCoord> canning) {
         setStyle(BG_STYLE);
         if (medium == null) {
             getChildren().clear();

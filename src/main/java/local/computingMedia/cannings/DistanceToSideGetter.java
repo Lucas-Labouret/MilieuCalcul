@@ -1,6 +1,6 @@
-package local.computingMedia.canning;
+package local.computingMedia.cannings;
 
-import local.computingMedia.geometry.Vertex;
+import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;
 
 import java.util.HashMap;
