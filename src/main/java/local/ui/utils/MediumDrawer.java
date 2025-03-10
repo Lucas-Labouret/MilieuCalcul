@@ -13,7 +13,7 @@ import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import local.computingMedia.media.Medium;
-import local.computingMedia.Vertex;
+import local.computingMedia.geometry.Vertex;
 
 public class MediumDrawer extends Pane {
     private static final String BG_STYLE = "-fx-background-color: #FFFFFF;";

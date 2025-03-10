@@ -1,7 +1,6 @@
 package local.computingMedia.media;
 
-import local.misc.geometry.Point;
-import local.computingMedia.Vertex;
+import local.computingMedia.geometry.Vertex;
 
 @SuppressWarnings("serial")
 public class SoftCircleMedium extends SoftBorderedMedium {
@@ -27,6 +26,6 @@ public class SoftCircleMedium extends SoftBorderedMedium {
 
     @Override
     public boolean isInBorder(Vertex vertex) {
-        return vertex.distanceFrom(new Point(0.5, 0.5)) < 0.5;
+        return vertex.distanceFrom(new Vertex(0.5, 0.5)) < 0.5;
     }
 }

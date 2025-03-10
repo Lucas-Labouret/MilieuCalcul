@@ -1,6 +1,6 @@
 package local.computingMedia.miseEnBoite;
 
-import local.computingMedia.Vertex;
+import local.computingMedia.geometry.Vertex;
 import local.computingMedia.media.Medium;
 
 import java.util.ArrayList;

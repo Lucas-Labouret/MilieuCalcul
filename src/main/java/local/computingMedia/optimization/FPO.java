@@ -1,7 +1,7 @@
-package local.optimization;
+package local.computingMedia.optimization;
 
-import local.computingMedia.Face;
-import local.computingMedia.Vertex;
+import local.computingMedia.geometry.Face;
+import local.computingMedia.geometry.Vertex;
 import local.computingMedia.media.Medium;
 
 import java.time.Duration;

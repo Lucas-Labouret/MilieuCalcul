@@ -1,7 +1,6 @@
 package local.computingMedia.media;
 
-import local.computingMedia.Vertex;
-import local.misc.geometry.GeometricPrimitives;
+import local.computingMedia.geometry.Vertex;
 import local.misc.LinkedList;
 import local.misc.Node;
 
@@ -41,7 +40,7 @@ public abstract class SoftBorderedMedium extends Medium {
         final Vertex tmp = current;
         neighbors.sort((v1, v2) -> new ClockWise(tmp).compare(v1, v2));
         for (int i = 0; i < neighbors.size(); i++) {
-            if (GeometricPrimitives.getAngle(neighbors.get(i), current, neighbors.get((i+1)%neighbors.size())) < Math.PI) {
+            if (Vertex.getAngle(neighbors.get(i), current, neighbors.get((i+1)%neighbors.size())) < Math.PI) {
                 softBorder.head.addNext(neighbors.get((i+1)%neighbors.size()));
                 break;
             }
@@ -77,7 +76,7 @@ public abstract class SoftBorderedMedium extends Medium {
                 }
             }
             assert commonNeighbor != null;
-            double angle = GeometricPrimitives.getAngle(current.value, commonNeighbor, next.value);
+            double angle = Vertex.getAngle(current.value, commonNeighbor, next.value);
             if (0.75 * Math.PI < angle && angle < 1.25 * Math.PI) {
                 current.value.removeNeighbor(next.value);
                 current.addNext(commonNeighbor);

@@ -1,6 +1,6 @@
 package local.computingMedia.media;
 
-import local.computingMedia.Vertex;
+import local.computingMedia.geometry.Vertex;
 
 @SuppressWarnings("serial")
 public class SoftSquareMedium extends SoftBorderedMedium {

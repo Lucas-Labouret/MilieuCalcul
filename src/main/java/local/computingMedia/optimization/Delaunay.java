@@ -1,14 +1,14 @@
-package local.optimization;
+package local.computingMedia.optimization;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
 import local.computingMedia.media.Medium;
-import local.misc.geometry.GeometricPrimitives;
-import local.misc.geometry.Orientation;
-import local.misc.geometry.Point;
-import local.computingMedia.Vertex;
+import local.computingMedia.geometry.Edge;
+import local.computingMedia.geometry.Face;
+import local.computingMedia.geometry.Orientation;
+import local.computingMedia.geometry.Vertex;
 
 /** Lucas */
 public class Delaunay {
@@ -58,7 +58,7 @@ public class Delaunay {
     /** Premier appel */
     private static void bucketDT(Medium medium){
         ArrayList<Vertex> vertices = new ArrayList<>(medium);
-        vertices.sort(new Point.CompareByXThenY());
+        vertices.sort(new Vertex.CompareByXThenY());
         _r_bucketDT(vertices, 0, vertices.size());
     }
 
@@ -78,7 +78,7 @@ public class Delaunay {
             v1.addNeighbor(v2);
             v2.addNeighbor(v3);
 
-            Orientation sens = GeometricPrimitives.orientation(v1, v2, v3);
+            Orientation sens = Vertex.orientation(v1, v2, v3);
             switch (sens) {
                 case CoLineaire -> { return new ArrayList<>(List.of(left, left+2)); }
                 case ClockWise -> {
@@ -179,7 +179,7 @@ public class Delaunay {
         boolean done = false;
         while (!done) {
             int next = Math.floorMod(current  + side, hull.size());
-            Orientation orientation = GeometricPrimitives.orientation(
+            Orientation orientation = Vertex.orientation(
                 vertices.get(otherHull.get(reference)),
                 vertices.get(hull.get(current)),
                 vertices.get(hull.get(next))
@@ -221,7 +221,7 @@ public class Delaunay {
                 Vertex va = vertices.get(a);
                 Vertex vb = vertices.get(b);
 
-                return GeometricPrimitives.sortCCW(v1, v2, vb, va);
+                return Edge.sortCCW(v1, v2, vb, va);
             });
 
             ArrayList<Integer> rCandidates = new ArrayList<>();
@@ -232,19 +232,19 @@ public class Delaunay {
                 Vertex va = vertices.get(a);
                 Vertex vb = vertices.get(b);
 
-                return GeometricPrimitives.sortCCW(v1, v2, va, vb);
+                return Edge.sortCCW(v1, v2, va, vb);
             });
 
             int lCand = 0;
             int rCand = 0;
 
             Function<Integer, Boolean> valid  =
-                    (candidate) -> GeometricPrimitives.ccw(vertices.get(candidate), vertices.get(lTemp), vertices.get(rTemp));
+                    (candidate) -> Vertex.ccw(vertices.get(candidate), vertices.get(lTemp), vertices.get(rTemp));
 
             boolean lFlag = false;
             if ( valid.apply(lCandidates.get(lCand)) ){
                 lFlag = true;
-                while (GeometricPrimitives.inCircle(
+                while (Face.inCircumscribedCircle(
                         vertices.get(lCurrent), vertices.get(lCandidates.get(lCand)), vertices.get(rCurrent),
                         vertices.get(lCandidates.get((lCand + 1) % lCandidates.size()))
                 )) {
@@ -256,7 +256,7 @@ public class Delaunay {
             boolean rFlag = false;
             if ( valid.apply(rCandidates.get(rCand)) ){
                 rFlag = true;
-                while (GeometricPrimitives.inCircle(
+                while (Face.inCircumscribedCircle(
                         vertices.get(lCurrent), vertices.get(rCandidates.get(rCand)), vertices.get(rCurrent),
                         vertices.get(rCandidates.get((rCand + 1) % rCandidates.size()))
                 )) {
@@ -267,7 +267,7 @@ public class Delaunay {
 
             if (!lFlag && !rFlag) return;
 
-            boolean circleCheck = GeometricPrimitives.inCircle(
+            boolean circleCheck = Face.inCircumscribedCircle(
                     vertices.get(lCurrent), vertices.get(lCandidates.get(lCand)), vertices.get(rCurrent),
                     vertices.get(rCandidates.get(rCand))
             );
@@ -286,7 +286,7 @@ public class Delaunay {
         candidates.addAll(left);
         candidates.addAll(right);
         for (int i = 1; i < candidates.size()-1; i++) for (int j = i+1; j < candidates.size(); j++){
-            if (GeometricPrimitives.orientation(
+            if (Vertex.orientation(
                     vertices.get(candidates.getFirst()),
                     vertices.get(i),
                     vertices.get(j)

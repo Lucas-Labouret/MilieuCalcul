@@ -6,7 +6,6 @@ module local.furthestpointoptimization {
     opens local.ui to javafx.fxml;
     opens local.ui.mediumApps to javafx.fxml;
 
-    exports local.computingMedia;
     exports local.computingMedia.media;
     exports local.computingMedia.miseEnBoite;
 
@@ -17,5 +16,5 @@ module local.furthestpointoptimization {
     exports local.savefileManagers;
     exports local.ui.utils;
     opens local.savefileManagers to javafx.fxml;
-    exports local.misc.geometry;
+    exports local.computingMedia.geometry;
 }

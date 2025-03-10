@@ -4,7 +4,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
-import local.computingMedia.Vertex;
+import local.computingMedia.geometry.Vertex;
 import local.computingMedia.miseEnBoite.VertexMeB;
 import local.computingMedia.miseEnBoite.Coord;
 import local.computingMedia.media.Medium;

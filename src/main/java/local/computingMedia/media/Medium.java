@@ -1,22 +1,16 @@
 package local.computingMedia.media;
 
-import local.computingMedia.Face;
-import local.misc.geometry.Point;
-import local.computingMedia.Vertex;
-import local.optimization.Delaunay;
-import local.optimization.FPO;
+import local.computingMedia.geometry.Edge;
+import local.computingMedia.geometry.Face;
+import local.computingMedia.geometry.Vertex;
+import local.computingMedia.optimization.Delaunay;
+import local.computingMedia.optimization.FPO;
 import local.misc.LinkedList;
-import local.misc.geometry.Segment;
 
 import java.util.*;
 
 @SuppressWarnings("serial")
 public abstract class Medium extends HashSet<Vertex> {
-    static final Random rd = new Random();
-    public static double randomEps() {
-        return rd.nextDouble(1e-5);
-    }
-
     protected double width = 1;
     protected double height = 1;
 
@@ -69,15 +63,6 @@ public abstract class Medium extends HashSet<Vertex> {
 
     public boolean isInBorder(Vertex vertex) { return false; }
 
-    public Vertex getVertex(Point p) {
-        for (Vertex v : this) {
-            if (Double.compare(v.getX(),p.getX())==0 && Double.compare(v.getY(),p.getY())==0) {
-                return v;
-            }
-        }
-        return null;
-    }
-
     public void delaunayTriangulate(){
         for (Vertex vertex : this) vertex.getNeighbors().clear();
         Delaunay.buildDT(this);
@@ -99,7 +84,7 @@ public abstract class Medium extends HashSet<Vertex> {
     }
 
     public double getDist(Vertex x, Vertex y){
-        return Segment.length(x, y);
+        return Edge.length(x, y);
     }
     public double getLocalMinDist(Vertex x){
         double minDistance = Double.POSITIVE_INFINITY;

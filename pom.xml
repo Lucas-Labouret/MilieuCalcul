@@ -57,7 +57,7 @@
                         <id>default-cli</id>
                         <configuration>
                             <mainClass>
-                                local.furthestpointoptimization/local.optimization.App
+                                local.furthestpointoptimization/local.computingMedia.optimization.App
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
