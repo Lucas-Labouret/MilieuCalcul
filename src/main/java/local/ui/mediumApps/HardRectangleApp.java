@@ -1,13 +1,14 @@
 package local.ui.mediumApps;
 
-import local.computingMedia.cannings.VertexCanning;
-import local.computingMedia.cannings.TopDistanceXSortedLinesVCanning;
+import local.computingMedia.cannings.Canning;
+import local.computingMedia.cannings.VertexCanningCompleter;
+import local.computingMedia.cannings.vertexCannings.TopDistanceXSortedLinesVCanning;
 import local.computingMedia.media.HardRectangleMedium;
 import local.savefileManagers.HardRectangleManager;
 import local.ui.utils.TBIntInput;
 
 public class HardRectangleApp extends MediumApp {
-    @Override public VertexCanning DEFAULT_CANNING() { return new TopDistanceXSortedLinesVCanning(); }
+    @Override public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning()); }
 
     private final TBIntInput ptCountInput;
     private final TBIntInput widthInput;

@@ -5,8 +5,9 @@ import java.util.ArrayList;
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
-import local.computingMedia.cannings.RoundedCoordVCanning;
-import local.computingMedia.cannings.TopDistanceXSortedLinesVCanning;
+import local.computingMedia.cannings.VertexCanningCompleter;
+import local.computingMedia.cannings.vertexCannings.RoundedCoordVCanning;
+import local.computingMedia.cannings.vertexCannings.TopDistanceXSortedLinesVCanning;
 import local.ui.mediumApps.*;
 import local.ui.utils.MediumDrawer;
 import local.ui.utils.SidePanel;
@@ -103,9 +104,13 @@ public class MasterScene extends BorderPane {
             if (newVal == defaultCanning) {
                 for (MediumApp scene : mediumScenes) scene.setCanning(scene.DEFAULT_CANNING());
             } else if (newVal == roundedCoordCanning) {
-                for (MediumApp scene : mediumScenes) scene.setCanning(new RoundedCoordVCanning());
+                for (MediumApp scene : mediumScenes) scene.setCanning(
+                        new VertexCanningCompleter(new RoundedCoordVCanning())
+                );
             } else if (newVal == topDistanceXSortedCanning) {
-                for (MediumApp scene : mediumScenes) scene.setCanning(new TopDistanceXSortedLinesVCanning());
+                for (MediumApp scene : mediumScenes) scene.setCanning(
+                        new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning())
+                );
             }
         });
         

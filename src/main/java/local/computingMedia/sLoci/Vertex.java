@@ -189,6 +189,12 @@ public class Vertex {
         return false;
     }
 
+    public ArrayList<Vertex> sortNeighborsCW() {
+        ArrayList<Vertex> sortedNeighbors = new ArrayList<>(this.getNeighbors());
+        sortedNeighbors.sort(new CompareByAngleDistance(this, new Vertex(this.getX() + 1, this.getY()), true));
+        return sortedNeighbors;
+    }
+
     public static double getAngle(Vertex a, Vertex b, Vertex c) {
         double angle = Math.atan2(c.getY() - b.getY(), c.getX() - b.getX()) - Math.atan2(a.getY() - b.getY(), a.getX() - b.getX());
         if (angle < 0) angle += 2 * Math.PI;

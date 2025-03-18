@@ -18,6 +18,7 @@ module local.furthestpointoptimization {
     opens local.savefileManagers to javafx.fxml;
     exports local.computingMedia.sLoci;
     exports local.computingMedia.tLoci;
-    exports local.computingMedia.cannings.Coords.sCoords;
-    exports local.computingMedia.cannings.Coords.tCoords;
+    exports local.computingMedia.cannings.coords.sCoords;
+    exports local.computingMedia.cannings.coords.tCoords;
+    exports local.computingMedia.cannings.vertexCannings;
 }

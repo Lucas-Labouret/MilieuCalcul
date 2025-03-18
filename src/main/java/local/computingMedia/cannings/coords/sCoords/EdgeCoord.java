@@ -1,6 +1,10 @@
-package local.computingMedia.cannings.Coords.sCoords;
+package local.computingMedia.cannings.coords.sCoords;
 
-public record FaceCoord(int theta, VertexCoord vertex) {
+public record EdgeCoord(int theta, VertexCoord vertex) {
+    public EdgeCoord(int theta, int X, int Y) {
+        this(theta, new VertexCoord(X, Y));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;

@@ -1,6 +1,6 @@
-package local.computingMedia.cannings.Coords.tCoords;
+package local.computingMedia.cannings.coords.tCoords;
 
-import local.computingMedia.cannings.Coords.sCoords.FaceCoord;
+import local.computingMedia.cannings.coords.sCoords.FaceCoord;
 
 public record FvCoord(int side, FaceCoord face) {
     public FvCoord {

@@ -4,7 +4,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.BorderPane;
-import local.computingMedia.cannings.VertexCanning;
+import local.computingMedia.cannings.Canning;
+import local.computingMedia.cannings.MasksComputer;
 import local.computingMedia.media.Medium;
 import local.ui.utils.InformationBar;
 import local.ui.utils.MediumDrawer;
@@ -14,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public abstract class MediumApp extends BorderPane {
-    public abstract VertexCanning DEFAULT_CANNING();
+    public abstract Canning DEFAULT_CANNING();
 
     protected final ToolBar topToolBar;
     protected final ToolBar botToolBar;
@@ -22,7 +23,7 @@ public abstract class MediumApp extends BorderPane {
     protected final MediumDrawer drawPane;
 
     protected Medium medium;
-    protected VertexCanning canning;
+    protected Canning canning;
 
     protected final Button gen;
     protected final Button tri;
@@ -129,12 +130,15 @@ public abstract class MediumApp extends BorderPane {
     protected boolean needRecanning = true;
     protected void can() {
         if (medium == null || !needRecanning) return;
+        canning.setMedium(medium);
         canning.can();
         needRecanning = false;
+        MasksComputer masksComputer = new MasksComputer(canning);
+        System.out.println(masksComputer.computeEvVe());
         showVertexSet();
     }
 
-    public void setCanning(VertexCanning canning) {
+    public void setCanning(Canning canning) {
         this.canning = canning;
         this.canning.setMedium(medium);
         needRecanning = true;

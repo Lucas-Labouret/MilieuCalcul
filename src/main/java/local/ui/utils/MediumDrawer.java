@@ -11,7 +11,7 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import local.computingMedia.cannings.Coords.sCoords.VertexCoord;
+import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 import local.computingMedia.media.Medium;
 import local.computingMedia.sLoci.Vertex;
 
@@ -69,7 +69,6 @@ public class MediumDrawer extends Pane {
         offsetY = (paneHeight - height * scale) / 2;
 
         if (canning == null) return;
-        System.out.println("canning: " + canning);
 
         this.tmpCanning = canning;
         for (VertexCoord coord : canning.values()) {
@@ -98,7 +97,7 @@ public class MediumDrawer extends Pane {
         getChildren().clear();
 
         if (SHOW_LINES) drawLines();
-        if (SHOW_CANNING && tmpCanning != null) drawCanning();
+        if (SHOW_CANNING) drawCanning();
         if (SHOW_POINTS) drawPoints();
     }
 
@@ -178,6 +177,8 @@ public class MediumDrawer extends Pane {
     }
 
     private void drawCanning() {
+        if (tmpCanning == null) return;
+
         for (int j = 0; j < canningHeight; j++) {
             int i1 = 0;
             int i2 = 0;

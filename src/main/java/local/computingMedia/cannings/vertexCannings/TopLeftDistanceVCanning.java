@@ -1,6 +1,6 @@
-package local.computingMedia.cannings;
+package local.computingMedia.cannings.vertexCannings;
 
-import local.computingMedia.cannings.Coords.sCoords.VertexCoord;
+import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;
 
@@ -10,6 +10,9 @@ import java.util.HashMap;
 public class TopLeftDistanceVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;
+
+    @Override public int getWidth() { return -1; }
+    @Override public int getHeight() { return -1; }
 
     public void setMedium(Medium medium) { this.medium = medium; }
     public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }

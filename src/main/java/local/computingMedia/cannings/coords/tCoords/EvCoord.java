@@ -1,12 +1,16 @@
-package local.computingMedia.cannings.Coords.tCoords;
+package local.computingMedia.cannings.coords.tCoords;
 
-import local.computingMedia.cannings.Coords.sCoords.EdgeCoord;
+import local.computingMedia.cannings.coords.sCoords.EdgeCoord;
 
-public record EfCoord(int side, EdgeCoord edge) {
-    public EfCoord{
+public record EvCoord(int side, EdgeCoord edge) {
+    public EvCoord {
         if (side < 0 || side > 1) {
             throw new IllegalArgumentException("Side must be 0 or 1");
         }
+    }
+
+    public EvCoord(int side, int theta, int X, int Y) {
+        this(side, new EdgeCoord(theta, X, Y));
     }
 
     @Override

@@ -1,9 +1,9 @@
-package local.computingMedia.cannings.Coords.tCoords;
+package local.computingMedia.cannings.coords.tCoords;
 
-import local.computingMedia.cannings.Coords.sCoords.EdgeCoord;
+import local.computingMedia.cannings.coords.sCoords.EdgeCoord;
 
-public record EvCoord(int side, EdgeCoord edge) {
-    public EvCoord {
+public record EfCoord(int side, EdgeCoord edge) {
+    public EfCoord{
         if (side < 0 || side > 1) {
             throw new IllegalArgumentException("Side must be 0 or 1");
         }

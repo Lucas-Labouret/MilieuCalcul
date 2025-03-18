@@ -152,4 +152,17 @@ public class Face {
     public boolean inCircumscribedCircle(Vertex d){
         return inCircumscribedCircle(a, b, c, d);
     }
+
+    public static int sortCWWithReferencePoint(Vertex ref, Face f1, Face f2) {
+        Vertex centroid1 = f1.getCentroid();
+        Vertex centroid2 = f2.getCentroid();
+
+        double angle1 = Math.atan2(centroid1.getY() - ref.getY(), centroid1.getX() - ref.getX());
+        double angle2 = Math.atan2(centroid2.getY() - ref.getY(), centroid2.getX() - ref.getX());
+
+        if (angle1 < 0) angle1 += 2 * Math.PI;
+        if (angle2 < 0) angle2 += 2 * Math.PI;
+
+        return Double.compare(angle2, angle1);
+    }
 }

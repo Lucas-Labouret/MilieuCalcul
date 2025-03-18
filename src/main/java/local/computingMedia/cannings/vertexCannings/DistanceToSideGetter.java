@@ -1,4 +1,4 @@
-package local.computingMedia.cannings;
+package local.computingMedia.cannings.vertexCannings;
 
 import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;

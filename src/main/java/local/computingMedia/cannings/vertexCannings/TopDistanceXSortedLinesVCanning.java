@@ -1,6 +1,6 @@
-package local.computingMedia.cannings;
+package local.computingMedia.cannings.vertexCannings;
 
-import local.computingMedia.cannings.Coords.sCoords.VertexCoord;
+import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;
 
@@ -11,8 +11,14 @@ public class TopDistanceXSortedLinesVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;
 
-    public void setMedium(Medium medium) { this.medium = medium; }
-    public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
+    private int width = 0;
+    private int height = 0;
+
+    @Override public int getWidth() { return width; }
+    @Override public int getHeight() { return height; }
+
+    @Override public void setMedium(Medium medium) { this.medium = medium; }
+    @Override public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
 
     @Override
     public void can() {
@@ -24,6 +30,7 @@ public class TopDistanceXSortedLinesVCanning implements VertexCanning {
             int top = topCoords.get(vertex);
             lines.computeIfAbsent(top, k -> new ArrayList<>());
             lines.get(top).add(vertex);
+            if (top > height) height = top;
         }
         for (ArrayList<Vertex> line : lines.values()) {
             line.sort((v1, v2) -> {
@@ -31,6 +38,7 @@ public class TopDistanceXSortedLinesVCanning implements VertexCanning {
                 if (v1.getX() > v2.getX()) return 1;
                 return Double.compare(v1.getY(), v2.getY());
             });
+            if (line.size() > width) width = line.size();
         }
 
         HashMap<Vertex, VertexCoord> result = new HashMap<>();

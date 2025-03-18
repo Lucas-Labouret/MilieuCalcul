@@ -1,13 +1,14 @@
 package local.ui.mediumApps;
 
-import local.computingMedia.cannings.VertexCanning;
-import local.computingMedia.cannings.RoundedCoordVCanning;
+import local.computingMedia.cannings.Canning;
+import local.computingMedia.cannings.VertexCanningCompleter;
+import local.computingMedia.cannings.vertexCannings.RoundedCoordVCanning;
 import local.computingMedia.media.SoftCircleMedium;
 import local.savefileManagers.SoftCircleManager;
 import local.ui.utils.TBIntInput;
 
 public class SoftCircleApp extends MediumApp {
-    public VertexCanning DEFAULT_CANNING() { return new RoundedCoordVCanning(); }
+    public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordVCanning()); }
 
     private final TBIntInput ptCountInput;
 

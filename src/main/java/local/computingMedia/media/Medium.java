@@ -1,8 +1,7 @@
 package local.computingMedia.media;
 
-import local.computingMedia.sLoci.Edge;
-import local.computingMedia.sLoci.Face;
-import local.computingMedia.sLoci.Vertex;
+import local.computingMedia.sLoci.*;
+import local.computingMedia.tLoci.*;
 import local.computingMedia.optimization.Delaunay;
 import local.computingMedia.optimization.FPO;
 import local.misc.LinkedList;

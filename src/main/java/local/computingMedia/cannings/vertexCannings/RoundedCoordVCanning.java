@@ -1,6 +1,6 @@
-package local.computingMedia.cannings;
+package local.computingMedia.cannings.vertexCannings;
 
-import local.computingMedia.cannings.Coords.sCoords.VertexCoord;
+import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;
 
@@ -9,6 +9,12 @@ import java.util.HashMap;
 public class RoundedCoordVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;
+
+    private int width = 0;
+    private int height = 0;
+
+    public int getWidth() { return width; }
+    public int getHeight() { return height; }
 
     public void setMedium(Medium medium) { this.medium = medium; }
     public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
@@ -71,6 +77,8 @@ public class RoundedCoordVCanning implements VertexCanning {
                 } else x++;
             }
         }
+        width = xMax;
+        height = yMax;
     }
     
     @Override
@@ -88,6 +96,8 @@ public class RoundedCoordVCanning implements VertexCanning {
         for (VertexCoord coord : coordVertexMap.keySet()){
             grid[coord.X()][coord.Y()] = coordVertexMap.get(coord);
         }
+        width = xMax;
+        height = yMax;
         //collapse(grid, yMax, xMax);
 
         HashMap<Vertex, VertexCoord> result = new HashMap<>();

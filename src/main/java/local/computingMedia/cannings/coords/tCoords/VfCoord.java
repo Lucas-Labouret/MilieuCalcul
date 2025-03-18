@@ -1,6 +1,6 @@
-package local.computingMedia.cannings.Coords.tCoords;
+package local.computingMedia.cannings.coords.tCoords;
 
-import local.computingMedia.cannings.Coords.sCoords.VertexCoord;
+import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 
 public record VfCoord(int theta, VertexCoord vertex) {
     @Override

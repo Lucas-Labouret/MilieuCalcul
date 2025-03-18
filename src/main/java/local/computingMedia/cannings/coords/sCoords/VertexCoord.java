@@ -1,4 +1,4 @@
-package local.computingMedia.cannings.Coords.sCoords;
+package local.computingMedia.cannings.coords.sCoords;
 
 public record VertexCoord(int X, int Y) {
     @Override
@@ -16,5 +16,12 @@ public record VertexCoord(int X, int Y) {
     @Override
     public String toString() {
         return "(" + X + ", " + Y + ")";
+    }
+
+    public int compareTo(VertexCoord other){
+        if (Y < other.Y) return -1;
+        if (Y > other.Y) return 1;
+
+        return Integer.compare(X, other.X);
     }
 }

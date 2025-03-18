@@ -1,10 +1,37 @@
 package local.computingMedia.sLoci;
 
 import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Set;
+import java.util.HashSet;
 
-public record Edge(Vertex start, Vertex end) {
+public class Edge {
+    private final Vertex start;
+    private final Vertex end;
+
+    public Edge(Vertex start, Vertex end) {
+        this.start = start;
+        this.end = end;
+    }
+
+    private Vertex start() { return start; }
+    private Vertex end() { return end; }
+
+    public HashSet<Vertex> getVertices() {
+        HashSet<Vertex> ends = new HashSet<>();
+        ends.add(start);
+        ends.add(end);
+        return ends;
+    }
+
+    public Vertex getNeighbor(Vertex vertex) {
+        if (vertex.equals(start)) return end;
+        if (vertex.equals(end)) return start;
+        return null;
+    }
+
+    public Vertex getCenter() {
+        return new Vertex((start.getX() + end.getX()) / 2, (start.getY() + end.getY()) / 2);
+    }
+
     public static double length2(Vertex start, Vertex end) {
         double dx = end.getX() - start.getX();
         double dy = end.getY() - start.getY();
@@ -24,8 +51,8 @@ public record Edge(Vertex start, Vertex end) {
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
-        if (!(obj instanceof Edge(Vertex start1, Vertex end1))) return false;
-        return Objects.equals(Set.of(start, end), Set.of(start1, end1));
+        if (!(obj instanceof Edge edge)) return false;
+        return getVertices().equals(edge.getVertices());
     }
 
     @Override
@@ -40,6 +67,19 @@ public record Edge(Vertex start, Vertex end) {
 
     public boolean contains(Vertex point) {
         return Math.abs(length() - (length(start, point) + length(point, end))) < 1e-6;
+    }
+
+    public static int sortCWWithReferencePoint(Vertex ref, Edge e1, Edge e2) {
+        Vertex centre1 = e1.getCenter();
+        Vertex centre2 = e2.getCenter();
+
+        double angle1 = Math.atan2(centre1.getY() - ref.getY(), centre1.getX() - ref.getX());
+        double angle2 = Math.atan2(centre2.getY() - ref.getY(), centre2.getX() - ref.getX());
+
+        if (angle1 < 0) angle1 += 2 * Math.PI;
+        if (angle2 < 0) angle2 += 2 * Math.PI;
+
+        return Double.compare(angle2, angle1);
     }
 
     public static int sortCCW(Vertex v1, Vertex v2, Vertex va, Vertex vb) {
@@ -58,6 +98,10 @@ public record Edge(Vertex start, Vertex end) {
         if (angleB < 0) angleB += 2 * Math.PI;
 
         return Double.compare(angleA, angleB);
+    }
+
+    public static int sortCCW(Edge e1, Edge e2) {
+        return sortCCW(e1.start(), e1.end(), e2.start(), e2.end());
     }
 
     public static boolean intersect(Edge s1, Edge s2) {
