@@ -16,7 +16,7 @@ public class SoftSquareApp extends MediumApp {
         pointCountField = new TBIntInput("Count", "20");
         pointCountField.setPrefWidth(50);
 
-        topToolBar.getItems().addAll(pointCountField, gen, tri, fpo, can);
+        topToolBar.getItems().addAll(pointCountField, gen, tri, fpo);
         setTop(topToolBar);
 
         savefileManager = new SoftSquareManager();
@@ -26,7 +26,6 @@ public class SoftSquareApp extends MediumApp {
         int pointCount = pointCountField.getValue();
         medium = new SoftSquareMedium(pointCount);
         canning.setMedium(medium);
-        needRecanning = true;
-        showVertexSet();
+        drawPane.setMedium(medium);
     }
 }

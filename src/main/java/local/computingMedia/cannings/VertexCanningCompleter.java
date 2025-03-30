@@ -55,6 +55,13 @@ public class VertexCanningCompleter implements Canning {
     @Override public HashMap<Ef, Fe> getEfFeCommunication() { return facingEfFe; }
     @Override public HashMap<Fe, Ef> getFeEfCommunication() { return facingFeEf; }
 
+    @Override public HashSet<Ef> getEf() { return new HashSet<>(facingEfFe.keySet()); }
+    @Override public HashSet<Fe> getFe() { return new HashSet<>(facingFeEf.keySet()); }
+    @Override public HashSet<Ev> getEv() { return new HashSet<>(facingEvVe.keySet()); }
+    @Override public HashSet<Ve> getVe() { return new HashSet<>(facingVeEv.keySet()); }
+    @Override public HashSet<Fv> getFv() { return new HashSet<>(facingFvVf.keySet()); }
+    @Override public HashSet<Vf> getVf() { return new HashSet<>(facingVfFv.keySet()); }
+
     @Override public void setMedium(Medium medium) {
         this.medium = medium;
         vertexCanner.setMedium(medium);

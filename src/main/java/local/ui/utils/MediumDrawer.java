@@ -1,8 +1,6 @@
 package local.ui.utils;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.function.Consumer;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -11,16 +9,31 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
+import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 import local.computingMedia.media.Medium;
+import local.computingMedia.sLoci.Edge;
+import local.computingMedia.sLoci.Face;
 import local.computingMedia.sLoci.Vertex;
+import local.computingMedia.tLoci.*;
 
 public class MediumDrawer extends Pane {
     private static final String BG_STYLE = "-fx-background-color: #FFFFFF;";
+    private static final int SLOCI_RADIUS = 5;
+    private static final double TLOCI_SPACING = 0.33;
 
-    public static boolean SHOW_POINTS = true;
-    public static boolean SHOW_LINES = true;
-    public static boolean SHOW_CANNING = true;
+    private boolean SHOW_VERTICES = true;
+    private boolean SHOW_EDGES = true;
+    private boolean EDGES_AS_LINES = true;
+    private boolean SHOW_FACES = false;
+
+    private boolean SHOW_CANNING = false;
+    private boolean SHOW_EF_FE = false;
+    private boolean SHOW_EV_VE = false;
+    private boolean SHOW_FV_VF = false;
+
 
     double xmax, ymax, xmin, ymin,
            width, height,
@@ -33,22 +46,63 @@ public class MediumDrawer extends Pane {
     int canningWidth, canningHeight;
     Vertex[][] canningGrid;
 
-
-    Medium tmpMedium;
-    HashMap<Vertex, VertexCoord> tmpCanning;
+    Medium medium;
+    Canning canning;
 
     HashSet<Vertex> visited;
     Vertex selection;
 
-    public MediumDrawer() {
-        super();
+    public MediumDrawer(Medium medium, Canning canning) {
+        this.medium = medium;
+        this.canning = canning;
         this.selection = null;
         setStyle(BG_STYLE);
     }
 
-    private void initEnv(Medium medium, HashMap<Vertex, VertexCoord> canning) {
-        this.tmpMedium = medium;
+    public void setMedium(Medium medium) {
+        this.medium = medium;
+        redraw();
+    }
+    public void setCanning(Canning canning) {
+        this.canning = canning;
+        redraw();
+    }
 
+    public void setShowVertices(boolean showVertices) {
+        SHOW_VERTICES = showVertices;
+        redraw();
+    }
+    public void setShowEdges(boolean showEdges) {
+        SHOW_EDGES = showEdges;
+        redraw();
+    }
+    public void setEdgesAsLines(boolean edgesAsLines) {
+        EDGES_AS_LINES = edgesAsLines;
+        redraw();
+    }
+    public void setShowFaces(boolean showFaces) {
+        SHOW_FACES = showFaces;
+        redraw();
+    }
+
+    public void setShowCanning(boolean showCanning) {
+        SHOW_CANNING = showCanning;
+        redraw();
+    }
+    public void setShowEfFe(boolean showEfFe) {
+        SHOW_EF_FE = showEfFe;
+        redraw();
+    }
+    public void setShowEvVe(boolean showEvVe) {
+        SHOW_EV_VE = showEvVe;
+        redraw();
+    }
+    public void setShowFvVf(boolean showFvVf) {
+        SHOW_FV_VF = showFvVf;
+        redraw();
+    }
+
+    private void initEnv() {
         xmax = medium.getMaxX();
         xmin = medium.getMinX();
         ymax = medium.getMaxY();
@@ -69,9 +123,9 @@ public class MediumDrawer extends Pane {
         offsetY = (paneHeight - height * scale) / 2;
 
         if (canning == null) return;
+        canning.can();
 
-        this.tmpCanning = canning;
-        for (VertexCoord coord : canning.values()) {
+        for (VertexCoord coord : canning.getVertexCanning().values()) {
             canningWidth = Math.max(canningWidth, coord.X());
             canningHeight = Math.max(canningHeight, coord.Y());
         }
@@ -80,12 +134,12 @@ public class MediumDrawer extends Pane {
 
         canningGrid = new Vertex[canningWidth][canningHeight];
         for (Vertex vertex : medium) {
-            VertexCoord coord = canning.get(vertex);
+            VertexCoord coord = canning.getVertexCanning().get(vertex);
             canningGrid[coord.X()][coord.Y()] = vertex;
         }
     }
 
-    public void showMedium(Medium medium, HashMap<Vertex, VertexCoord> canning) {
+    public void redraw() {
         setStyle(BG_STYLE);
         if (medium == null) {
             getChildren().clear();
@@ -93,76 +147,86 @@ public class MediumDrawer extends Pane {
             return;
         }
 
-        initEnv(medium, canning);
+        initEnv();
         getChildren().clear();
 
-        if (SHOW_LINES) drawLines();
-        if (SHOW_CANNING) drawCanning();
-        if (SHOW_POINTS) drawPoints();
+        if (SHOW_EDGES && EDGES_AS_LINES ) drawLines();
+        if (SHOW_EDGES && !EDGES_AS_LINES) drawEdges();
+        if (SHOW_FACES                   ) drawFaces();
+        if (SHOW_CANNING                 ) drawCanning();
+        if (SHOW_EF_FE                   ) drawEfFe();
+        if (SHOW_EV_VE                   ) drawEvVe();
+        if (SHOW_FV_VF                   ) drawFvVf();
+        if (SHOW_VERTICES                ) drawVertices();
     }
 
-    private void drawPoint(Vertex v) {
-        double x = (v.getX() - xmin) * scale + offsetX;
-        double y = (v.getY() - ymin) * scale + offsetY;
+    private Color getColorFromNeighborCount(int count) {
+        if (count == 0)
+            return Color.BLACK;
+        int criticalCount = 6;
+        double sigmoid = 1 / (1 + Math.exp(-(count - criticalCount)));
+        return Color.BLUE.interpolate(Color.RED, sigmoid);
+    }
 
-        Circle circle = new Circle(x, y, 5);
-        Circle selectionCircle = new Circle(x, y, 7); // Circle the selected point
-        selectionCircle.setFill(null);
-        selectionCircle.setStroke(Color.YELLOW);
-        selectionCircle.setStrokeWidth(4);
-        int neighborCount = v.getNeighbors().size();
+    private void drawVertices() {
+        for (Vertex v : medium) {
+            double x = (v.getX() - xmin) * scale + offsetX;
+            double y = (v.getY() - ymin) * scale + offsetY;
 
-        if (tmpMedium.partOfBorder(v)) {
-            circle.setFill(Color.GREEN);
-        } else {
-            Color color = getColorFromNeighborCount(neighborCount);
-            circle.setFill(color);
-        }
+            Circle circle = new Circle(x, y, SLOCI_RADIUS);
+            Circle selectionCircle = new Circle(x, y, (int)(1.5*SLOCI_RADIUS)); // Circle the selected point
+            selectionCircle.setFill(null);
+            selectionCircle.setStroke(Color.YELLOW);
+            selectionCircle.setStrokeWidth(4);
+            int neighborCount = v.getNeighbors().size();
 
-        circle.setOnMouseClicked(event -> {
-            if (selection == v) selection = null;
-            else selection = v;
-            redrawPoints();
-        });
-        getChildren().add(circle);
+            if (medium.partOfBorder(v)) {
+                circle.setFill(Color.GREEN);
+            } else {
+                Color color = getColorFromNeighborCount(neighborCount);
+                circle.setFill(color);
+            }
 
-        if (selection == v) {
-            getChildren().add(selectionCircle);
-            for (Vertex neighbor : v.getNeighbors()) {
-                double neighborX = (neighbor.getX() - xmin) * scale + offsetX;
-                double neighborY = (neighbor.getY() - ymin) * scale + offsetY;
-                Circle neighborSelectionCircle = new Circle(neighborX, neighborY, 7);
-                getChildren().add(neighborSelectionCircle);
+            circle.setOnMouseClicked(event -> {
+                if (selection == v) selection = null;
+                else selection = v;
+                redraw();
+            });
+            getChildren().add(circle);
+
+            if (selection == v) {
+                getChildren().add(selectionCircle);
+                for (Vertex neighbor : v.getNeighbors()) {
+                    double neighborX = (neighbor.getX() - xmin) * scale + offsetX;
+                    double neighborY = (neighbor.getY() - ymin) * scale + offsetY;
+                    Circle neighborSelectionCircle = new Circle(neighborX, neighborY, 7);
+                    getChildren().add(neighborSelectionCircle);
+                }
             }
         }
     }
 
-    private void redrawPoints() {
-        getChildren().clear();
-        drawLines();
-        drawPoints();
-    }
+    private void drawLines() {
+        for (Edge e : medium.getEdges()) {
+            Vertex[] ends = e.getEnds().toArray(new Vertex[2]);
+            Vertex v1 = ends[0];
+            Vertex v2 = ends[1];
 
-    private void drawPoints() {
-        forAllVertex(this::drawPoint);
-    }
+            double x1 = (v1.getX() - xmin) * scale + offsetX;
+            double y1 = (v1.getY() - ymin) * scale + offsetY;
 
-    private void drawLine(Vertex v) {
-        double x = (v.getX() - xmin) * scale + offsetX;
-        double y = (v.getY() - ymin) * scale + offsetY;
+            double x2 = (v2.getX() - xmin) * scale + offsetX;
+            double y2 = (v2.getY() - ymin) * scale + offsetY;
 
-        for (Vertex neighbor : v.getNeighbors()) {
-            double neighborX = (neighbor.getX() - xmin) * scale + offsetX;
-            double neighborY = (neighbor.getY() - ymin) * scale + offsetY;
-            double gradientStartX = x / paneWidth;
-            double gradientStartY = y / paneHeight;
-            double gradientEndX = neighborX / paneWidth;
-            double gradientEndY = neighborY / paneHeight;
+            double gradientStartX = x1 / paneWidth;
+            double gradientStartY = y1 / paneHeight;
+            double gradientEndX = x2 / paneWidth;
+            double gradientEndY = y2 / paneHeight;
 
-            Line line = new Line(x, y, neighborX, neighborY);
-            Color color1 = getColorFromNeighborCount(v.getNeighbors().size());
-            Color color2 = getColorFromNeighborCount(neighbor.getNeighbors().size());
-            if (SHOW_CANNING && tmpCanning != null) {
+            Line line = new Line(x1, y1, x2, y2);
+            Color color1 = getColorFromNeighborCount(v1.getNeighbors().size());
+            Color color2 = getColorFromNeighborCount(v2.getNeighbors().size());
+            if (SHOW_CANNING && canning != null) {
                 color1 = Color.LIGHTGRAY;
                 color2 = Color.LIGHTGRAY;
             }
@@ -176,8 +240,95 @@ public class MediumDrawer extends Pane {
         }
     }
 
+    private void drawEdges() {
+        for (Edge e : medium.getEdges()) {
+            Vertex center = e.getCenter();
+            double x = (center.getX() - xmin) * scale + offsetX;
+            double y = (center.getY() - ymin) * scale + offsetY;
+
+            Rectangle rectangle = new Rectangle(
+                    x-SLOCI_RADIUS,
+                    y-SLOCI_RADIUS,
+                    2*SLOCI_RADIUS,
+                    2*SLOCI_RADIUS
+            );
+            rectangle.setFill((SHOW_CANNING && canning != null)? Color.LIGHTGRAY: Color.GOLD);
+
+            getChildren().add(rectangle);
+        }
+    }
+
+    private void drawFaces() {
+        for (Face f : medium.getFaces()) {
+            Vertex center = f.getCentroid();
+            double x = (center.getX() - xmin) * scale + offsetX;
+            double y = (center.getY() - ymin) * scale + offsetY;
+
+            Polygon triangle = new Polygon(
+                    x, y - SLOCI_RADIUS,
+                    x - SLOCI_RADIUS, y + SLOCI_RADIUS,
+                    x + SLOCI_RADIUS, y + SLOCI_RADIUS
+            );
+            triangle.setFill((SHOW_CANNING && canning != null)? Color.LIGHTGRAY: Color.GREEN);
+
+            getChildren().add(triangle);
+        }
+    }
+
+    private void drawTLoci(Vertex v1, Vertex v2, Color color) {
+        Vertex v = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
+        double x = (v.getX() - xmin) * scale + offsetX;
+        double y = (v.getY() - ymin) * scale + offsetY;
+
+        Circle circle = new Circle(x, y, SLOCI_RADIUS/2);
+        circle.setFill(color);
+        getChildren().add(circle);
+    }
+
+    private void drawEfFe() {
+        for (Ef ef: canning.getEf()){
+            Vertex v1 = ef.e().getCenter();
+            Vertex v2 = ef.f().getCentroid();
+            drawTLoci(v1, v2, Color.LIGHTPINK);
+        }
+
+        for (Fe fe : canning.getFe()){
+            Vertex v1 = fe.f().getCentroid();
+            Vertex v2 = fe.e().getCenter();
+            drawTLoci(v1, v2, Color.DEEPPINK);
+        }
+    }
+
+    private void drawEvVe() {
+        for (Ev ev : canning.getEv()){
+            Vertex v1 = ev.e().getCenter();
+            Vertex v2 = ev.v();
+            drawTLoci(v1, v2, Color.DEEPSKYBLUE);
+        }
+
+        for (Ve ve : canning.getVe()){
+            Vertex v1 = ve.v();
+            Vertex v2 = ve.e().getCenter();
+            drawTLoci(v1, v2, Color.DARKBLUE);
+        }
+    }
+
+    private void drawFvVf() {
+        for (Fv fv : canning.getFv()){
+            Vertex v1 = fv.f().getCentroid();
+            Vertex v2 = fv.v();
+            drawTLoci(v1, v2, Color.RED);
+        }
+
+        for (Vf vf : canning.getVf()){
+            Vertex v1 = vf.v();
+            Vertex v2 = vf.f().getCentroid();
+            drawTLoci(v1, v2, Color.ORANGE);
+        }
+    }
+
     private void drawCanning() {
-        if (tmpCanning == null) return;
+        if (canning == null) return;
 
         for (int j = 0; j < canningHeight; j++) {
             int i1 = 0;
@@ -268,25 +419,5 @@ public class MediumDrawer extends Pane {
 
             } while (j1 < canningHeight && j2 < canningHeight && v2 != null);
         }
-    }
-
-    private void drawLines() {
-        forAllVertex(this::drawLine);
-    }
-
-    private void forAllVertex(Consumer<Vertex> action) {
-        visited = new HashSet<>();
-        for (Vertex v : this.tmpMedium) {
-            action.accept(v);
-            visited.add(v);
-        }
-    }
-
-    private Color getColorFromNeighborCount(int count) {
-        if (count == 0)
-            return Color.BLACK;
-        int criticalCount = 6;
-        double sigmoid = 1 / (1 + Math.exp(-(count - criticalCount)));
-        return Color.BLUE.interpolate(Color.RED, sigmoid);
     }
 }

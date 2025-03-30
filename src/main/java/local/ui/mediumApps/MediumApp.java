@@ -1,15 +1,18 @@
 package local.ui.mediumApps;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
 import local.computingMedia.cannings.Canning;
-import local.computingMedia.cannings.MasksComputer;
+import local.computingMedia.cannings.VertexCanningCompleter;
+import local.computingMedia.cannings.vertexCannings.RoundedCoordVCanning;
+import local.computingMedia.cannings.vertexCannings.TopDistanceXSortedLinesVCanning;
 import local.computingMedia.media.Medium;
 import local.ui.utils.InformationBar;
 import local.ui.utils.MediumDrawer;
 import local.savefileManagers.SavefileManager;
+import local.ui.utils.SidePanel;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,6 +22,7 @@ public abstract class MediumApp extends BorderPane {
 
     protected final ToolBar topToolBar;
     protected final ToolBar botToolBar;
+    protected final SidePanel sidePanel;
     protected final InformationBar infoBar;
     protected final MediumDrawer drawPane;
 
@@ -28,7 +32,6 @@ public abstract class MediumApp extends BorderPane {
     protected final Button gen;
     protected final Button tri;
     protected final Button fpo;
-    protected final Button can;
 
     protected final InformationBar savefileInfo;
     protected SavefileManager savefileManager;
@@ -41,13 +44,17 @@ public abstract class MediumApp extends BorderPane {
     protected double convergenceTolerance = 0.9;
 
     public MediumApp() {
+        canning = DEFAULT_CANNING();
+
         topToolBar = new ToolBar();
         botToolBar = new ToolBar();
+        sidePanel = new SidePanel();
         infoBar = new InformationBar("Information");
-        drawPane = new MediumDrawer();
+        drawPane = new MediumDrawer(medium, canning);
 
         setTop(topToolBar);
         setCenter(drawPane);
+        setRight(sidePanel);
         setBottom(botToolBar);
 
         gen = new Button("Generate");
@@ -56,10 +63,8 @@ public abstract class MediumApp extends BorderPane {
         tri.setOnAction(event -> triangulate());
         fpo = new Button("FPO");
         fpo.setOnAction(event -> fpoIteration());
-        can = new Button("Can");
-        can.setOnAction(event -> this.can());
 
-        canning = DEFAULT_CANNING();
+        fillSidePanel();
 
         savefileInfo = new InformationBar();
         fileName = new TextField();
@@ -80,7 +85,7 @@ public abstract class MediumApp extends BorderPane {
         if (medium != null) {
             medium.delaunayTriangulate();
         }
-        showVertexSet();
+        drawPane.redraw();
     }
 
     public void setFpoToConvergence(boolean fpoToConvergence) {
@@ -95,11 +100,10 @@ public abstract class MediumApp extends BorderPane {
 
     protected void fpoIteration() {
         if (medium == null) return;
-        needRecanning = true;
 
         if (fpoToConvergence) medium.optimizeToConvergence(convergenceTolerance);
         else medium.optimizeToSetIterations(fpoIterations);
-        showVertexSet();
+        drawPane.redraw();
     }
 
     private void save(){
@@ -117,45 +121,171 @@ public abstract class MediumApp extends BorderPane {
         try {
             medium = savefileManager.load(getFileName());
             canning.setMedium(medium);
-            needRecanning = true;
+            drawPane.setMedium(medium);
         }
         catch (FileNotFoundException e) { savefileInfo.setText("File not found."); }
         catch (IOException e) {
             savefileInfo.setText("File exists but couldn't be read.");
             e.printStackTrace();
         }
-        showVertexSet();
-    }
-
-    protected boolean needRecanning = true;
-    protected void can() {
-        if (medium == null || !needRecanning) return;
-        canning.setMedium(medium);
-        canning.can();
-        needRecanning = false;
-        MasksComputer masksComputer = new MasksComputer(canning);
-        System.out.println(masksComputer.computeEvVe());
-        showVertexSet();
     }
 
     public void setCanning(Canning canning) {
         this.canning = canning;
         this.canning.setMedium(medium);
-        needRecanning = true;
+        drawPane.setCanning(canning);
     }
 
     public String getFileName() { return fileName.getText(); }
 
-    public void showVertexSet() {
-        if (needRecanning) drawPane.showMedium(medium, null);
-        else drawPane.showMedium(medium, canning.getVertexCanning());
-    }
-
     private void updateDrawPaneSize() {
         drawPane.setPrefWidth(getWidth());
         drawPane.setPrefHeight(getHeight() - topToolBar.getHeight() - botToolBar.getHeight());
-        if (medium != null) {
-            showVertexSet();
-        }
+        drawPane.redraw();
+    }
+
+    private void fillSidePanel() {
+        //Graphics
+        CheckBox showVertices = new CheckBox("Show Vertices");
+        CheckBox showEdges = new CheckBox("Show Edges");
+        CheckBox edgesAsLines = new CheckBox("as lines");
+        CheckBox showFaces = new CheckBox("Show Faces");
+
+        CheckBox showCanning = new CheckBox("Show Canning");
+        CheckBox showEfFe = new CheckBox("Show Ef/Fe");
+        CheckBox showEvVe = new CheckBox("Show Ev/Ve");
+        CheckBox showFvVf = new CheckBox("Show Fv/Vf");
+
+        showVertices.setSelected(true);
+        showEdges.setSelected(true);
+        edgesAsLines.setSelected(true);
+        showFaces.setSelected(false);
+
+        showCanning.setSelected(false);
+        showEfFe.setSelected(false);
+        showEvVe.setSelected(false);
+        showFvVf.setSelected(false);
+
+        showVertices.allowIndeterminateProperty().set(false);
+        showEdges.allowIndeterminateProperty().set(false);
+        edgesAsLines.allowIndeterminateProperty().set(false);
+        showFaces.allowIndeterminateProperty().set(false);
+
+        showCanning.allowIndeterminateProperty().set(false);
+        showEfFe.allowIndeterminateProperty().set(false);
+        showEvVe.allowIndeterminateProperty().set(false);
+        showFvVf.allowIndeterminateProperty().set(false);
+
+        showVertices.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowVertices(newVal);
+        });
+        showEdges.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowEdges(newVal);
+        });
+        edgesAsLines.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setEdgesAsLines(newVal);
+        });
+        showFaces.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowFaces(newVal);
+        });
+
+        showCanning.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowCanning(newVal);
+        });
+        showEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowEfFe(newVal);
+        });
+        showEvVe.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowEvVe(newVal);
+        });
+        showFvVf.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowFvVf(newVal);
+        });
+
+        //Canning
+        ToggleGroup canGroup = new ToggleGroup();
+
+        RadioButton defaultCanning = new RadioButton("Default");
+        RadioButton roundedCoordCanning = new RadioButton("Rounded Coordinates");
+        RadioButton topDistanceXSortedCanning = new RadioButton("Top Distance X Sorted");
+
+        defaultCanning.setToggleGroup(canGroup);
+        roundedCoordCanning.setToggleGroup(canGroup);
+        topDistanceXSortedCanning.setToggleGroup(canGroup);
+
+        defaultCanning.setSelected(true);
+
+        canGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal == defaultCanning) {
+                setCanning(DEFAULT_CANNING());
+            } else if (newVal == roundedCoordCanning) {
+                setCanning(new VertexCanningCompleter(new RoundedCoordVCanning()));
+            } else if (newVal == topDistanceXSortedCanning) {
+                setCanning(new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning()));
+            }
+        });
+
+        //FPO
+        ToggleGroup fpoGroup = new ToggleGroup();
+
+        RadioButton setIter = new RadioButton("Set iterations");
+        TextField iterInput = new TextField("1");
+
+        RadioButton toConvergence = new RadioButton("To convergence");
+        TextField convInput = new TextField("0.9");
+
+        setIter.setToggleGroup(fpoGroup);
+        toConvergence.setToggleGroup(fpoGroup);
+
+        setIter.setSelected(true);
+
+        fpoGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            setFpoToConvergence(newVal == toConvergence);
+        });
+
+        iterInput.textProperty().addListener((obs, oldVal, newVal) -> {
+            int iter;
+            try { iter = Integer.parseInt(newVal); }
+            catch (NumberFormatException e) { return; }
+            setFpoIterations(iter);
+        });
+
+        convInput.textProperty().addListener((obs, oldVal, newVal) -> {
+            double conv;
+            try { conv = Double.parseDouble(newVal); }
+            catch (NumberFormatException e) { return; }
+            setConvergenceTolerance(conv);
+        });
+
+
+        //Add to side panel
+        sidePanel.getChildren().addAll(
+                new Label("Graphics"),
+                showVertices,
+                showEdges,
+                new HBox(new Text("    ("), edgesAsLines, new Text(")")),
+                showFaces,
+                showCanning,
+                showEfFe,
+                showEvVe,
+                showFvVf
+        );
+
+        sidePanel.getChildren().addAll(
+                new Separator(),
+                new Label("Canning"),
+                defaultCanning,
+                roundedCoordCanning,
+                topDistanceXSortedCanning
+        );
+
+        sidePanel.getChildren().addAll(
+                new Separator(),
+                new Label("FPO"),
+                setIter,
+                iterInput,
+                toConvergence,
+                convInput
+        );
     }
 }

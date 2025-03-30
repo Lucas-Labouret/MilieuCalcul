@@ -15,7 +15,7 @@ public class Edge {
     private Vertex start() { return start; }
     private Vertex end() { return end; }
 
-    public HashSet<Vertex> getVertices() {
+    public HashSet<Vertex> getEnds() {
         HashSet<Vertex> ends = new HashSet<>();
         ends.add(start);
         ends.add(end);
@@ -28,8 +28,16 @@ public class Edge {
         return null;
     }
 
+    public static Vertex getWeightedCenter(double t, Vertex start, Vertex end) {
+        assert 0 <= t && t <= 1;
+        return new Vertex(
+                (1 - t) * start.getX() + t * end.getX(),
+                (1 - t) * start.getY() + t * end.getY()
+        );
+    }
+
     public Vertex getCenter() {
-        return new Vertex((start.getX() + end.getX()) / 2, (start.getY() + end.getY()) / 2);
+        return Edge.getWeightedCenter(0.5, start, end);
     }
 
     public static double length2(Vertex start, Vertex end) {
@@ -52,7 +60,7 @@ public class Edge {
     public boolean equals(Object obj) {
         if (this == obj) return true;
         if (!(obj instanceof Edge edge)) return false;
-        return getVertices().equals(edge.getVertices());
+        return getEnds().equals(edge.getEnds());
     }
 
     @Override

@@ -15,7 +15,7 @@ public class SoftCircleApp extends MediumApp {
     public SoftCircleApp() {
         ptCountInput = new TBIntInput("Count", "20");
 
-        topToolBar.getItems().addAll(ptCountInput, gen, tri, fpo, can);
+        topToolBar.getItems().addAll(ptCountInput, gen, tri, fpo);
         setTop(topToolBar);
 
         savefileManager = new SoftCircleManager();
@@ -26,7 +26,6 @@ public class SoftCircleApp extends MediumApp {
         int pointCount = this.ptCountInput.getValue();
         medium = new SoftCircleMedium(pointCount);
         canning.setMedium(medium);
-        needRecanning = true;
-        showVertexSet();
+        drawPane.setMedium(medium);
     }
 }

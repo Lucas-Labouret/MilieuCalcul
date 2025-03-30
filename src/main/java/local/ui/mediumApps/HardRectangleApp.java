@@ -21,7 +21,7 @@ public class HardRectangleApp extends MediumApp {
 
         this.width = width;
 
-        topToolBar.getItems().addAll(ptCountInput, widthInput, gen, tri, fpo, can);
+        topToolBar.getItems().addAll(ptCountInput, widthInput, gen, tri, fpo);
         setTop(topToolBar);
 
         savefileManager = new HardRectangleManager();
@@ -33,7 +33,6 @@ public class HardRectangleApp extends MediumApp {
         int vertexWidth = this.widthInput.getValue();
         medium = new HardRectangleMedium(width, vertexWidth, pointCount);
         canning.setMedium(medium);
-        needRecanning = true;
-        showVertexSet();
+        drawPane.setMedium(medium);
     }
 }

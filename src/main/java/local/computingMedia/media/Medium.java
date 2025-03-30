@@ -74,6 +74,12 @@ public abstract class Medium extends HashSet<Vertex> {
         for (int i=0; i<iterations; i++) FPO.fpoIteration(this);
     }
 
+    public HashSet<Edge> getEdges(){
+        HashSet<Edge> edges = new HashSet<>();
+        for (Vertex vertex : this) for (Vertex neighbor : vertex.getNeighbors())
+            edges.add(new Edge(vertex, neighbor));
+        return edges;
+    }
     public HashSet<Face> getFaces(){
         HashSet<Face> faces = new HashSet<>();
         for (Vertex vertex : this){
