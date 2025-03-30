@@ -1,6 +1,5 @@
 package local.ui.utils;
 
-import java.util.HashSet;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -14,15 +13,20 @@ import javafx.scene.shape.Rectangle;
 import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 import local.computingMedia.media.Medium;
-import local.computingMedia.sLoci.Edge;
-import local.computingMedia.sLoci.Face;
-import local.computingMedia.sLoci.Vertex;
+import local.computingMedia.sLoci.*;
 import local.computingMedia.tLoci.*;
 
 public class MediumDrawer extends Pane {
     private static final String BG_STYLE = "-fx-background-color: #FFFFFF;";
     private static final int SLOCI_RADIUS = 5;
     private static final double TLOCI_SPACING = 0.33;
+
+    private static final Color EF_COLOR = Color.LIGHTPINK;
+    private static final Color FE_COLOR = Color.DEEPPINK;
+    private static final Color EV_COLOR = Color.DEEPSKYBLUE;
+    private static final Color VE_COLOR = Color.DARKBLUE;
+    private static final Color FV_COLOR = Color.RED;
+    private static final Color VF_COLOR = Color.ORANGE;
 
     private boolean SHOW_VERTICES = true;
     private boolean SHOW_EDGES = true;
@@ -34,6 +38,12 @@ public class MediumDrawer extends Pane {
     private boolean SHOW_EV_VE = false;
     private boolean SHOW_FV_VF = false;
 
+    private boolean SHOW_TRANSFER_EF_FE = false;
+    private boolean SHOW_TRANSFER_FE_EF = false;
+    private boolean SHOW_TRANSFER_EV_VE = false;
+    private boolean SHOW_TRANSFER_VE_EV = false;
+    private boolean SHOW_TRANSFER_FV_VF = false;
+    private boolean SHOW_TRANSFER_VF_FV = false;
 
     double xmax, ymax, xmin, ymin,
            width, height,
@@ -49,7 +59,6 @@ public class MediumDrawer extends Pane {
     Medium medium;
     Canning canning;
 
-    HashSet<Vertex> visited;
     Vertex selection;
 
     public MediumDrawer(Medium medium, Canning canning) {
@@ -99,6 +108,31 @@ public class MediumDrawer extends Pane {
     }
     public void setShowFvVf(boolean showFvVf) {
         SHOW_FV_VF = showFvVf;
+        redraw();
+    }
+
+    public void setShowTransferEfFe(boolean showTransferEfFe) {
+        SHOW_TRANSFER_EF_FE = showTransferEfFe;
+        redraw();
+    }
+    public void setShowTransferFeEf(boolean showTransferFeEf) {
+        SHOW_TRANSFER_FE_EF = showTransferFeEf;
+        redraw();
+    }
+    public void setShowTransferEvVe(boolean showTransferEvVe) {
+        SHOW_TRANSFER_EV_VE = showTransferEvVe;
+        redraw();
+    }
+    public void setShowTransferVeEv(boolean showTransferVeEv) {
+        SHOW_TRANSFER_VE_EV = showTransferVeEv;
+        redraw();
+    }
+    public void setShowTransferFvVf(boolean showTransferFvVf) {
+        SHOW_TRANSFER_FV_VF = showTransferFvVf;
+        redraw();
+    }
+    public void setShowTransferVfFv(boolean showTransferVfFv) {
+        SHOW_TRANSFER_VF_FV = showTransferVfFv;
         redraw();
     }
 
@@ -153,6 +187,12 @@ public class MediumDrawer extends Pane {
         if (SHOW_EDGES && EDGES_AS_LINES ) drawLines();
         if (SHOW_EDGES && !EDGES_AS_LINES) drawEdges();
         if (SHOW_FACES                   ) drawFaces();
+        if (SHOW_TRANSFER_EF_FE          ) drawTransferEfFe();
+        if (SHOW_TRANSFER_FE_EF          ) drawTransferFeEf();
+        if (SHOW_TRANSFER_EV_VE          ) drawTransferEvVe();
+        if (SHOW_TRANSFER_VE_EV          ) drawTransferVeEv();
+        if (SHOW_TRANSFER_FV_VF          ) drawTransferFvVf();
+        if (SHOW_TRANSFER_VF_FV          ) drawTransferVfFv();
         if (SHOW_CANNING                 ) drawCanning();
         if (SHOW_EF_FE                   ) drawEfFe();
         if (SHOW_EV_VE                   ) drawEvVe();
@@ -280,7 +320,7 @@ public class MediumDrawer extends Pane {
         double x = (v.getX() - xmin) * scale + offsetX;
         double y = (v.getY() - ymin) * scale + offsetY;
 
-        Circle circle = new Circle(x, y, SLOCI_RADIUS/2);
+        Circle circle = new Circle(x, y, SLOCI_RADIUS/2.);
         circle.setFill(color);
         getChildren().add(circle);
     }
@@ -289,13 +329,13 @@ public class MediumDrawer extends Pane {
         for (Ef ef: canning.getEf()){
             Vertex v1 = ef.e().getCenter();
             Vertex v2 = ef.f().getCentroid();
-            drawTLoci(v1, v2, Color.LIGHTPINK);
+            drawTLoci(v1, v2, EF_COLOR);
         }
 
         for (Fe fe : canning.getFe()){
             Vertex v1 = fe.f().getCentroid();
             Vertex v2 = fe.e().getCenter();
-            drawTLoci(v1, v2, Color.DEEPPINK);
+            drawTLoci(v1, v2, FE_COLOR);
         }
     }
 
@@ -303,13 +343,13 @@ public class MediumDrawer extends Pane {
         for (Ev ev : canning.getEv()){
             Vertex v1 = ev.e().getCenter();
             Vertex v2 = ev.v();
-            drawTLoci(v1, v2, Color.DEEPSKYBLUE);
+            drawTLoci(v1, v2, EV_COLOR);
         }
 
         for (Ve ve : canning.getVe()){
             Vertex v1 = ve.v();
             Vertex v2 = ve.e().getCenter();
-            drawTLoci(v1, v2, Color.DARKBLUE);
+            drawTLoci(v1, v2, VE_COLOR);
         }
     }
 
@@ -317,13 +357,122 @@ public class MediumDrawer extends Pane {
         for (Fv fv : canning.getFv()){
             Vertex v1 = fv.f().getCentroid();
             Vertex v2 = fv.v();
-            drawTLoci(v1, v2, Color.RED);
+            drawTLoci(v1, v2, FV_COLOR);
         }
 
         for (Vf vf : canning.getVf()){
             Vertex v1 = vf.v();
             Vertex v2 = vf.f().getCentroid();
-            drawTLoci(v1, v2, Color.ORANGE);
+            drawTLoci(v1, v2, VF_COLOR);
+        }
+    }
+
+    private void drawTransfer(Vertex start, Vertex end, Color color1, Color color2) {
+        double xStart = (start.getX() - xmin) * scale + offsetX;
+        double yStart = (start.getY() - ymin) * scale + offsetY;
+        double xEnd = (end.getX() - xmin) * scale + offsetX;
+        double yEnd = (end.getY() - ymin) * scale + offsetY;
+        Line line = new Line(xStart, yStart, xEnd, yEnd);
+
+        double gradientStartX = xStart / paneWidth;
+        double gradientStartY = yStart / paneHeight;
+        double gradientEndX = xEnd / paneWidth;
+        double gradientEndY = yEnd / paneHeight;
+        Stop[] stops = new Stop[] {new Stop(0, color1), new Stop(1, color2)};
+        LinearGradient gradient = new LinearGradient(
+                gradientStartX, gradientStartY, gradientEndX, gradientEndY, true, CycleMethod.NO_CYCLE, stops);
+        line.setStroke(gradient);
+        line.setStrokeWidth(1);
+
+        getChildren().add(line);
+    }
+
+    private void drawTransferEfFe(){
+        for (Ef ef : canning.getEf()){
+            Vertex v1 = ef.e().getCenter();
+            Vertex v2 = ef.f().getCentroid();
+            Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
+
+            Fe fe = canning.getEfFeCommunication().get(ef);
+            Vertex v3 = fe.f().getCentroid();
+            Vertex v4 = fe.e().getCenter();
+            Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
+
+            drawTransfer(start, end, EF_COLOR, FE_COLOR);
+        }
+    }
+
+    private void drawTransferFeEf(){
+        for (Fe fe : canning.getFe()){
+            Vertex v1 = fe.f().getCentroid();
+            Vertex v2 = fe.e().getCenter();
+            Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
+
+            Ef ef = canning.getFeEfCommunication().get(fe);
+            Vertex v3 = ef.e().getCenter();
+            Vertex v4 = fe.f().getCentroid();
+            Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
+
+            drawTransfer(start, end, FE_COLOR, EF_COLOR);
+        }
+    }
+
+    private void drawTransferEvVe(){
+        for (Ev ev : canning.getEv()){
+            Vertex v1 = ev.e().getCenter();
+            Vertex v2 = ev.v();
+            Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
+
+            Ve ve = canning.getEvVeCommunication().get(ev);
+            Vertex v3 = ve.v();
+            Vertex v4 = ev.e().getCenter();
+            Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
+
+            drawTransfer(start, end, EV_COLOR, VE_COLOR);
+        }
+    }
+
+    private void drawTransferVeEv(){
+        for (Ve ve : canning.getVe()){
+            Vertex v1 = ve.v();
+            Vertex v2 = ve.e().getCenter();
+            Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
+
+            Ev ev = canning.getVeEvCommunication().get(ve);
+            Vertex v3 = ev.e().getCenter();
+            Vertex v4 = ev.v();
+            Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
+
+            drawTransfer(start, end, VE_COLOR, EV_COLOR);
+        }
+    }
+
+    private void drawTransferFvVf(){
+        for (Fv fv : canning.getFv()){
+            Vertex v1 = fv.f().getCentroid();
+            Vertex v2 = fv.v();
+            Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
+
+            Vf vf = canning.getFvVfCommunication().get(fv);
+            Vertex v3 = vf.v();
+            Vertex v4 = vf.f().getCentroid();
+            Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
+            drawTransfer(start, end, FV_COLOR, VF_COLOR);
+        }
+    }
+
+    private void drawTransferVfFv(){
+        for (Vf vf : canning.getVf()){
+            Vertex v1 = vf.v();
+            Vertex v2 = vf.f().getCentroid();
+            Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
+
+            Fv fv = canning.getVfFvCommunication().get(vf);
+            Vertex v3 = fv.f().getCentroid();
+            Vertex v4 = fv.v();
+            Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
+
+            drawTransfer(start, end, VF_COLOR, FV_COLOR);
         }
     }
 

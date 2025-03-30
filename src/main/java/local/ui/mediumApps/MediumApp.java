@@ -3,6 +3,7 @@ package local.ui.mediumApps;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.VertexCanningCompleter;
@@ -156,6 +157,13 @@ public abstract class MediumApp extends BorderPane {
         CheckBox showEvVe = new CheckBox("Show Ev/Ve");
         CheckBox showFvVf = new CheckBox("Show Fv/Vf");
 
+        CheckBox transferEfFe = new CheckBox("Ef -> Fe");
+        CheckBox transferFeEf = new CheckBox("Fe -> Ef");
+        CheckBox transferEvVe = new CheckBox("Ev -> Ve");
+        CheckBox transferVeEv = new CheckBox("Ve -> Ev");
+        CheckBox transferFvVf = new CheckBox("Fv -> Vf");
+        CheckBox transferVfFv = new CheckBox("Vf -> Fv");
+
         showVertices.setSelected(true);
         showEdges.setSelected(true);
         edgesAsLines.setSelected(true);
@@ -166,6 +174,13 @@ public abstract class MediumApp extends BorderPane {
         showEvVe.setSelected(false);
         showFvVf.setSelected(false);
 
+        transferEfFe.setSelected(false);
+        transferFeEf.setSelected(false);
+        transferEvVe.setSelected(false);
+        transferVeEv.setSelected(false);
+        transferFvVf.setSelected(false);
+        transferVfFv.setSelected(false);
+
         showVertices.allowIndeterminateProperty().set(false);
         showEdges.allowIndeterminateProperty().set(false);
         edgesAsLines.allowIndeterminateProperty().set(false);
@@ -175,6 +190,13 @@ public abstract class MediumApp extends BorderPane {
         showEfFe.allowIndeterminateProperty().set(false);
         showEvVe.allowIndeterminateProperty().set(false);
         showFvVf.allowIndeterminateProperty().set(false);
+
+        transferEfFe.allowIndeterminateProperty().set(false);
+        transferFeEf.allowIndeterminateProperty().set(false);
+        transferEvVe.allowIndeterminateProperty().set(false);
+        transferVeEv.allowIndeterminateProperty().set(false);
+        transferFvVf.allowIndeterminateProperty().set(false);
+        transferVfFv.allowIndeterminateProperty().set(false);
 
         showVertices.selectedProperty().addListener((obs, oldVal, newVal) -> {
             drawPane.setShowVertices(newVal);
@@ -200,6 +222,25 @@ public abstract class MediumApp extends BorderPane {
         });
         showFvVf.selectedProperty().addListener((obs, oldVal, newVal) -> {
             drawPane.setShowFvVf(newVal);
+        });
+
+        transferEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowTransferEfFe(newVal);
+        });
+        transferFeEf.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowTransferFeEf(newVal);
+        });
+        transferEvVe.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowTransferEvVe(newVal);
+        });
+        transferVeEv.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowTransferVeEv(newVal);
+        });
+        transferFvVf.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowTransferFvVf(newVal);
+        });
+        transferVfFv.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowTransferVfFv(newVal);
         });
 
         //Canning
@@ -259,33 +300,42 @@ public abstract class MediumApp extends BorderPane {
 
 
         //Add to side panel
-        sidePanel.getChildren().addAll(
-                new Label("Graphics"),
+        VBox graphics = new VBox(
+                new Label("Loci"),
                 showVertices,
                 showEdges,
-                new HBox(new Text("    ("), edgesAsLines, new Text(")")),
+                new HBox(new Label("    ("), edgesAsLines, new Label(")")),
                 showFaces,
                 showCanning,
                 showEfFe,
                 showEvVe,
-                showFvVf
+                showFvVf,
+                new Label("Transfers"),
+                transferEfFe,
+                transferFeEf,
+                transferEvVe,
+                transferVeEv,
+                transferFvVf,
+                transferVfFv
         );
+        graphics.setSpacing(5);
+        sidePanel.getChildren().add(new TitledPane("Graphics", graphics));
 
-        sidePanel.getChildren().addAll(
-                new Separator(),
-                new Label("Canning"),
+        VBox canning = new VBox(
                 defaultCanning,
                 roundedCoordCanning,
                 topDistanceXSortedCanning
         );
+        canning.setSpacing(5);
+        sidePanel.getChildren().add(new TitledPane("Canning", canning));
 
-        sidePanel.getChildren().addAll(
-                new Separator(),
-                new Label("FPO"),
+        VBox fpo = new VBox(
                 setIter,
                 iterInput,
                 toConvergence,
                 convInput
         );
+        fpo.setSpacing(5);
+        sidePanel.getChildren().add(new TitledPane("FPO", fpo));
     }
 }
