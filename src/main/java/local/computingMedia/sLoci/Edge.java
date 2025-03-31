@@ -87,7 +87,7 @@ public class Edge {
         if (angle1 < 0) angle1 += 2 * Math.PI;
         if (angle2 < 0) angle2 += 2 * Math.PI;
 
-        return Double.compare(angle2, angle1);
+        return Double.compare(angle1, angle2);
     }
 
     public static int sortCCW(Vertex v1, Vertex v2, Vertex va, Vertex vb) {

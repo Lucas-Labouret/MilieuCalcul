@@ -76,22 +76,11 @@ public class Vertex {
     public HashSet<Vertex> getNeighbors() { return neighbors; }
 
     public HashSet<Face> getSurroundingFaces() {
-        HashSet<Face> t = new HashSet<>();
-        getSurroundingFacesIn(t);
-        return t;
-    }
-
-    public void getSurroundingFacesIn(Set<Face> faces) {
-        ArrayList<Vertex> sortedNeighbors = new ArrayList<>(this.getNeighbors());
-        sortedNeighbors.sort(new Medium.ClockWise(this));
-        int nbNeighbours = sortedNeighbors.size();
-        for (int i = 0; i < nbNeighbours; i++) {
-            Vertex neighbor1 = sortedNeighbors.get(i % nbNeighbours);
-            Vertex neighbor2 = sortedNeighbors.get((i + 1) % nbNeighbours);
-            if (neighbor1.hasNeighbors(neighbor2)) {
-                faces.add(new Face(this, neighbor1, neighbor2));
-            }
+        HashSet<Face> faces = new HashSet<>();
+        for (Vertex n1 : neighbors) for (Vertex n2 : neighbors) {
+            if (n1.hasNeighbors(n2)) faces.add(new Face(this, n1, n2));
         }
+        return faces;
     }
 
     @Override

@@ -87,14 +87,14 @@ public class RoundedCoordVCanning implements VertexCanning {
 
         int yMax = 0, xMax = 0;
         for (VertexCoord coord : coordVertexMap.keySet()){
-            if (coord.X() > yMax) yMax = coord.X();
-            if (coord.Y() > xMax) xMax = coord.Y();
+            if (coord.Y() > yMax) yMax = coord.Y();
+            if (coord.X() > xMax) xMax = coord.X();
         }
         yMax++; xMax++;
 
         Vertex[][] grid = new Vertex[yMax][xMax];
         for (VertexCoord coord : coordVertexMap.keySet()){
-            grid[coord.X()][coord.Y()] = coordVertexMap.get(coord);
+            grid[coord.Y()][coord.X()] = coordVertexMap.get(coord);
         }
         width = xMax;
         height = yMax;

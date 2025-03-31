@@ -1,21 +1,21 @@
 package local.computingMedia.cannings.coords.sCoords;
 
-public record VertexCoord(int X, int Y) {
+public record VertexCoord(int Y, int X) {
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
         if (!(o instanceof VertexCoord(int i1, int j1))) return false;
-        return X == i1 && Y == j1;
+        return Y == i1 && X == j1;
     }
 
     @Override
     public int hashCode() {
-        return Y < X ? X * X + Y : Y * Y + X + Y;
+        return X < Y ? Y * Y + X : X * X + Y + X;
     }
 
     @Override
     public String toString() {
-        return "(" + X + ", " + Y + ")";
+        return "(" + Y + ", " + X + ")";
     }
 
     public int compareTo(VertexCoord other){

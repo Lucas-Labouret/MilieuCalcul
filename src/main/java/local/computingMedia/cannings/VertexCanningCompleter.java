@@ -13,9 +13,6 @@ public class VertexCanningCompleter implements Canning {
     private Medium medium;
     private final VertexCanning vertexCanner;
 
-    @Override public int getWidth() { return vertexCanner.getWidth(); }
-    @Override public int getHeight() { return vertexCanner.getHeight(); }
-
     private HashMap<Vertex, VertexCoord> vertexCanning;
     private HashMap<Edge, EdgeCoord> edgeCanning;
     private HashMap<Face, FaceCoord> faceCanning;
@@ -37,30 +34,37 @@ public class VertexCanningCompleter implements Canning {
     private HashMap<Fv, Vf> facingFvVf;
     private HashMap<Vf, Fv> facingVfFv;
 
+    @Override public int getWidth() { return vertexCanner.getWidth(); }
+    @Override public int getHeight() { return vertexCanner.getHeight(); }
+
     @Override public HashMap<Vertex, VertexCoord> getVertexCanning() { return vertexCanning; }
     @Override public HashMap<Edge  , EdgeCoord  > getEdgeCanning()   { return edgeCanning;   }
     @Override public HashMap<Face  , FaceCoord  > getFaceCanning()   { return faceCanning;   }
 
     @Override public HashMap<Ef, EfCoord> getEfCanning() { return efCanning; }
-    @Override public HashMap<Ev, EvCoord> getEvCanning() { return evCanning; }
     @Override public HashMap<Fe, FeCoord> getFeCanning() { return feCanning; }
-    @Override public HashMap<Fv, FvCoord> getFvCanning() { return fvCanning; }
+    @Override public HashMap<Ev, EvCoord> getEvCanning() { return evCanning; }
     @Override public HashMap<Ve, VeCoord> getVeCanning() { return veCanning; }
+    @Override public HashMap<Fv, FvCoord> getFvCanning() { return fvCanning; }
     @Override public HashMap<Vf, VfCoord> getVfCanning() { return vfCanning; }
 
-    @Override public HashMap<Ve, Ev> getVeEvCommunication() { return facingVeEv; }
-    @Override public HashMap<Ev, Ve> getEvVeCommunication() { return facingEvVe; }
-    @Override public HashMap<Vf, Fv> getVfFvCommunication() { return facingVfFv; }
-    @Override public HashMap<Fv, Vf> getFvVfCommunication() { return facingFvVf; }
     @Override public HashMap<Ef, Fe> getEfFeCommunication() { return facingEfFe; }
     @Override public HashMap<Fe, Ef> getFeEfCommunication() { return facingFeEf; }
+    @Override public HashMap<Ev, Ve> getEvVeCommunication() { return facingEvVe; }
+    @Override public HashMap<Ve, Ev> getVeEvCommunication() { return facingVeEv; }
+    @Override public HashMap<Fv, Vf> getFvVfCommunication() { return facingFvVf; }
+    @Override public HashMap<Vf, Fv> getVfFvCommunication() { return facingVfFv; }
 
-    @Override public HashSet<Ef> getEf() { return new HashSet<>(facingEfFe.keySet()); }
-    @Override public HashSet<Fe> getFe() { return new HashSet<>(facingFeEf.keySet()); }
-    @Override public HashSet<Ev> getEv() { return new HashSet<>(facingEvVe.keySet()); }
-    @Override public HashSet<Ve> getVe() { return new HashSet<>(facingVeEv.keySet()); }
-    @Override public HashSet<Fv> getFv() { return new HashSet<>(facingFvVf.keySet()); }
-    @Override public HashSet<Vf> getVf() { return new HashSet<>(facingVfFv.keySet()); }
+    @Override public HashSet<Vertex> getVertices() { return new HashSet<>(vertexCanning.keySet()); }
+    @Override public HashSet<Edge>   getEdges()    { return new HashSet<>(edgeCanning.keySet());   }
+    @Override public HashSet<Face>   getFaces()    { return new HashSet<>(faceCanning.keySet());   }
+
+    @Override public HashSet<Ef> getEf() { return new HashSet<>(efCanning.keySet()); }
+    @Override public HashSet<Fe> getFe() { return new HashSet<>(feCanning.keySet()); }
+    @Override public HashSet<Ev> getEv() { return new HashSet<>(evCanning.keySet()); }
+    @Override public HashSet<Ve> getVe() { return new HashSet<>(veCanning.keySet()); }
+    @Override public HashSet<Fv> getFv() { return new HashSet<>(fvCanning.keySet()); }
+    @Override public HashSet<Vf> getVf() { return new HashSet<>(vfCanning.keySet()); }
 
     @Override public void setMedium(Medium medium) {
         this.medium = medium;
@@ -108,13 +112,10 @@ public class VertexCanningCompleter implements Canning {
             }
         }
     }
-
     private void fillManagedFaces() {
         vertexToManagedFaces = new HashMap<>();
-
         for (Vertex vertex: medium) {
             vertexToManagedFaces.put(vertex, new HashSet<>());
-
             for (Face face: vertex.getSurroundingFaces()) {
                 ArrayList<Vertex> faceVertices = new ArrayList<>(face.getVertices());
                 faceVertices.sort((v1, v2) -> vertexCanning.get(v1).compareTo(vertexCanning.get(v2)));
@@ -133,7 +134,6 @@ public class VertexCanningCompleter implements Canning {
         sCanning();
         tCanning();
     }
-
     private void sCanning(){
         for (Vertex vertex: medium) {
             VertexCoord vertexCoord = vertexCanning.get(vertex);
@@ -146,7 +146,7 @@ public class VertexCanningCompleter implements Canning {
             for (int i = 0; i < sortedEdges.size(); i++) {
                 Edge edge = sortedEdges.get(i);
                 VertexCoord neighborCoord = vertexCanning.get(edge.getNeighbor(vertex));
-                if (vertexCoord.Y() == neighborCoord.Y() && vertexCoord.X() < neighborCoord.X()) {
+                if (vertexCoord.X() == neighborCoord.X() && vertexCoord.Y() < neighborCoord.Y()) {
                     firstEdgeIndex = i;
                     break;
                 }
@@ -163,7 +163,7 @@ public class VertexCanningCompleter implements Canning {
             for (int i = 0; i < sortedFaces.size(); i++) {
                 for (Vertex faceVertex: sortedFaces.get(i).getVertices()) {
                     VertexCoord neighborCoord = vertexCanning.get(faceVertex);
-                    if (vertexCoord.Y() == neighborCoord.Y() && vertexCoord.X() < neighborCoord.X()) {
+                    if (vertexCoord.X() == neighborCoord.X() && vertexCoord.Y() < neighborCoord.Y()) {
                         firstFaceIndex = i;
                         break;
                     }
@@ -176,7 +176,6 @@ public class VertexCanningCompleter implements Canning {
             }
         }
     }
-
     private void tCanning(){
         for (Vertex vertex: medium) {
             VertexCoord vertexCoord = vertexCanning.get(vertex);

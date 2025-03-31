@@ -4,7 +4,6 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
 import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.VertexCanningCompleter;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordVCanning;
@@ -145,17 +144,27 @@ public abstract class MediumApp extends BorderPane {
         drawPane.redraw();
     }
 
+    private HBox subCheckBox(CheckBox checkBox) {
+        return new HBox(new Label("    ("), checkBox, new Label(")"));
+    }
     private void fillSidePanel() {
         //Graphics
-        CheckBox showVertices = new CheckBox("Show Vertices");
-        CheckBox showEdges = new CheckBox("Show Edges");
+        CheckBox showVertices = new CheckBox("Vertices");
+        CheckBox showVerticesCoords = new CheckBox("coordinates");
+        CheckBox showEdges = new CheckBox("Edges");
         CheckBox edgesAsLines = new CheckBox("as lines");
-        CheckBox showFaces = new CheckBox("Show Faces");
+        CheckBox showEdgesCoords = new CheckBox("coordinates");
+        CheckBox showFaces = new CheckBox("Faces");
+        CheckBox showFacesCoords = new CheckBox("coordinates");
 
-        CheckBox showCanning = new CheckBox("Show Canning");
-        CheckBox showEfFe = new CheckBox("Show Ef/Fe");
-        CheckBox showEvVe = new CheckBox("Show Ev/Ve");
-        CheckBox showFvVf = new CheckBox("Show Fv/Vf");
+        CheckBox showEfFe = new CheckBox("Ef/Fe");
+        CheckBox showEfFeCoords = new CheckBox("coordinates");
+        CheckBox showEvVe = new CheckBox("Ev/Ve");
+        CheckBox showEvVeCoords = new CheckBox("coordinates");
+        CheckBox showFvVf = new CheckBox("Fv/Vf");
+        CheckBox showFvVfCoords = new CheckBox("coordinates");
+
+        CheckBox showCanning = new CheckBox("Canning");
 
         CheckBox transferEfFe = new CheckBox("Ef -> Fe");
         CheckBox transferFeEf = new CheckBox("Fe -> Ef");
@@ -165,14 +174,21 @@ public abstract class MediumApp extends BorderPane {
         CheckBox transferVfFv = new CheckBox("Vf -> Fv");
 
         showVertices.setSelected(true);
+        showVerticesCoords.setSelected(false);
         showEdges.setSelected(true);
         edgesAsLines.setSelected(true);
+        showEdgesCoords.setSelected(false);
         showFaces.setSelected(false);
+        showFacesCoords.setSelected(false);
+
+        showEfFe.setSelected(false);
+        showEfFeCoords.setSelected(false);
+        showEvVe.setSelected(false);
+        showEvVeCoords.setSelected(false);
+        showFvVf.setSelected(false);
+        showFvVfCoords.setSelected(false);
 
         showCanning.setSelected(false);
-        showEfFe.setSelected(false);
-        showEvVe.setSelected(false);
-        showFvVf.setSelected(false);
 
         transferEfFe.setSelected(false);
         transferFeEf.setSelected(false);
@@ -182,14 +198,21 @@ public abstract class MediumApp extends BorderPane {
         transferVfFv.setSelected(false);
 
         showVertices.allowIndeterminateProperty().set(false);
+        showVerticesCoords.allowIndeterminateProperty().set(false);
         showEdges.allowIndeterminateProperty().set(false);
         edgesAsLines.allowIndeterminateProperty().set(false);
+        showEdgesCoords.allowIndeterminateProperty().set(false);
         showFaces.allowIndeterminateProperty().set(false);
+        showFacesCoords.allowIndeterminateProperty().set(false);
+
+        showEfFe.allowIndeterminateProperty().set(false);
+        showEfFeCoords.allowIndeterminateProperty().set(false);
+        showEvVe.allowIndeterminateProperty().set(false);
+        showEvVeCoords.allowIndeterminateProperty().set(false);
+        showFvVf.allowIndeterminateProperty().set(false);
+        showFvVfCoords.allowIndeterminateProperty().set(false);
 
         showCanning.allowIndeterminateProperty().set(false);
-        showEfFe.allowIndeterminateProperty().set(false);
-        showEvVe.allowIndeterminateProperty().set(false);
-        showFvVf.allowIndeterminateProperty().set(false);
 
         transferEfFe.allowIndeterminateProperty().set(false);
         transferFeEf.allowIndeterminateProperty().set(false);
@@ -201,27 +224,46 @@ public abstract class MediumApp extends BorderPane {
         showVertices.selectedProperty().addListener((obs, oldVal, newVal) -> {
             drawPane.setShowVertices(newVal);
         });
+        showVerticesCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowVerticesCoords(newVal);
+        });
         showEdges.selectedProperty().addListener((obs, oldVal, newVal) -> {
             drawPane.setShowEdges(newVal);
         });
         edgesAsLines.selectedProperty().addListener((obs, oldVal, newVal) -> {
             drawPane.setEdgesAsLines(newVal);
         });
+        showEdgesCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowEdgesCoords(newVal);
+        });
         showFaces.selectedProperty().addListener((obs, oldVal, newVal) -> {
             drawPane.setShowFaces(newVal);
         });
-
-        showCanning.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowCanning(newVal);
+        showFacesCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowFacesCoords(newVal);
         });
+
         showEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> {
             drawPane.setShowEfFe(newVal);
+        });
+        showEfFeCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowEfFeCoords(newVal);
         });
         showEvVe.selectedProperty().addListener((obs, oldVal, newVal) -> {
             drawPane.setShowEvVe(newVal);
         });
+        showEvVeCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowEvVeCoords(newVal);
+        });
         showFvVf.selectedProperty().addListener((obs, oldVal, newVal) -> {
             drawPane.setShowFvVf(newVal);
+        });
+        showFvVfCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowFvVfCoords(newVal);
+        });
+
+        showCanning.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            drawPane.setShowCanning(newVal);
         });
 
         transferEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> {
@@ -248,7 +290,7 @@ public abstract class MediumApp extends BorderPane {
 
         RadioButton defaultCanning = new RadioButton("Default");
         RadioButton roundedCoordCanning = new RadioButton("Rounded Coordinates");
-        RadioButton topDistanceXSortedCanning = new RadioButton("Top Distance X Sorted");
+        RadioButton topDistanceXSortedCanning = new RadioButton("Top Distance Y Sorted");
 
         defaultCanning.setToggleGroup(canGroup);
         roundedCoordCanning.setToggleGroup(canGroup);
@@ -303,13 +345,19 @@ public abstract class MediumApp extends BorderPane {
         VBox graphics = new VBox(
                 new Label("Loci"),
                 showVertices,
+                subCheckBox(showVerticesCoords),
                 showEdges,
-                new HBox(new Label("    ("), edgesAsLines, new Label(")")),
+                subCheckBox(edgesAsLines),
+                subCheckBox(showEdgesCoords),
                 showFaces,
-                showCanning,
+                subCheckBox(showFacesCoords),
                 showEfFe,
+                subCheckBox(showEfFeCoords),
                 showEvVe,
+                subCheckBox(showEvVeCoords),
                 showFvVf,
+                subCheckBox(showFvVfCoords),
+                showCanning,
                 new Label("Transfers"),
                 transferEfFe,
                 transferFeEf,

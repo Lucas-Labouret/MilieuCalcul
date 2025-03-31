@@ -29,12 +29,12 @@ public class MasksComputer {
             VeCoord veCoord = veCoords.get(ve);
             EvCoord evCoord = evCoords.get(ev);
 
-            int maskLine = veCoord.vertex().Y();
+            int maskLine = veCoord.vertex().X();
             masks.get(maskLine).add(new EvCoord(
                     evCoord.side(),
                     evCoord.edge().theta() - veCoord.theta(),
-                    evCoord.edge().vertex().X() - veCoord.vertex().X(),
-                    evCoord.edge().vertex().Y() - veCoord.vertex().Y()
+                    evCoord.edge().vertex().Y() - veCoord.vertex().Y(),
+                    evCoord.edge().vertex().X() - veCoord.vertex().X()
             ));
         }
 

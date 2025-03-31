@@ -6,6 +6,7 @@ import local.computingMedia.cannings.coords.tCoords.*;
 import local.computingMedia.cannings.vertexCannings.VertexCanning;
 import local.computingMedia.sLoci.Edge;
 import local.computingMedia.sLoci.Face;
+import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.tLoci.*;
 
 import java.util.HashMap;
@@ -27,6 +28,10 @@ public interface Canning extends VertexCanning {
     HashMap<Fv, Vf> getFvVfCommunication();
     HashMap<Ef, Fe> getEfFeCommunication();
     HashMap<Fe, Ef> getFeEfCommunication();
+
+    HashSet<Vertex> getVertices();
+    HashSet<Edge> getEdges();
+    HashSet<Face> getFaces();
 
     HashSet<Ef> getEf();
     HashSet<Fe> getFe();

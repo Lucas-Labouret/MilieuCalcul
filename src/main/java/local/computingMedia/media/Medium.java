@@ -83,7 +83,7 @@ public abstract class Medium extends HashSet<Vertex> {
     public HashSet<Face> getFaces(){
         HashSet<Face> faces = new HashSet<>();
         for (Vertex vertex : this){
-            vertex.getSurroundingFacesIn(faces);
+            faces.addAll(vertex.getSurroundingFaces());
         }
         return faces;
     }
