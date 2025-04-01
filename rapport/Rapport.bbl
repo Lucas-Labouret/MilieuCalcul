@@ -1,0 +1,88 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.2 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nty/global//global/global}
+  \entry{FPO}{inproceedings}{}
+    \name{author}{3}{}{%
+      {{hash=ST}{%
+         family={Schl\"{o}mer},
+         familyi={S\bibinitperiod},
+         given={Thomas},
+         giveni={T\bibinitperiod},
+      }}%
+      {{hash=HD}{%
+         family={Heck},
+         familyi={H\bibinitperiod},
+         given={Daniel},
+         giveni={D\bibinitperiod},
+      }}%
+      {{hash=DO}{%
+         family={Deussen},
+         familyi={D\bibinitperiod},
+         given={Oliver},
+         giveni={O\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Association for Computing Machinery}%
+    }
+    \keyw{Delaunay triangulations, Poisson-disk, anti-aliasing, blue noise,
+  maximized minimum distance, numerical integration, sampling, trajectory
+  splitting}
+    \strng{namehash}{STHDDO1}
+    \strng{fullhash}{STHDDO1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
+    \field{abstract}{%
+    Efficient sampling often relies on irregular point sets that uniformly
+  cover the sample space. We present a flexible and simple optimization
+  strategy for such point sets. It is based on the idea of increasing the
+  mutual distances by successively moving each point to the "farthest point,"
+  i.e., the location that has the maximum distance from the rest of the point
+  set. We present two iterative algorithms based on this strategy. The first is
+  our main algorithm which distributes points in the plane. Our experimental
+  results show that the resulting distributions have almost optimal blue noise
+  properties and are highly suitable for image plane sampling. The second is a
+  variant of the main algorithm that partitions any point set into equally
+  sized subsets, each with large mutual distances; the resulting partitionings
+  yield improved results in more general integration problems such as those
+  occurring in physically based rendering.%
+    }
+    \field{booktitle}{Proceedings of the ACM SIGGRAPH Symposium on High
+  Performance Graphics}
+    \verb{doi}
+    \verb 10.1145/2018323.2018345
+    \endverb
+    \field{isbn}{9781450308960}
+    \field{pages}{135–142}
+    \field{series}{HPG '11}
+    \field{title}{Farthest-point optimized point sets with maximized minimum
+  distance}
+    \verb{url}
+    \verb https://doi.org/10.1145/2018323.2018345
+    \endverb
+    \list{location}{1}{%
+      {Vancouver, British Columbia, Canada}%
+    }
+    \field{year}{2011}
+    \warn{\item Can't use 'location' + 'address'}
+  \endentry
+\enddatalist
+\endinput

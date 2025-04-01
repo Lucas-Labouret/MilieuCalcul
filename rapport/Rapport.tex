@@ -1,7 +1,12 @@
 \documentclass{article}
 
-\usepackage[]{graphicx}
-\usepackage[]{float}
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage[
+	backend=bibtex
+]{biblatex}
+\addbibresource{refs.bib}
 
 \title{
 	Canning for Amorphous Blob Computing\\
@@ -40,15 +45,25 @@
 
 \subsection{Computing media}
 
+A computing medium is a delaunay-triangulated set of points where each triangle, edge, and point is associated with a "processing element" capable of minimal computation, storing information, and communicating with its neighbors.
+
+Computing media are the  
+
 \subsection{An example of computation : the Voronoï diagram}
 
 \subsection{Objective : Cannings}
 
 \section{Preliminary work}
 
+In this section, I detail some work I did last year during another internship with Mr Gruau to generate media with good properties. While it isn't the main focus of this year's interniship, it is what made it possible in its current form.
+
 \subsection{Delaunay Triangulation}
 
-\subsection{Furthest Point Optimization}
+\subsection{Farthest Point Optimization}
+
+The Farthest Point Optimization algorithm \supercite{FPO} allows for the construction of the irregular yet homogeneous sets of points that we need for blob computing.
+
+One key difference between the original article and my computing that made the implementation of FPO not-so-straightforward is the fact that the article applied the algorithm to sets of points in the unit torus, while the media use bounded subsets of the euclidean plane instead. In particular, I had to adapt the algorithm to work around the existence of a border that is not necessarily regular or convex, and that can contain fixed points that shouldn't be moved even though they can still influence the placement of other points.
 
 
 \renewcommand{\thesection}{\arabic{section}}
@@ -67,5 +82,7 @@
 \subsection{Partial and total cannings}
 
 \subsection{Evaluation}
+
+\printbibliography[heading=bibintoc]
 
 \end{document}

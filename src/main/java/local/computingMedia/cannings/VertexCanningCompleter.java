@@ -258,4 +258,17 @@ public class VertexCanningCompleter implements Canning {
             }
         }
     }
+
+    public String toString(){
+        int i=0;
+        for (Vertex vertex: medium) {
+            vertex.setId(String.valueOf(i++));
+        }
+        return "Ef canning : " + efCanning + "\n" +
+               "Ev canning : " + evCanning + "\n" +
+               "Fe canning : " + feCanning + "\n" +
+               "Fv canning : " + fvCanning + "\n" +
+               "Ve canning : " + veCanning + "\n" +
+               "Vf canning : " + vfCanning + "\n";
+    }
 }
