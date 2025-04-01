@@ -139,7 +139,7 @@ public abstract class MediumApp extends BorderPane {
     public String getFileName() { return fileName.getText(); }
 
     private void updateDrawPaneSize() {
-        drawPane.setPrefWidth(getWidth());
+        drawPane.setPrefWidth(getWidth() - sidePanel.getWidth());
         drawPane.setPrefHeight(getHeight() - topToolBar.getHeight() - botToolBar.getHeight());
         drawPane.redraw();
     }
@@ -221,69 +221,29 @@ public abstract class MediumApp extends BorderPane {
         transferFvVf.allowIndeterminateProperty().set(false);
         transferVfFv.allowIndeterminateProperty().set(false);
 
-        showVertices.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowVertices(newVal);
-        });
-        showVerticesCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowVerticesCoords(newVal);
-        });
-        showEdges.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowEdges(newVal);
-        });
-        edgesAsLines.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setEdgesAsLines(newVal);
-        });
-        showEdgesCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowEdgesCoords(newVal);
-        });
-        showFaces.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowFaces(newVal);
-        });
-        showFacesCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowFacesCoords(newVal);
-        });
+        showVertices.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowVertices(newVal));
+        showVerticesCoords.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowVerticesCoords(newVal));
+        showEdges.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowEdges(newVal));
+        edgesAsLines.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setEdgesAsLines(newVal));
+        showEdgesCoords.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowEdgesCoords(newVal));
+        showFaces.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowFaces(newVal));
+        showFacesCoords.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowFacesCoords(newVal));
 
-        showEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowEfFe(newVal);
-        });
-        showEfFeCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowEfFeCoords(newVal);
-        });
-        showEvVe.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowEvVe(newVal);
-        });
-        showEvVeCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowEvVeCoords(newVal);
-        });
-        showFvVf.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowFvVf(newVal);
-        });
-        showFvVfCoords.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowFvVfCoords(newVal);
-        });
+        showEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowEfFe(newVal));
+        showEfFeCoords.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowEfFeCoords(newVal));
+        showEvVe.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowEvVe(newVal));
+        showEvVeCoords.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowEvVeCoords(newVal));
+        showFvVf.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowFvVf(newVal));
+        showFvVfCoords.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowFvVfCoords(newVal));
 
-        showCanning.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowCanning(newVal);
-        });
+        showCanning.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowCanning(newVal));
 
-        transferEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowTransferEfFe(newVal);
-        });
-        transferFeEf.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowTransferFeEf(newVal);
-        });
-        transferEvVe.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowTransferEvVe(newVal);
-        });
-        transferVeEv.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowTransferVeEv(newVal);
-        });
-        transferFvVf.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowTransferFvVf(newVal);
-        });
-        transferVfFv.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            drawPane.setShowTransferVfFv(newVal);
-        });
+        transferEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferEfFe(newVal));
+        transferFeEf.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferFeEf(newVal));
+        transferEvVe.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferEvVe(newVal));
+        transferVeEv.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferVeEv(newVal));
+        transferFvVf.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferFvVf(newVal));
+        transferVfFv.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferVfFv(newVal));
 
         //Canning
         ToggleGroup canGroup = new ToggleGroup();
@@ -322,9 +282,7 @@ public abstract class MediumApp extends BorderPane {
 
         setIter.setSelected(true);
 
-        fpoGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
-            setFpoToConvergence(newVal == toConvergence);
-        });
+        fpoGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> setFpoToConvergence(newVal == toConvergence));
 
         iterInput.textProperty().addListener((obs, oldVal, newVal) -> {
             int iter;
@@ -367,7 +325,7 @@ public abstract class MediumApp extends BorderPane {
                 transferVfFv
         );
         graphics.setSpacing(5);
-        sidePanel.getChildren().add(new TitledPane("Graphics", graphics));
+        sidePanel.add(new TitledPane("Graphics", graphics));
 
         VBox canning = new VBox(
                 defaultCanning,
@@ -375,7 +333,7 @@ public abstract class MediumApp extends BorderPane {
                 topDistanceXSortedCanning
         );
         canning.setSpacing(5);
-        sidePanel.getChildren().add(new TitledPane("Canning", canning));
+        sidePanel.add(new TitledPane("Canning", canning));
 
         VBox fpo = new VBox(
                 setIter,
@@ -384,6 +342,6 @@ public abstract class MediumApp extends BorderPane {
                 convInput
         );
         fpo.setSpacing(5);
-        sidePanel.getChildren().add(new TitledPane("FPO", fpo));
+        sidePanel.add(new TitledPane("FPO", fpo));
     }
 }

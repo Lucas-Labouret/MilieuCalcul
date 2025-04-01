@@ -9,8 +9,8 @@ public record EvCoord(int side, EdgeCoord edge) {
         }
     }
 
-    public EvCoord(int side, int theta, int X, int Y) {
-        this(side, new EdgeCoord(theta, X, Y));
+    public EvCoord(int side, int theta, int Y, int X) {
+        this(side, new EdgeCoord(theta, Y, X));
     }
 
     @Override

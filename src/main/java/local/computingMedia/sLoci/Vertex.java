@@ -1,7 +1,6 @@
 package local.computingMedia.sLoci;
 
 import local.misc.Orientation;
-import local.computingMedia.media.Medium;
 
 import java.util.*;
 

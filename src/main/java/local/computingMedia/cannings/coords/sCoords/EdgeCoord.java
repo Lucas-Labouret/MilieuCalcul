@@ -1,8 +1,8 @@
 package local.computingMedia.cannings.coords.sCoords;
 
 public record EdgeCoord(int theta, VertexCoord vertex) {
-    public EdgeCoord(int theta, int X, int Y) {
-        this(theta, new VertexCoord(X, Y));
+    public EdgeCoord(int theta, int Y, int X) {
+        this(theta, new VertexCoord(Y, X));
     }
 
     @Override

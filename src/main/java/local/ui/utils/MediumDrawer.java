@@ -34,8 +34,8 @@ public class MediumDrawer extends Pane {
     private static final Color FE_COLOR = Color.DEEPPINK;
     private static final Color EV_COLOR = Color.DEEPSKYBLUE;
     private static final Color VE_COLOR = Color.DARKBLUE;
-    private static final Color FV_COLOR = Color.RED;
-    private static final Color VF_COLOR = Color.ORANGE;
+    private static final Color FV_COLOR = Color.ORANGE;
+    private static final Color VF_COLOR = Color.RED;
 
     private static final Color OFF_COLOR = Color.LIGHTGRAY;
 
@@ -57,6 +57,7 @@ public class MediumDrawer extends Pane {
     private boolean SHOW_FV_VF_COORDS = false;
 
     private boolean SHOW_CANNING = false;
+    private boolean SUCCESSFULLY_CANNED = false;
 
     private boolean SHOW_TRANSFER_EF_FE = false;
     private boolean SHOW_TRANSFER_FE_EF = false;
@@ -182,6 +183,8 @@ public class MediumDrawer extends Pane {
     }
 
     private void initEnv() {
+        SUCCESSFULLY_CANNED = false;
+
         xmax = medium.getMaxX();
         xmin = medium.getMinX();
         ymax = medium.getMaxY();
@@ -201,8 +204,9 @@ public class MediumDrawer extends Pane {
         offsetX = (paneWidth - width * scale) / 2;
         offsetY = (paneHeight - height * scale) / 2;
 
-        if (canning == null) return;
-        canning.can();
+        try { canning.can(); }
+        catch (Exception e) { return; }
+        SUCCESSFULLY_CANNED = true;
 
         for (VertexCoord coord : canning.getVertexCanning().values()) {
             canningWidth = Math.max(canningWidth, coord.X());
@@ -228,20 +232,20 @@ public class MediumDrawer extends Pane {
         initEnv();
         getChildren().clear();
 
-        if (SHOW_EDGES && EDGES_AS_LINES ) drawLines();
-        if (SHOW_EDGES && !EDGES_AS_LINES) drawEdges();
-        if (SHOW_FACES                   ) drawFaces();
-        if (SHOW_TRANSFER_EF_FE          ) drawTransferEfFe();
-        if (SHOW_TRANSFER_FE_EF          ) drawTransferFeEf();
-        if (SHOW_TRANSFER_EV_VE          ) drawTransferEvVe();
-        if (SHOW_TRANSFER_VE_EV          ) drawTransferVeEv();
-        if (SHOW_TRANSFER_FV_VF          ) drawTransferFvVf();
-        if (SHOW_TRANSFER_VF_FV          ) drawTransferVfFv();
-        if (SHOW_CANNING                 ) drawCanning();
-        if (SHOW_EF_FE                   ) drawEfFe();
-        if (SHOW_EV_VE                   ) drawEvVe();
-        if (SHOW_FV_VF                   ) drawFvVf();
-        if (SHOW_VERTICES                ) drawVertices();
+        if (SHOW_EDGES && EDGES_AS_LINES              ) drawLines();
+        if (SHOW_EDGES && !EDGES_AS_LINES             ) drawEdges();
+        if (SHOW_FACES                                ) drawFaces();
+        if (SHOW_TRANSFER_EF_FE && SUCCESSFULLY_CANNED) drawTransferEfFe();
+        if (SHOW_TRANSFER_FE_EF && SUCCESSFULLY_CANNED) drawTransferFeEf();
+        if (SHOW_TRANSFER_EV_VE && SUCCESSFULLY_CANNED) drawTransferEvVe();
+        if (SHOW_TRANSFER_VE_EV && SUCCESSFULLY_CANNED) drawTransferVeEv();
+        if (SHOW_TRANSFER_FV_VF && SUCCESSFULLY_CANNED) drawTransferFvVf();
+        if (SHOW_TRANSFER_VF_FV && SUCCESSFULLY_CANNED) drawTransferVfFv();
+        if (SHOW_CANNING        && SUCCESSFULLY_CANNED) drawCanning();
+        if (SHOW_EF_FE          && SUCCESSFULLY_CANNED) drawEfFe();
+        if (SHOW_EV_VE          && SUCCESSFULLY_CANNED) drawEvVe();
+        if (SHOW_FV_VF          && SUCCESSFULLY_CANNED) drawFvVf();
+        if (SHOW_VERTICES                             ) drawVertices();
     }
 
     private Color getColorFromNeighborCount(int count) {
@@ -252,7 +256,7 @@ public class MediumDrawer extends Pane {
         return VERTEX_LOW_COLOR.interpolate(VERTEX_HIGH_COLOR, sigmoid);
     }
     private void drawVertices() {
-        for (Vertex v : canning.getVertices()) {
+        for (Vertex v : medium) {
             double x = (v.getX() - xmin) * scale + offsetX;
             double y = (v.getY() - ymin) * scale + offsetY;
 
@@ -287,7 +291,7 @@ public class MediumDrawer extends Pane {
                 }
             }
 
-            if (SHOW_VERTICES_COORDS) {
+            if (SHOW_VERTICES_COORDS && SUCCESSFULLY_CANNED) {
                 Text coords = new Text(x-15, y-10, canning.getVertexCanning().get(v).toString());
                 coords.setFill(COORD_COLOR);
                 getChildren().add(coords);
@@ -295,7 +299,7 @@ public class MediumDrawer extends Pane {
         }
     }
     private void drawLines() {
-        for (Edge e : canning.getEdges()) {
+        for (Edge e : medium.getEdges()) {
             Vertex[] ends = e.getEnds().toArray(new Vertex[2]);
             Vertex v1 = ends[0];
             Vertex v2 = ends[1];
@@ -314,7 +318,7 @@ public class MediumDrawer extends Pane {
             Line line = new Line(x1, y1, x2, y2);
             Color color1 = getColorFromNeighborCount(v1.getNeighbors().size());
             Color color2 = getColorFromNeighborCount(v2.getNeighbors().size());
-            if (SHOW_CANNING && canning != null) {
+            if (SHOW_CANNING && SUCCESSFULLY_CANNED) {
                 color1 = OFF_COLOR;
                 color2 = OFF_COLOR;
             }
@@ -326,7 +330,7 @@ public class MediumDrawer extends Pane {
 
             getChildren().add(line);
 
-            if (SHOW_EDGES_COORDS) {
+            if (SHOW_EDGES_COORDS && SUCCESSFULLY_CANNED) {
                 double xmid = (x1 + x2) / 2;
                 double ymid = (y1 + y2) / 2;
 
@@ -337,7 +341,7 @@ public class MediumDrawer extends Pane {
         }
     }
     private void drawEdges() {
-        for (Edge e : canning.getEdges()) {
+        for (Edge e : medium.getEdges()) {
             Vertex center = e.getCenter();
             double x = (center.getX() - xmin) * scale + offsetX;
             double y = (center.getY() - ymin) * scale + offsetY;
@@ -348,11 +352,11 @@ public class MediumDrawer extends Pane {
                     2*SLOCI_RADIUS,
                     2*SLOCI_RADIUS
             );
-            rectangle.setFill((SHOW_CANNING && canning != null)? OFF_COLOR: EDGE_COLOR);
+            rectangle.setFill((SHOW_CANNING && SUCCESSFULLY_CANNED)? OFF_COLOR: EDGE_COLOR);
 
             getChildren().add(rectangle);
 
-            if (SHOW_EDGES_COORDS) {
+            if (SHOW_EDGES_COORDS && SUCCESSFULLY_CANNED) {
                 Text coords = new Text(x-25, y-10, canning.getEdgeCanning().get(e).toString());
                 coords.setFill(COORD_COLOR);
                 getChildren().add(coords);
@@ -360,7 +364,7 @@ public class MediumDrawer extends Pane {
         }
     }
     private void drawFaces() {
-        for (Face f : canning.getFaces()) {
+        for (Face f : medium.getFaces()) {
             Vertex center = f.getCentroid();
             double x = (center.getX() - xmin) * scale + offsetX;
             double y = (center.getY() - ymin) * scale + offsetY;
@@ -370,11 +374,11 @@ public class MediumDrawer extends Pane {
                     x - SLOCI_RADIUS, y + SLOCI_RADIUS,
                     x + SLOCI_RADIUS, y + SLOCI_RADIUS
             );
-            triangle.setFill((SHOW_CANNING && canning != null)? OFF_COLOR: FACE_COLOR);
+            triangle.setFill((SHOW_CANNING && SUCCESSFULLY_CANNED)? OFF_COLOR: FACE_COLOR);
 
             getChildren().add(triangle);
 
-            if (SHOW_FACES_COORDS) {
+            if (SHOW_FACES_COORDS && SUCCESSFULLY_CANNED) {
                 Text coords = new Text(x-25, y-10, canning.getFaceCanning().get(f).toString());
                 coords.setFill(COORD_COLOR);
                 getChildren().add(coords);
@@ -387,7 +391,7 @@ public class MediumDrawer extends Pane {
         double x = (v.getX() - xmin) * scale + offsetX;
         double y = (v.getY() - ymin) * scale + offsetY;
 
-        color = (SHOW_CANNING && canning != null)? OFF_COLOR: color;
+        color = (SHOW_CANNING && SUCCESSFULLY_CANNED)? OFF_COLOR: color;
         Circle circle = new Circle(x, y, SLOCI_RADIUS/2.);
         circle.setFill(color);
         getChildren().add(circle);
@@ -554,8 +558,8 @@ public class MediumDrawer extends Pane {
         if (canning == null) return;
 
         for (int j = 0; j < canningHeight; j++) {
-            int i1 = 0;
-            int i2 = 0;
+            int i1, i2;
+            i1 = 0;
 
             Vertex v1 = canningGrid[j][i1];
             while (v1 == null && i1 < canningWidth-1) {
@@ -599,8 +603,8 @@ public class MediumDrawer extends Pane {
         }
 
         for (int i = 0; i < canningWidth; i++) {
-            int j1 = 0;
-            int j2 = 0;
+            int j1, j2;
+            j1 = 0;
 
             Vertex v1 = canningGrid[j1][i];
             while (v1 == null && j1 < canningHeight-1) {

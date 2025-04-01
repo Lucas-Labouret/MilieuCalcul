@@ -146,7 +146,7 @@ public class VertexCanningCompleter implements Canning {
             for (int i = 0; i < sortedEdges.size(); i++) {
                 Edge edge = sortedEdges.get(i);
                 VertexCoord neighborCoord = vertexCanning.get(edge.getNeighbor(vertex));
-                if (vertexCoord.X() == neighborCoord.X() && vertexCoord.Y() < neighborCoord.Y()) {
+                if (vertexCoord.Y() == neighborCoord.Y() && vertexCoord.X() < neighborCoord.X()) {
                     firstEdgeIndex = i;
                     break;
                 }
@@ -163,7 +163,7 @@ public class VertexCanningCompleter implements Canning {
             for (int i = 0; i < sortedFaces.size(); i++) {
                 for (Vertex faceVertex: sortedFaces.get(i).getVertices()) {
                     VertexCoord neighborCoord = vertexCanning.get(faceVertex);
-                    if (vertexCoord.X() == neighborCoord.X() && vertexCoord.Y() < neighborCoord.Y()) {
+                    if (vertexCoord.Y() == neighborCoord.Y() && vertexCoord.X() < neighborCoord.X()) {
                         firstFaceIndex = i;
                         break;
                     }
