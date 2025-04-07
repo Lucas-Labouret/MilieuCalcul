@@ -154,7 +154,7 @@ public class VertexCanningCompleter implements Canning {
             for (int _i = 0; _i < sortedEdges.size(); _i++) {
                 int i = (firstEdgeIndex + _i) % sortedEdges.size();
                 Edge edge = sortedEdges.get(i);
-                edgeCanning.put(edge, new EdgeCoord(i, vertexCoord));
+                edgeCanning.put(edge, new EdgeCoord(_i, vertexCoord));
             }
 
             ArrayList<Face> sortedFaces = new ArrayList<>(managedFaces);
@@ -172,7 +172,7 @@ public class VertexCanningCompleter implements Canning {
             for (int _i = 0; _i < sortedFaces.size(); _i++) {
                 int i = (firstFaceIndex + _i) % sortedFaces.size();
                 Face face = sortedFaces.get(i);
-                faceCanning.put(face, new FaceCoord(i, vertexCoord));
+                faceCanning.put(face, new FaceCoord(_i, vertexCoord));
             }
         }
     }
@@ -185,8 +185,8 @@ public class VertexCanningCompleter implements Canning {
             int firstNeighborIndex = 0;
             for (int i = 0; i < neighbors.size(); i++) {
                 Vertex neighbor = neighbors.get(i);
-                VertexCoord neighborCoord = vertexCanning.get(neighbor);
-                if (vertexCanning.get(vertex).compareTo(neighborCoord) < 0) {
+                EdgeCoord edgeCoord = edgeCanning.get(new Edge(vertex, neighbor));
+                if (vertexCanning.get(vertex).equals(edgeCoord.vertex())) {
                     firstNeighborIndex = i;
                     break;
                 }
@@ -201,7 +201,7 @@ public class VertexCanningCompleter implements Canning {
 
                 Edge edge = new Edge(vertex, neighbor1);
                 int sideEdge = 0;
-                for (Edge candidate: vertexToManagedEdges.get(vertex))   if (candidate.equals(edge)) edge = candidate;
+                for (Edge candidate: vertexToManagedEdges.get(vertex))    if (candidate.equals(edge)) edge = candidate;
                 for (Edge candidate: vertexToManagedEdges.get(neighbor1)) if (candidate.equals(edge)) {
                     sideEdge = 1;
                     edge = candidate;
@@ -209,7 +209,7 @@ public class VertexCanningCompleter implements Canning {
                 EdgeCoord edgeCoord = edgeCanning.get(edge);
 
                 Ve ve = new Ve(vertex, edge);
-                VeCoord veCoord = new VeCoord(i, vertexCoord);
+                VeCoord veCoord = new VeCoord(_i, vertexCoord);
                 veCanning.put(ve, veCoord);
 
                 Ev ev = new Ev(edge, vertex);
@@ -222,7 +222,7 @@ public class VertexCanningCompleter implements Canning {
                 Face oldFace = new Face(vertex, neighbor1, neighbor2);
                 Face face = null;
                 int sideFace = 0;
-                for (Face candidate: vertexToManagedFaces.get(vertex)) if (candidate.equals(oldFace)) face = candidate;
+                for (Face candidate: vertexToManagedFaces.get(vertex))    if (candidate.equals(oldFace)) face = candidate;
                 for (Face candidate: vertexToManagedFaces.get(neighbor1)) if (candidate.equals(oldFace)) {
                     sideFace = 2;
                     face = candidate;
@@ -231,11 +231,13 @@ public class VertexCanningCompleter implements Canning {
                     sideFace = 1;
                     face = candidate;
                 }
-                if (face == null) continue;
+                if (face == null) {
+                    continue;
+                }
                 FaceCoord faceCoord = faceCanning.get(face);
 
                 Vf vf = new Vf(vertex, face);
-                VfCoord vfCoord = new VfCoord(i, vertexCoord);
+                VfCoord vfCoord = new VfCoord(_i, vertexCoord);
                 vfCanning.put(vf, vfCoord);
 
                 Fv fv = new Fv(face, vertex);
