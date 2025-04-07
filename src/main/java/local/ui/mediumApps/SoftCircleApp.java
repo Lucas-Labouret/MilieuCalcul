@@ -25,7 +25,6 @@ public class SoftCircleApp extends MediumApp {
     protected void generate() {
         int pointCount = this.ptCountInput.getValue();
         medium = new SoftCircleMedium(pointCount);
-        canning.setMedium(medium);
-        drawPane.setMedium(medium);
+        generateCommon();
     }
 }

@@ -1,46 +1,28 @@
 package local.computingMedia.cannings;
 
-import local.computingMedia.cannings.coords.tCoords.EvCoord;
-import local.computingMedia.cannings.coords.tCoords.VeCoord;
-import local.computingMedia.tLoci.*;
+import local.computingMedia.cannings.coords.sCoords.VertexCoord;
+import local.computingMedia.sLoci.Vertex;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 public class MasksComputer {
-    private final Canning canning;
+    private Canning canning;
 
     public MasksComputer(Canning canning) {
         this.canning = canning;
     }
 
-    public ArrayList<Integer> computeEvVe() {
-        canning.can();
-        ArrayList<HashSet<EvCoord>> masks = new ArrayList<>(canning.getHeight());
-        for (int i = 0; i < canning.getHeight(); i++) masks.add(new HashSet<>());
+    public void setCanning(Canning canning) { this.canning = canning; }
 
-        HashMap<Ev, Ve> communication = canning.getEvVeCommunication();
-        HashMap<Ev, EvCoord> evCoords = canning.getEvCanning();
-        HashMap<Ve, VeCoord> veCoords = canning.getVeCanning();
+    public int[] getDeltas(){
+        HashMap<Vertex, VertexCoord> vCanning = canning.getVertexCanning();
 
-        for (Ev ev : communication.keySet()) {
-            Ve ve = communication.get(ev);
-            VeCoord veCoord = veCoords.get(ve);
-            EvCoord evCoord = evCoords.get(ev);
-
-            int maskLine = veCoord.vertex().X();
-            masks.get(maskLine).add(new EvCoord(
-                    evCoord.side(),
-                    evCoord.edge().theta() - veCoord.theta(),
-                    evCoord.edge().vertex().Y() - veCoord.vertex().Y(),
-                    evCoord.edge().vertex().X() - veCoord.vertex().X()
-            ));
+        int deltaY = 0, deltaX = 0;
+        for (Vertex v : vCanning.keySet()) for (Vertex neighbor : v.getNeighbors()) {
+            deltaY = Math.max(deltaY, Math.abs(vCanning.get(v).Y() - vCanning.get(neighbor).Y()));
+            deltaX = Math.max(deltaX, Math.abs(vCanning.get(v).X() - vCanning.get(neighbor).X()));
         }
-
-        ArrayList<Integer> results = new ArrayList<>();
-        for (int i = 0; i < canning.getHeight(); i++) results.add(masks.get(i).size());
-
-        return results;
+        int upperBound = (2*deltaY+1) * (2*deltaX+1);
+        return new int[]{deltaY, deltaX, upperBound};
     }
 }

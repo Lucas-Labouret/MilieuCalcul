@@ -4,25 +4,20 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
 public class InformationBar extends Pane {
+    private final String BG_STYLE = "-fx-background-color: #f0f0f0;";
 
     private final String defaultText;
-    private Label text;
+    private final Label text;
 
     public InformationBar() { this(""); }
 
     public InformationBar(String defaultText) {
+        setStyle(BG_STYLE);
         this.defaultText = " " + defaultText + " ";
-        build();
-    }
-
-    private void build() {
         this.text = new Label(this.defaultText);
-        setStyle("-fx-background-color: #EEEEEE;");
         getChildren().add(this.text);
     }
 
-    private void setLabel(String text) { this.text.setText(text); }
-
-    public void setText(String text) { this.setLabel(" " + text + " "); }
-    public void removeText() { setLabel(this.defaultText); }
+    public void setText(String newText) { text.setText(" " + newText + " "); }
+    public void removeText() { text.setText(this.defaultText); }
 }

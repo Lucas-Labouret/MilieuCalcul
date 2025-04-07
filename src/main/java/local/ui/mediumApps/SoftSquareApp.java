@@ -25,7 +25,6 @@ public class SoftSquareApp extends MediumApp {
     protected void generate() {
         int pointCount = pointCountField.getValue();
         medium = new SoftSquareMedium(pointCount);
-        canning.setMedium(medium);
-        drawPane.setMedium(medium);
+        generateCommon();
     }
 }

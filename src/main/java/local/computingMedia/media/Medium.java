@@ -185,6 +185,23 @@ public abstract class Medium extends HashSet<Vertex> {
         }
         return maxN;
     }
+    public int getMinNeighborsCount() {
+        int minN = Integer.MAX_VALUE;
+        for (Vertex vertex : this){
+            int count = vertex.getNeighbors().size();
+            if (count < minN) minN = count;
+        }
+        return minN;
+    }
+    public int getInsideMinNeighborsCount() {
+        int minN = Integer.MAX_VALUE;
+        for (Vertex vertex : this){
+            if (partOfBorder(vertex)) continue;
+            int count = vertex.getNeighbors().size();
+            if (count < minN) minN = count;
+        }
+        return minN;
+    }
 
     public static class ClockWise implements Comparator<Vertex> {
         private final Vertex center;

@@ -5,6 +5,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import local.computingMedia.cannings.Canning;
+import local.computingMedia.cannings.MasksComputer;
 import local.computingMedia.cannings.VertexCanningCompleter;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordVCanning;
 import local.computingMedia.cannings.vertexCannings.TopDistanceXSortedLinesVCanning;
@@ -23,11 +24,15 @@ public abstract class MediumApp extends BorderPane {
     protected final ToolBar topToolBar;
     protected final ToolBar botToolBar;
     protected final SidePanel sidePanel;
-    protected final InformationBar infoBar;
+    protected final InformationBar mediumInfoBar;
+    protected final InformationBar maskInfoBar;
     protected final MediumDrawer drawPane;
+
+    protected final VBox botVBox;
 
     protected Medium medium;
     protected Canning canning;
+    protected MasksComputer masksComputer;
 
     protected final Button gen;
     protected final Button tri;
@@ -45,17 +50,22 @@ public abstract class MediumApp extends BorderPane {
 
     public MediumApp() {
         canning = DEFAULT_CANNING();
+        masksComputer = new MasksComputer(canning);
 
         topToolBar = new ToolBar();
-        botToolBar = new ToolBar();
         sidePanel = new SidePanel();
-        infoBar = new InformationBar("Information");
+        mediumInfoBar = new InformationBar();
+        maskInfoBar = new InformationBar();
+        botToolBar = new ToolBar();
         drawPane = new MediumDrawer(medium, canning);
+
+        botVBox = new VBox();
+        botVBox.getChildren().addAll(mediumInfoBar, maskInfoBar, botToolBar);
 
         setTop(topToolBar);
         setCenter(drawPane);
         setRight(sidePanel);
-        setBottom(botToolBar);
+        setBottom(botVBox);
 
         gen = new Button("Generate");
         gen.setOnAction((event) -> generate());
@@ -80,12 +90,19 @@ public abstract class MediumApp extends BorderPane {
     }
 
     abstract protected void generate();
+    protected void generateCommon(){
+        canning.setMedium(medium);
+        drawPane.setMedium(medium);
+        mediumInfoBar.removeText();
+        maskInfoBar.removeText();
+    }
 
     protected void triangulate() {
         if (medium != null) {
             medium.delaunayTriangulate();
         }
         drawPane.redraw();
+        updateInfoBars();
     }
 
     public void setFpoToConvergence(boolean fpoToConvergence) {
@@ -104,6 +121,7 @@ public abstract class MediumApp extends BorderPane {
         if (fpoToConvergence) medium.optimizeToConvergence(convergenceTolerance);
         else medium.optimizeToSetIterations(fpoIterations);
         drawPane.redraw();
+        updateInfoBars();
     }
 
     private void save(){
@@ -122,6 +140,7 @@ public abstract class MediumApp extends BorderPane {
             medium = savefileManager.load(getFileName());
             canning.setMedium(medium);
             drawPane.setMedium(medium);
+            updateInfoBars();
         }
         catch (FileNotFoundException e) { savefileInfo.setText("File not found."); }
         catch (IOException e) {
@@ -133,14 +152,32 @@ public abstract class MediumApp extends BorderPane {
     public void setCanning(Canning canning) {
         this.canning = canning;
         this.canning.setMedium(medium);
+        this.masksComputer.setCanning(canning);
         drawPane.setCanning(canning);
+        updateInfoBars();
     }
 
     public String getFileName() { return fileName.getText(); }
 
+    private void updateInfoBars() {
+        String mediumText = "Neighbors : max=" + medium.getMaxNeighborsCount() +
+                ", min=" + medium.getInsideMinNeighborsCount() + "(" +medium.getMinNeighborsCount() + ")";
+        mediumInfoBar.setText(mediumText);
+
+        int[] data = masksComputer.getDeltas();
+        int deltaY = data[0];
+        int deltaX = data[1];
+        int upperBound = data[2];
+        String maskText = "Canning : delta Y=" + deltaY +
+                          ", delta X=" + deltaX +
+                          ", covered area=" + upperBound +
+                          ", density=" + medium.size()/(double)(canning.getHeight()*canning.getWidth());
+        maskInfoBar.setText(maskText);
+    }
+
     private void updateDrawPaneSize() {
         drawPane.setPrefWidth(getWidth() - sidePanel.getWidth());
-        drawPane.setPrefHeight(getHeight() - topToolBar.getHeight() - botToolBar.getHeight());
+        drawPane.setPrefHeight(getHeight() - topToolBar.getHeight() - botVBox.getHeight());
         drawPane.redraw();
     }
 
