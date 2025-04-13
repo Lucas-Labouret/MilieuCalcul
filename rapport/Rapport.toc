@@ -1,15 +1,33 @@
-\contentsline {section}{\numberline {A}What is blob computing ?}{3}{}%
-\contentsline {subsection}{\numberline {A.1}Computing media}{3}{}%
-\contentsline {subsection}{\numberline {A.2}An example of computation : the Voronoï diagram}{3}{}%
-\contentsline {subsection}{\numberline {A.3}Objective : Cannings}{3}{}%
-\contentsline {section}{\numberline {B}Preliminary work}{3}{}%
-\contentsline {subsection}{\numberline {B.1}Delaunay Triangulation}{3}{}%
-\contentsline {subsection}{\numberline {B.2}Farthest Point Optimization}{3}{}%
-\contentsline {section}{\numberline {1}GUI}{4}{}%
-\contentsline {section}{\numberline {2}Borders and media}{4}{}%
-\contentsline {subsection}{\numberline {2.1}Choice of border}{4}{}%
-\contentsline {subsection}{\numberline {2.2}Different types of medium}{4}{}%
-\contentsline {section}{\numberline {3}Canning and evaluation}{4}{}%
-\contentsline {subsection}{\numberline {3.1}Partial and total cannings}{4}{}%
-\contentsline {subsection}{\numberline {3.2}Evaluation}{4}{}%
-\contentsline {section}{References}{4}{}%
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {A}What is blob computing ?}{3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {A.1}Definition and structure of a computing medium}{3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {A.2}An example of computation : the (discrete) Voronoï diagram}{4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {A.3}Objective : Cannings}{5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {B}Preliminary work}{5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {B.1}Delaunay Triangulation}{5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {B.2}Farthest Point Optimization}{5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1}GUI}{6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2}Borders and media}{6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1}Choice of border}{6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2}Different types of medium}{6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3}Canning and evaluation}{6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1}Partial cannings}{6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2}Total cannings}{6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3}Evaluation}{6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{References}{6}%

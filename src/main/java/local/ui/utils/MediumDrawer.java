@@ -17,6 +17,8 @@ import local.computingMedia.media.Medium;
 import local.computingMedia.sLoci.*;
 import local.computingMedia.tLoci.*;
 
+import java.util.HashMap;
+
 public class MediumDrawer extends Pane {
     private static final String BG_STYLE = "-fx-background-color: #FFFFFF;";
     
@@ -75,7 +77,7 @@ public class MediumDrawer extends Pane {
            offsetX, offsetY;
 
     int canningWidth, canningHeight;
-    Vertex[][] canningGrid;
+    HashMap<VertexCoord, Vertex> canningGrid;
 
     Medium medium;
     Canning canning;
@@ -215,10 +217,10 @@ public class MediumDrawer extends Pane {
         canningWidth++;
         canningHeight++;
 
-        canningGrid = new Vertex[canningHeight][canningWidth];
+        canningGrid = new HashMap<>();
         for (Vertex vertex : medium) {
             VertexCoord coord = canning.getVertexCanning().get(vertex);
-            canningGrid[coord.Y()][coord.X()] = vertex;
+            canningGrid.put(coord, vertex);
         }
     }
     public void redraw() {
@@ -561,19 +563,19 @@ public class MediumDrawer extends Pane {
             int i1, i2;
             i1 = 0;
 
-            Vertex v1 = canningGrid[j][i1];
+            Vertex v1 = canningGrid.get(new VertexCoord(j, i1));
             while (v1 == null && i1 < canningWidth-1) {
                 i1++;
-                v1 = canningGrid[j][i1];
+                v1 = canningGrid.get(new VertexCoord(j, i1));
             }
 
             i2 = i1 + 1;
             Vertex v2;
-            if (i2 < canningWidth) v2 = canningGrid[j][i2];
+            if (i2 < canningWidth) v2 = canningGrid.get(new VertexCoord(j, i2));
             else continue;
             while (v2 == null && i2 < canningWidth-1) {
                 i2++;
-                v2 = canningGrid[j][i2];
+                v2 = canningGrid.get(new VertexCoord(j, i2));
             }
 
             if (v1 == null || v2 == null) continue;
@@ -596,7 +598,7 @@ public class MediumDrawer extends Pane {
 
                 do {
                     i2++;
-                    v2 = canningGrid[j][i2];
+                    v2 = canningGrid.get(new VertexCoord(j, i2));
                 } while (v2 == null && i2 < canningWidth-1);
 
             } while (i1 < canningWidth && i2 < canningWidth && v2 != null);
@@ -606,19 +608,19 @@ public class MediumDrawer extends Pane {
             int j1, j2;
             j1 = 0;
 
-            Vertex v1 = canningGrid[j1][i];
+            Vertex v1 = canningGrid.get(new VertexCoord(j1, i));
             while (v1 == null && j1 < canningHeight-1) {
                 j1++;
-                v1 = canningGrid[j1][i];
+                v1 = canningGrid.get(new VertexCoord(j1, i));
             }
 
             j2 = j1 + 1;
             Vertex v2;
-            if (j2 < canningHeight) v2 = canningGrid[j2][i];
+            if (j2 < canningHeight) v2 = canningGrid.get(new VertexCoord(j2, i));
             else continue;
             while (v2 == null && j2 < canningHeight-1) {
                 j2++;
-                v2 = canningGrid[j2][i];
+                v2 = canningGrid.get(new VertexCoord(j2, i));
             }
 
             if (v1 == null || v2 == null) continue;
@@ -641,7 +643,7 @@ public class MediumDrawer extends Pane {
 
                 do {
                     j2++;
-                    v2 = canningGrid[j2][i];
+                    v2 = canningGrid.get(new VertexCoord(j2, i));
                 } while (v2 == null && j2 < canningHeight-1);
 
             } while (j1 < canningHeight && j2 < canningHeight && v2 != null);

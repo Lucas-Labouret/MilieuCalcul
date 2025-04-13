@@ -1,4 +1,4 @@
-@inproceedings{FPO,
+@InProceedings{FPO,
 	author = {Schl\"{o}mer, Thomas and Heck, Daniel and Deussen, Oliver},
 	title = {Farthest-point optimized point sets with maximized minimum distance},
 	year = {2011},
@@ -15,6 +15,36 @@
 	location = {Vancouver, British Columbia, Canada},
 	series = {HPG '11}
 }
+@Article{Voronoi,
+	author={Gruau, Fr{\'e}d{\'e}ric},
+	title={A parallel data-structure for modular programming of triangulated computing media.},
+	journal={Natural Computing},
+	year={2023},
+	month={Dec},
+	day={01},
+	volume={22},
+	number={4},
+	pages={753-766},
+	abstract={Our long-term project involves performing general-purpose computation on 2D amorphous computing media, which consist of arbitrary many, small, identical processing elements that are homogeneously spread in 2D Euclidian space, and that communicate locally in space. While the minimal assumptions on hardware provide the fascinating perspective of arbitrary large computing power, they also make programming notoriously difficult. Furthermore, our project involves simulating objects extended in 2D-space, called ``blobs''. Maintaining the connectedness of blobs while they move in space adds another layer of difficulty since it demands to process the topology of 2D space. This paper describes a new parallel data structure that can simplify the programming task, in this context. In computer graphics, processing related to 2D topology is performed by using triangle meshes. We consider synchronous media whose underlying network is also a triangle mesh. Our data structure, derived from computer graphics, is anchored on that mesh so that its operations can be compiled on the medium. More precisely, our compiler produces a circuit of logic gates, which enables a high-performance simulation, in the case of crystalline media (Cellular Automata). We demonstrate the expressiveness of the data structure's operation by using an incremental and modular programming style. We program, first small, then larger building-block functions, and re-use them. Blobs are implemented and re-used to compute the Vorono{\"i} diagram. What is the scope of the data-structure? This poses the question of whether there exists a universal set of primitives able to program any processing specified only in terms of 2D-geometry.},
+	issn={1572-9796},
+	doi={10.1007/s11047-022-09906-1},
+	url={https://doi.org/10.1007/s11047-022-09906-1}
+}
+@InProceedings{other_computation,
+	author="Gruau, Fr{\'e}d{\'e}ric",
+	editor="Sanchez, Eduardo
+	and Tomassini, Marco",
+	title="Artificial cellular development in optimization and compilation",
+	booktitle="Towards Evolvable Hardware",
+	year="1996",
+	publisher="Springer Berlin Heidelberg",
+	address="Berlin, Heidelberg",
+	pages="48--75",
+	abstract="Nature creates systems made of many cells that work in parallel, by using a developmental process. The development starts with a single cell which divides and divides again, generating a coherent parallel distributed system. We show how this simple idea of cell division can be exploited using computers, either for optimization or for automatic parallel compilation. In both cases, the object being generated is a parallel distributed networks. For describing cellular development we use a language that can express in a unified and simple format all our past results.",
+	isbn="978-3-540-49947-3"
+	doi={10.1007/3-540-61093-6_3}
+}
+
 
 
 

@@ -1,5 +1,5 @@
 % $ biblatex auxiliary file $
-% $ biblatex bbl format version 3.2 $
+% $ biblatex bbl format version 3.1 $
 % Do not modify the above lines!
 %
 % This is an auxiliary file used by the 'biblatex' package.
@@ -17,6 +17,117 @@
 \endgroup
 
 \datalist[entry]{nty/global//global/global}
+  \entry{Voronoi}{article}{}
+    \name{author}{1}{}{%
+      {{hash=GF}{%
+         family={Gruau},
+         familyi={G\bibinitperiod},
+         given={Fr{\'e}d{\'e}ric},
+         giveni={F\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GF1}
+    \strng{fullhash}{GF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{abstract}{%
+    Our long-term project involves performing general-purpose computation on 2D
+  amorphous computing media, which consist of arbitrary many, small, identical
+  processing elements that are homogeneously spread in 2D Euclidian space, and
+  that communicate locally in space. While the minimal assumptions on hardware
+  provide the fascinating perspective of arbitrary large computing power, they
+  also make programming notoriously difficult. Furthermore, our project
+  involves simulating objects extended in 2D-space, called ``blobs''.
+  Maintaining the connectedness of blobs while they move in space adds another
+  layer of difficulty since it demands to process the topology of 2D space.
+  This paper describes a new parallel data structure that can simplify the
+  programming task, in this context. In computer graphics, processing related
+  to 2D topology is performed by using triangle meshes. We consider synchronous
+  media whose underlying network is also a triangle mesh. Our data structure,
+  derived from computer graphics, is anchored on that mesh so that its
+  operations can be compiled on the medium. More precisely, our compiler
+  produces a circuit of logic gates, which enables a high-performance
+  simulation, in the case of crystalline media (Cellular Automata). We
+  demonstrate the expressiveness of the data structure's operation by using an
+  incremental and modular programming style. We program, first small, then
+  larger building-block functions, and re-use them. Blobs are implemented and
+  re-used to compute the Vorono{\"i} diagram. What is the scope of the
+  data-structure? This poses the question of whether there exists a universal
+  set of primitives able to program any processing specified only in terms of
+  2D-geometry.%
+    }
+    \verb{doi}
+    \verb 10.1007/s11047-022-09906-1
+    \endverb
+    \field{issn}{1572-9796}
+    \field{number}{4}
+    \field{pages}{753\bibrangedash 766}
+    \field{title}{A parallel data-structure for modular programming of
+  triangulated computing media.}
+    \verb{url}
+    \verb https://doi.org/10.1007/s11047-022-09906-1
+    \endverb
+    \field{volume}{22}
+    \field{journaltitle}{Natural Computing}
+    \field{year}{2023}
+    \warn{\item Invalid format of field 'month'}
+  \endentry
+
+  \entry{other_computation}{inproceedings}{}
+    \name{author}{1}{}{%
+      {{hash=GF}{%
+         family={Gruau},
+         familyi={G\bibinitperiod},
+         given={Fr{\'e}d{\'e}ric},
+         giveni={F\bibinitperiod},
+      }}%
+    }
+    \name{editor}{2}{}{%
+      {{hash=SE}{%
+         family={Sanchez},
+         familyi={S\bibinitperiod},
+         given={Eduardo},
+         giveni={E\bibinitperiod},
+      }}%
+      {{hash=TM}{%
+         family={Tomassini},
+         familyi={T\bibinitperiod},
+         given={Marco},
+         giveni={M\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Springer Berlin Heidelberg}%
+    }
+    \strng{namehash}{GF1}
+    \strng{fullhash}{GF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{abstract}{%
+    Nature creates systems made of many cells that work in parallel, by using a
+  developmental process. The development starts with a single cell which
+  divides and divides again, generating a coherent parallel distributed system.
+  We show how this simple idea of cell division can be exploited using
+  computers, either for optimization or for automatic parallel compilation. In
+  both cases, the object being generated is a parallel distributed networks.
+  For describing cellular development we use a language that can express in a
+  unified and simple format all our past results.%
+    }
+    \field{booktitle}{Towards Evolvable Hardware}
+    \field{isbn}{978-3-540-49947-3}
+    \field{pages}{48\bibrangedash 75}
+    \field{title}{Artificial cellular development in optimization and
+  compilation}
+    \list{location}{1}{%
+      {Berlin, Heidelberg}%
+    }
+    \field{year}{1996}
+  \endentry
+
   \entry{FPO}{inproceedings}{}
     \name{author}{3}{}{%
       {{hash=ST}{%

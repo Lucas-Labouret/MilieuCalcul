@@ -92,17 +92,12 @@ public class RoundedCoordVCanning implements VertexCanning {
         }
         yMax++; xMax++;
 
-        Vertex[][] grid = new Vertex[yMax][xMax];
-        for (VertexCoord coord : coordVertexMap.keySet()){
-            grid[coord.Y()][coord.X()] = coordVertexMap.get(coord);
-        }
         width = xMax;
         height = yMax;
-        //collapse(grid, yMax, xMax);
 
         HashMap<Vertex, VertexCoord> result = new HashMap<>();
-        for (int y = 0; y < yMax; y++) for (int x = 0; x < xMax; x++){
-            if (grid[y][x] != null) result.put(grid[y][x], new VertexCoord(y, x));
+        for (VertexCoord coord : coordVertexMap.keySet()){
+            result.put(coordVertexMap.get(coord), coord);
         }
         vertexCanning = result;
     }
