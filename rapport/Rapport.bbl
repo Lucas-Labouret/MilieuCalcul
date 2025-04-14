@@ -16,125 +16,40 @@
   {}
 \endgroup
 
-\datalist[entry]{none/global//global/global}
-  \entry{blob_computing}{inproceedings}{}
-    \name{author}{4}{}{%
-      {{hash=GF}{%
-         family={Gruau},
-         familyi={G\bibinitperiod},
-         given={Fr\'{e}d\'{e}ric},
-         giveni={F\bibinitperiod},
-      }}%
-      {{hash=LY}{%
-         family={Lhuillier},
-         familyi={L\bibinitperiod},
-         given={Yves},
-         giveni={Y\bibinitperiod},
-      }}%
-      {{hash=RP}{%
-         family={Reitz},
-         familyi={R\bibinitperiod},
-         given={Philippe},
-         giveni={P\bibinitperiod},
-      }}%
-      {{hash=TO}{%
-         family={Temam},
-         familyi={T\bibinitperiod},
+\datalist[entry]{nty/global//global/global}
+  \entry{remove_delaunay}{article}{}
+    \name{author}{1}{}{%
+      {{hash=DO}{%
+         family={Devillers},
+         familyi={D\bibinitperiod},
          given={Olivier},
          giveni={O\bibinitperiod},
       }}%
     }
     \list{publisher}{1}{%
-      {Association for Computing Machinery}%
+      {{World Scientific Publishing}}%
     }
-    \keyw{bio-inspiration, cellular automata, scalable architectures}
-    \strng{namehash}{GF+1}
-    \strng{fullhash}{GFLYRPTO1}
+    \strng{namehash}{DO1}
+    \strng{fullhash}{DO1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{abstract}{%
-    Current processor and multiprocessor architectures are almost all based on
-  the Von Neumann paradigm. Based on this paradigm, one can build a
-  general-purpose computer using very few transistors, e.g., 2250 transistors
-  in the first Intel 4004 microprocessor. In other terms, the notion that
-  on-chip space is a scarce resource is at the root of this paradigm which
-  trades on-chip space for program execution time. Today, technology
-  considerably relaxed this space constraint. Still, few research works
-  question this paradigm as the most adequate basis for high-performance
-  computers, even though the paradigm was not initially designed to scale with
-  technology and space.In this article, we propose a different computing model,
-  defining both an architecture and a language, that is intrinsically designed
-  to exploit space; we then investigate the implementation issues of a computer
-  based on this model, and we provide simulation results for small programs and
-  a simplified architecture as a first proof of concept. Through this model, we
-  also want to outline that revisiting some of the principles of today's
-  computing paradigm has the potential of overcoming major limitations of
-  current architectures.%
-    }
-    \field{booktitle}{Proceedings of the 1st Conference on Computing Frontiers}
+    \field{sortinit}{D}
+    \field{sortinithash}{D}
     \verb{doi}
-    \verb 10.1145/977091.977111
+    \verb 10.1142/S0218195902000815
     \endverb
-    \field{isbn}{1581137419}
-    \field{pages}{125–139}
-    \field{series}{CF '04}
-    \field{title}{BLOB computing}
+    \field{pages}{193\bibrangedash 205}
+    \field{title}{{On Deletion in Delaunay Triangulations}}
     \verb{url}
-    \verb https://doi.org/10.1145/977091.977111
+    \verb https://inria.hal.science/inria-00167201
     \endverb
-    \list{location}{1}{%
-      {Ischia, Italy}%
-    }
-    \field{year}{2004}
-    \warn{\item Can't use 'location' + 'address'}
-  \endentry
-
-  \entry{swarm_robotic}{article}{}
-    \name{author}{2}{}{%
-      {{hash=NI}{%
-         family={Navarro},
-         familyi={N\bibinitperiod},
-         given={Iñaki},
-         giveni={I\bibinitperiod},
-      }}%
-      {{hash=MF}{%
-         family={Matía},
-         familyi={M\bibinitperiod},
-         given={Fernando},
-         giveni={F\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{NIMF1}
-    \strng{fullhash}{NIMF1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{abstract}{%
-    Swarm robotics is a field of multi-robotics in which large number of robots
-  are coordinated in a distributed and decentralised way. It is based on the
-  use of local rules, and simple robots compared to the complexity of the task
-  to achieve, and inspired by social insects. Large number of simple robots can
-  perform complex tasks in a more efficient way than a single robot, giving
-  robustness and flexibility to the group. In this article, an overview of
-  swarm robotics is given, describing its main properties and characteristics
-  and comparing it to general multi-robotic systems. A review of different
-  research works and experimental results, together with a discussion of the
-  future swarm robotics in real world applications completes this work.%
-    }
-    \verb{doi}
-    \verb https://doi.org/10.5402/2013/608164
+    \field{volume}{12}
+    \verb{file}
+    \verb https://inria.hal.science/inria-00167201v1/file/hal.pdf
     \endverb
-    \verb{eprint}
-    \verb https://onlinelibrary.wiley.com/doi/pdf/10.5402/2013/608164
-    \endverb
-    \field{number}{1}
-    \field{pages}{608164}
-    \field{title}{An Introduction to Swarm Robotics}
-    \verb{url}
-    \verb https://onlinelibrary.wiley.com/doi/abs/10.5402/2013/608164
-    \endverb
-    \field{volume}{2013}
-    \field{journaltitle}{International Scholarly Research Notices}
-    \field{year}{2013}
+    \field{journaltitle}{{International Journal of Computational Geometry and
+  Applications}}
+    \field{year}{2002}
   \endentry
 
   \entry{Voronoi}{article}{}
@@ -150,6 +65,8 @@
     \strng{fullhash}{GF1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
     \field{abstract}{%
     Our long-term project involves performing general-purpose computation on 2D
   amorphous computing media, which consist of arbitrary many, small, identical
@@ -193,57 +110,6 @@
     \warn{\item Invalid format of field 'month'}
   \endentry
 
-  \entry{other_computation}{inproceedings}{}
-    \name{author}{1}{}{%
-      {{hash=GF}{%
-         family={Gruau},
-         familyi={G\bibinitperiod},
-         given={Fr{\'e}d{\'e}ric},
-         giveni={F\bibinitperiod},
-      }}%
-    }
-    \name{editor}{2}{}{%
-      {{hash=SE}{%
-         family={Sanchez},
-         familyi={S\bibinitperiod},
-         given={Eduardo},
-         giveni={E\bibinitperiod},
-      }}%
-      {{hash=TM}{%
-         family={Tomassini},
-         familyi={T\bibinitperiod},
-         given={Marco},
-         giveni={M\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Springer Berlin Heidelberg}%
-    }
-    \strng{namehash}{GF1}
-    \strng{fullhash}{GF1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{abstract}{%
-    Nature creates systems made of many cells that work in parallel, by using a
-  developmental process. The development starts with a single cell which
-  divides and divides again, generating a coherent parallel distributed system.
-  We show how this simple idea of cell division can be exploited using
-  computers, either for optimization or for automatic parallel compilation. In
-  both cases, the object being generated is a parallel distributed networks.
-  For describing cellular development we use a language that can express in a
-  unified and simple format all our past results.%
-    }
-    \field{booktitle}{Towards Evolvable Hardware}
-    \field{isbn}{978-3-540-49947-3}
-    \field{pages}{48\bibrangedash 75}
-    \field{title}{Artificial cellular development in optimization and
-  compilation}
-    \list{location}{1}{%
-      {Berlin, Heidelberg}%
-    }
-    \field{year}{1996}
-  \endentry
-
   \entry{platform_CA2}{online}{}
     \name{author}{1}{}{%
       {{hash=GF}{%
@@ -257,10 +123,289 @@
     \strng{fullhash}{GF1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
     \field{title}{platform-CA2}
     \verb{url}
     \verb https://github.com/fredgruau/platform-CA2
     \endverb
+  \endentry
+
+  \entry{blob_computing1}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=GF}{%
+         family={Gruau},
+         familyi={G\bibinitperiod},
+         given={Fr\'{e}d\'{e}ric},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=LY}{%
+         family={Lhuillier},
+         familyi={L\bibinitperiod},
+         given={Yves},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=RP}{%
+         family={Reitz},
+         familyi={R\bibinitperiod},
+         given={Philippe},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=TO}{%
+         family={Temam},
+         familyi={T\bibinitperiod},
+         given={Olivier},
+         giveni={O\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Association for Computing Machinery}%
+    }
+    \keyw{bio-inspiration, cellular automata, scalable architectures}
+    \strng{namehash}{GF+1}
+    \strng{fullhash}{GFLYRPTO1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{abstract}{%
+    Current processor and multiprocessor architectures are almost all based on
+  the Von Neumann paradigm. Based on this paradigm, one can build a
+  general-purpose computer using very few transistors, e.g., 2250 transistors
+  in the first Intel 4004 microprocessor. In other terms, the notion that
+  on-chip space is a scarce resource is at the root of this paradigm which
+  trades on-chip space for program execution time. Today, technology
+  considerably relaxed this space constraint. Still, few research works
+  question this paradigm as the most adequate basis for high-performance
+  computers, even though the paradigm was not initially designed to scale with
+  technology and space.In this article, we propose a different computing model,
+  defining both an architecture and a language, that is intrinsically designed
+  to exploit space; we then investigate the implementation issues of a computer
+  based on this model, and we provide simulation results for small programs and
+  a simplified architecture as a first proof of concept. Through this model, we
+  also want to outline that revisiting some of the principles of today's
+  computing paradigm has the potential of overcoming major limitations of
+  current architectures.%
+    }
+    \field{booktitle}{Proceedings of the 1st Conference on Computing Frontiers}
+    \verb{doi}
+    \verb 10.1145/977091.977111
+    \endverb
+    \field{isbn}{1581137419}
+    \field{pages}{125–139}
+    \field{series}{CF '04}
+    \field{title}{BLOB computing}
+    \verb{url}
+    \verb https://doi.org/10.1145/977091.977111
+    \endverb
+    \list{location}{1}{%
+      {Ischia, Italy}%
+    }
+    \field{year}{2004}
+    \warn{\item Can't use 'location' + 'address'}
+  \endentry
+
+  \entry{blob_computing2}{article}{}
+    \name{author}{3}{}{%
+      {{hash=GF}{%
+         family={Gruau},
+         familyi={G\bibinitperiod},
+         given={Frédéric},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=EC}{%
+         family={Eisenbeis},
+         familyi={E\bibinitperiod},
+         given={Christine},
+         giveni={C\bibinitperiod},
+      }}%
+      {{hash=ML}{%
+         family={Maignan},
+         familyi={M\bibinitperiod},
+         given={Luidnel},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \keyw{Spatial computing, Distributed algorithm, Self-developing network,
+  Computer architecture, Computer language}
+    \strng{namehash}{GFECML1}
+    \strng{fullhash}{GFECML1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{abstract}{%
+    The current trend in electronics is to integrate more and more transistors
+  on a chip and produce massive hardware resources. As a consequence,
+  traditional computing models, which mainly compute in the temporal domain, do
+  not work well anymore since it becomes increasingly difficult to orchestrate
+  these massive-scale hardware resources in a centralized way. Spatial
+  computing is a unifying term that embodies many unconventional computing
+  models and means computing on a relatively homogeneous physical medium made
+  of hardware components, where the communication time is dependent on the
+  Euclidean distance between the components (locality constraint). This
+  constraint makes the programming for high performance significantly more
+  complex compared to classical non-spatial hardware because performance now
+  depends on where computation happens in space (mapping problem). Blob
+  computing is a new approach that addresses this parallel computing challenge
+  in a radically new and unconventional way: it decouples the mapping of
+  computations onto the hardware from the software programming while still
+  elegantly exploiting the space of the underlying hardware. Hardware mapping
+  of computations is done by a physical force-based approach that simulates
+  forces between threads of computation (automata). Attractive forces are used
+  to keep automata that need to communicate with each other closer while
+  repulsive forces are used for load balancing. The advantage of these
+  primitives is that they are simple enough to be implemented on an arbitrary
+  computing medium. They form the basis of a runtime system (RTS) that
+  transforms an arbitrary computing medium into an easier-to-program virtual
+  machine called the blob machine. The basic objects of the blob machine are
+  those automata, and the instructions let automata create new automata in
+  specific ways so as to maintain a hierarchical organization (which
+  facilitates both the mapping and the programming). We detail the basic
+  instructions of the blob machine and demonstrate their confluence.
+  Programming a spatial medium to perform a given algorithm then boils down to
+  programming the blob machine, provided the RTS is implemented on it. The
+  advantage of this approach is the hardware independency, meaning that the
+  same program can be used on different media. By means of several examples
+  programmed using a high-level language description, we further show that we
+  can efficiently implement most current parallel computing models, such as
+  Single Instruction Multiple Data (SIMD), data parallelism,
+  “divide-and-conquer” parallelism and pipelining which demonstrates
+  parallel expressiveness. On sorting and matrix multiplication algorithms, we
+  also show that our approach scales up optimally with the number of basic
+  hardware components.%
+    }
+    \verb{doi}
+    \verb https://doi.org/10.1016/j.physd.2008.03.046
+    \endverb
+    \field{issn}{0167-2789}
+    \field{note}{Novel Computing Paradigms: Quo Vadis?}
+    \field{number}{9}
+    \field{pages}{1282\bibrangedash 1301}
+    \field{title}{The foundation of self-developing blob machines for spatial
+  computing}
+    \verb{url}
+    \verb https://www.sciencedirect.com/science/article/pii/S0167278908001255
+    \endverb
+    \field{volume}{237}
+    \field{journaltitle}{Physica D: Nonlinear Phenomena}
+    \field{year}{2008}
+  \endentry
+
+  \entry{build_delaunay}{article}{}
+    \name{author}{2}{}{%
+      {{hash=GL}{%
+         family={Guibas},
+         familyi={G\bibinitperiod},
+         given={Leonidas},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=SJ}{%
+         family={Stolfi},
+         familyi={S\bibinitperiod},
+         given={Jorge},
+         giveni={J\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Association for Computing Machinery}%
+    }
+    \keyw{Euler operators, Voronoi and Delaunay diagrams, closest point,
+  computational topology, convex hull, geometric primitives, nearest
+  neighbours, planar graphs, point location, representation of polynedra,
+  trianglations}
+    \strng{namehash}{GLSJ1}
+    \strng{fullhash}{GLSJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{G}
+    \field{sortinithash}{G}
+    \field{abstract}{%
+    The following problem is discussed: given n points in the plane (the sites)
+  and an arbitrary query point q, find the site that is closest to q. This
+  problem can be solved by constructing the Voronoi diagram of the griven sites
+  and then locating the query point inone of its regions. Two algorithms are
+  given, one that constructs the Voronoi diagram in O(n log n) time, and
+  another that inserts a new sit on O(n) time. Both are based on the use of the
+  Voronoi dual, or Delaunay triangulation, and are simple enough to be of
+  practical value. the simplicity of both algorithms can be attributed to the
+  separation of the geometrical and topological aspects of the problem and to
+  the use of two simple but powerful primitives, a geometric predicate and an
+  operator for manipulating the topology of the diagram. The topology is
+  represented by a new data structure for generalized diagrams, that is,
+  embeddings of graphs in two-dimensional manifolds. This structure represents
+  simultaneously an embedding, its dual, and its mirror image. Furthermore,
+  just two operators are sufficients for building and modifying arbitrary
+  diagrams.%
+    }
+    \verb{doi}
+    \verb 10.1145/282918.282923
+    \endverb
+    \field{issn}{0730-0301}
+    \field{number}{2}
+    \field{pages}{74–123}
+    \field{title}{Primitives for the manipulation of general subdivisions and
+  the computation of Voronoi}
+    \verb{url}
+    \verb https://doi.org/10.1145/282918.282923
+    \endverb
+    \field{volume}{4}
+    \list{location}{1}{%
+      {New York, NY, USA}%
+    }
+    \field{journaltitle}{ACM Trans. Graph.}
+    \field{month}{04}
+    \field{year}{1985}
+  \endentry
+
+  \entry{swarm_robotic}{article}{}
+    \name{author}{2}{}{%
+      {{hash=NI}{%
+         family={Navarro},
+         familyi={N\bibinitperiod},
+         given={Iñaki},
+         giveni={I\bibinitperiod},
+      }}%
+      {{hash=MF}{%
+         family={Matía},
+         familyi={M\bibinitperiod},
+         given={Fernando},
+         giveni={F\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{NIMF1}
+    \strng{fullhash}{NIMF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{N}
+    \field{sortinithash}{N}
+    \field{abstract}{%
+    Swarm robotics is a field of multi-robotics in which large number of robots
+  are coordinated in a distributed and decentralised way. It is based on the
+  use of local rules, and simple robots compared to the complexity of the task
+  to achieve, and inspired by social insects. Large number of simple robots can
+  perform complex tasks in a more efficient way than a single robot, giving
+  robustness and flexibility to the group. In this article, an overview of
+  swarm robotics is given, describing its main properties and characteristics
+  and comparing it to general multi-robotic systems. A review of different
+  research works and experimental results, together with a discussion of the
+  future swarm robotics in real world applications completes this work.%
+    }
+    \verb{doi}
+    \verb https://doi.org/10.5402/2013/608164
+    \endverb
+    \verb{eprint}
+    \verb https://onlinelibrary.wiley.com/doi/pdf/10.5402/2013/608164
+    \endverb
+    \field{number}{1}
+    \field{pages}{608164}
+    \field{title}{An Introduction to Swarm Robotics}
+    \verb{url}
+    \verb https://onlinelibrary.wiley.com/doi/abs/10.5402/2013/608164
+    \endverb
+    \field{volume}{2013}
+    \field{journaltitle}{International Scholarly Research Notices}
+    \field{year}{2013}
   \endentry
 
   \entry{FPO}{inproceedings}{}
@@ -294,6 +439,8 @@
     \strng{fullhash}{STHDDO1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
+    \field{sortinit}{S}
+    \field{sortinithash}{S}
     \field{abstract}{%
     Efficient sampling often relies on irregular point sets that uniformly
   cover the sample space. We present a flexible and simple optimization

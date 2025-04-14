@@ -1,33 +1,35 @@
 \boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {A}What is blob computing ?}{3}%
+\contentsline {section}{\numberline {A}What is Blob Computing ?}{3}{section.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.1}Definition and structure of a computing medium}{3}%
+\contentsline {subsection}{\numberline {A.1}Definition and Structure of a Computing Medium}{3}{subsection.4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.2}An example of computation : the (discrete) Voronoï diagram}{5}%
+\contentsline {subsection}{\numberline {A.2}An Example of Computation : the Voronoï Diagram}{5}{subsection.7}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.3}Objective : Cannings}{6}%
+\contentsline {subsection}{\numberline {A.3}Objective : Cannings}{6}{subsection.9}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {B}Preliminary work}{6}%
+\contentsline {section}{\numberline {B}Preliminary Work}{6}{section.19}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1}Delaunay Triangulation}{7}%
+\contentsline {subsection}{\numberline {B.1}Delaunay Triangulation}{6}{subsection.20}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.2}Farthest Point Optimization}{7}%
+\contentsline {subsection}{\numberline {B.2}Farthest Point Optimization}{7}{subsection.21}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1}GUI}{7}%
+\contentsline {section}{\numberline {1}Borders and Media}{7}{section.22}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2}Borders and media}{8}%
+\contentsline {subsection}{\numberline {1.1}Choice of Border}{7}{subsection.23}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.1}Choice of border}{8}%
+\contentsline {subsection}{\numberline {1.2}Different Types of Medium}{7}{subsection.24}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {2.2}Different types of medium}{8}%
+\contentsline {section}{\numberline {2}Canning and Evaluation}{7}{section.25}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {3}Canning and evaluation}{8}%
+\contentsline {subsection}{\numberline {2.1}Vertex Cannings}{8}{subsection.26}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.1}Partial cannings}{8}%
+\contentsline {subsection}{\numberline {2.2}From Vertex to Total Cannings}{9}{subsection.30}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.2}Total cannings}{8}%
+\contentsline {subsection}{\numberline {2.3}Evaluation}{9}{subsection.31}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {3.3}Evaluation}{8}%
+\contentsline {section}{\numberline {3}GUI}{9}{section.32}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{References}{8}%
+\contentsline {section}{\numberline {4}Conclusion}{10}{section.39}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{References}{10}{section*.40}%
