@@ -16,7 +16,127 @@
   {}
 \endgroup
 
-\datalist[entry]{nty/global//global/global}
+\datalist[entry]{none/global//global/global}
+  \entry{blob_computing}{inproceedings}{}
+    \name{author}{4}{}{%
+      {{hash=GF}{%
+         family={Gruau},
+         familyi={G\bibinitperiod},
+         given={Fr\'{e}d\'{e}ric},
+         giveni={F\bibinitperiod},
+      }}%
+      {{hash=LY}{%
+         family={Lhuillier},
+         familyi={L\bibinitperiod},
+         given={Yves},
+         giveni={Y\bibinitperiod},
+      }}%
+      {{hash=RP}{%
+         family={Reitz},
+         familyi={R\bibinitperiod},
+         given={Philippe},
+         giveni={P\bibinitperiod},
+      }}%
+      {{hash=TO}{%
+         family={Temam},
+         familyi={T\bibinitperiod},
+         given={Olivier},
+         giveni={O\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {Association for Computing Machinery}%
+    }
+    \keyw{bio-inspiration, cellular automata, scalable architectures}
+    \strng{namehash}{GF+1}
+    \strng{fullhash}{GFLYRPTO1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{abstract}{%
+    Current processor and multiprocessor architectures are almost all based on
+  the Von Neumann paradigm. Based on this paradigm, one can build a
+  general-purpose computer using very few transistors, e.g., 2250 transistors
+  in the first Intel 4004 microprocessor. In other terms, the notion that
+  on-chip space is a scarce resource is at the root of this paradigm which
+  trades on-chip space for program execution time. Today, technology
+  considerably relaxed this space constraint. Still, few research works
+  question this paradigm as the most adequate basis for high-performance
+  computers, even though the paradigm was not initially designed to scale with
+  technology and space.In this article, we propose a different computing model,
+  defining both an architecture and a language, that is intrinsically designed
+  to exploit space; we then investigate the implementation issues of a computer
+  based on this model, and we provide simulation results for small programs and
+  a simplified architecture as a first proof of concept. Through this model, we
+  also want to outline that revisiting some of the principles of today's
+  computing paradigm has the potential of overcoming major limitations of
+  current architectures.%
+    }
+    \field{booktitle}{Proceedings of the 1st Conference on Computing Frontiers}
+    \verb{doi}
+    \verb 10.1145/977091.977111
+    \endverb
+    \field{isbn}{1581137419}
+    \field{pages}{125–139}
+    \field{series}{CF '04}
+    \field{title}{BLOB computing}
+    \verb{url}
+    \verb https://doi.org/10.1145/977091.977111
+    \endverb
+    \list{location}{1}{%
+      {Ischia, Italy}%
+    }
+    \field{year}{2004}
+    \warn{\item Can't use 'location' + 'address'}
+  \endentry
+
+  \entry{swarm_robotic}{article}{}
+    \name{author}{2}{}{%
+      {{hash=NI}{%
+         family={Navarro},
+         familyi={N\bibinitperiod},
+         given={Iñaki},
+         giveni={I\bibinitperiod},
+      }}%
+      {{hash=MF}{%
+         family={Matía},
+         familyi={M\bibinitperiod},
+         given={Fernando},
+         giveni={F\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{NIMF1}
+    \strng{fullhash}{NIMF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{abstract}{%
+    Swarm robotics is a field of multi-robotics in which large number of robots
+  are coordinated in a distributed and decentralised way. It is based on the
+  use of local rules, and simple robots compared to the complexity of the task
+  to achieve, and inspired by social insects. Large number of simple robots can
+  perform complex tasks in a more efficient way than a single robot, giving
+  robustness and flexibility to the group. In this article, an overview of
+  swarm robotics is given, describing its main properties and characteristics
+  and comparing it to general multi-robotic systems. A review of different
+  research works and experimental results, together with a discussion of the
+  future swarm robotics in real world applications completes this work.%
+    }
+    \verb{doi}
+    \verb https://doi.org/10.5402/2013/608164
+    \endverb
+    \verb{eprint}
+    \verb https://onlinelibrary.wiley.com/doi/pdf/10.5402/2013/608164
+    \endverb
+    \field{number}{1}
+    \field{pages}{608164}
+    \field{title}{An Introduction to Swarm Robotics}
+    \verb{url}
+    \verb https://onlinelibrary.wiley.com/doi/abs/10.5402/2013/608164
+    \endverb
+    \field{volume}{2013}
+    \field{journaltitle}{International Scholarly Research Notices}
+    \field{year}{2013}
+  \endentry
+
   \entry{Voronoi}{article}{}
     \name{author}{1}{}{%
       {{hash=GF}{%
@@ -30,8 +150,6 @@
     \strng{fullhash}{GF1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{sortinit}{G}
-    \field{sortinithash}{G}
     \field{abstract}{%
     Our long-term project involves performing general-purpose computation on 2D
   amorphous computing media, which consist of arbitrary many, small, identical
@@ -105,8 +223,6 @@
     \strng{fullhash}{GF1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{sortinit}{G}
-    \field{sortinithash}{G}
     \field{abstract}{%
     Nature creates systems made of many cells that work in parallel, by using a
   developmental process. The development starts with a single cell which
@@ -126,6 +242,25 @@
       {Berlin, Heidelberg}%
     }
     \field{year}{1996}
+  \endentry
+
+  \entry{platform_CA2}{online}{}
+    \name{author}{1}{}{%
+      {{hash=GF}{%
+         family={Gruau},
+         familyi={G\bibinitperiod},
+         given={Fr{\'e}d{\'e}ric},
+         giveni={F\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{GF1}
+    \strng{fullhash}{GF1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{title}{platform-CA2}
+    \verb{url}
+    \verb https://github.com/fredgruau/platform-CA2
+    \endverb
   \endentry
 
   \entry{FPO}{inproceedings}{}
@@ -159,8 +294,6 @@
     \strng{fullhash}{STHDDO1}
     \field{labelnamesource}{author}
     \field{labeltitlesource}{title}
-    \field{sortinit}{S}
-    \field{sortinithash}{S}
     \field{abstract}{%
     Efficient sampling often relies on irregular point sets that uniformly
   cover the sample space. We present a flexible and simple optimization

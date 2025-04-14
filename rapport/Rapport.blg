@@ -19,7 +19,7 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: Rapport-blx.bib
 Database file #2: refs.bib
-I was expecting a `,' or a `}'---line 45 of file refs.bib
+I was expecting a `,' or a `}'---line 75 of file refs.bib
  :  
  :  doi={10.1007/3-540-61093-6_3}
 (Error may have been on previous line)
@@ -27,45 +27,45 @@ I'm skipping whatever remains of this entry
 Biblatex version: 3.13
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
-You've used 4 entries,
+You've used 7 entries,
             6365 wiz_defined-function locations,
-            1231 strings with 13070 characters,
-and the built_in function-call counts, 22757 in all, are:
-= -- 1637
-> -- 498
-< -- 196
-+ -- 545
-- -- 150
-* -- 1432
-:= -- 2273
+            1258 strings with 15704 characters,
+and the built_in function-call counts, 39942 in all, are:
+= -- 2902
+> -- 796
+< -- 274
++ -- 967
+- -- 246
+* -- 2493
+:= -- 4018
 add.period$ -- 0
-call.type$ -- 4
-change.case$ -- 143
+call.type$ -- 7
+change.case$ -- 205
 chr.to.int$ -- 43
-cite$ -- 6
-duplicate$ -- 2280
-empty$ -- 1967
-format.name$ -- 206
-if$ -- 4888
+cite$ -- 12
+duplicate$ -- 4176
+empty$ -- 3558
+format.name$ -- 387
+if$ -- 8463
 int.to.chr$ -- 0
-int.to.str$ -- 13
+int.to.str$ -- 23
 missing$ -- 0
-newline$ -- 151
-num.names$ -- 254
-pop$ -- 1068
+newline$ -- 259
+num.names$ -- 418
+pop$ -- 2104
 preamble$ -- 1
-purify$ -- 157
+purify$ -- 240
 quote$ -- 0
-skip$ -- 938
+skip$ -- 1513
 stack$ -- 0
-substring$ -- 2549
-swap$ -- 650
-text.length$ -- 107
-text.prefix$ -- 3
+substring$ -- 4559
+swap$ -- 1081
+text.length$ -- 148
+text.prefix$ -- 0
 top$ -- 1
-type$ -- 124
+type$ -- 226
 warning$ -- 0
-while$ -- 325
+while$ -- 569
 width$ -- 0
-write$ -- 148
+write$ -- 253
 (There was 1 error message)
