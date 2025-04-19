@@ -62,7 +62,9 @@ This TER is part of a long term research project about the concept of "blob comp
 
 The ultimate goal of the project is to develop a new paradigm of computation that is inherently arbitrarily scalable through the use of \textit{space} as a resource. This kind of computation is becoming increasingly useful, for example with the recent development of swarm robotic\supercite{swarm_robotic}.
 
-We aim to achieve this through the use of arbitrarily many processing elements (PEs) distributed through space and locally connected. These PEs, which can be severely lacking in power on their own, create a computing medium where virtual "blobs" can form and evolve. These blobs are the main primitive we use for making computations.
+We aim to achieve this through the use of arbitrarily many processing elements (PEs) distributed through space and locally connected. These PEs, which can be severely lacking in power on their own, create a computing medium where virtual "blobs" can form and evolve. These blobs are the main primitive we use for making computations. 
+
+IMPORTANT $\longrightarrow$ blobs persist through time
 
 \subsection{Definition and Structure of a Computing Medium}
 
@@ -72,7 +74,7 @@ We aim to achieve this through the use of arbitrarily many processing elements (
 	\label{fig:example_structure}
 \end{figure}
 
-A computing medium is a weakly Delaunay-triangulated planar graph where each vertex, edge, and face is associated with a processing element capable of executing minimal computation, storing information, and communicating with its neighbors.
+In general, a computing medium graph where each vertex, edge, and face is associated with a processing element capable of executing minimal computation, storing information, and communicating with its neighbors. Here, we focus exclusively in specific mediums which are weakly Delaunay triangulated, hence the term "computing medium" in the rest of this report will refer to those unless specified otherwise.
 
 Vertices, edges and faces are called "simplicial loci" (or "S-loci" for short). They determine the overall structure of their medium. Each S-locus controls a set of "transfer loci" (or "t-loci"). T-loci come in pairs that handle the communication between two S-loci. For example, if a vertex was connected to an edge, there would be a pair of t-loci (one belonging to the vertex and the other belonging to the edge) between them.
 
@@ -136,16 +138,16 @@ Up until now, Gruau mainly focused on hexagonal crystalline media. He built a pl
 
 The point of this TER is to allow the use of SIMD to optimize the simulation of AHI media as well. We do this through the development of the notion of "total canning", or simply "canning". Given a medium $M$, a canning is a set of 9 injective maps which assign some integer coordinates to each locus of $M$ :
 \begin{enumerate}[noitemsep,nosep]
-	\item $\{$Vertex$_M\} \mapsto \mathbb{N}^2$
-	\item $\{$Edge$_M\} \mapsto \mathbb{N}^{a_1}$
-	\item $\{$Face$_M\} \mapsto \mathbb{N}^{a_2}$
-	\item $\{$Ve$_M\} \mapsto \mathbb{N}^{a_3}$
-	\item $\{$Vf$_M\} \mapsto \mathbb{N}^{a_4}$
-	\item $\{$Ev$_M\} \mapsto \mathbb{N}^{a_5}$
-	\item $\{$Ef$_M\} \mapsto \mathbb{N}^{a_6}$
-	\item $\{$Fv$_M\} \mapsto \mathbb{N}^{a_7}$
-	\item $\{$Fe$_M\} \mapsto \mathbb{N}^{a_8}$
-	\item[] $a_1, ..., a_8 \geq 2$
+	\item $\{$Vertex$_M\} \mapsto \mathbb{N}^{a_1}$
+	\item $\{$Edge$_M\} \mapsto \mathbb{N}^{a_2}$
+	\item $\{$Face$_M\} \mapsto \mathbb{N}^{a_3}$
+	\item $\{$Ve$_M\} \mapsto \mathbb{N}^{a_4}$
+	\item $\{$Vf$_M\} \mapsto \mathbb{N}^{a_5}$
+	\item $\{$Ev$_M\} \mapsto \mathbb{N}^{a_6}$
+	\item $\{$Ef$_M\} \mapsto \mathbb{N}^{a_7}$
+	\item $\{$Fv$_M\} \mapsto \mathbb{N}^{a_8}$
+	\item $\{$Fe$_M\} \mapsto \mathbb{N}^{a_9}$
+	\item[] where $a_1, ..., a_9 \geq 1$ are specific to each canning method.
 \end{enumerate}
 Through misuse of language, the term "canning" will designate either this set of maps, or the algorithm used to build it.
 
@@ -186,7 +188,7 @@ Before we begin our search for total cannings, let us define the notion of parti
 \subsection{Vertex Cannings}
 \label{partial_canning}
 
-Since a vertex has two coordinates, the objective is equivalent to placing every vertex of the medium in a grid s.t. every cell of the grid contains at most 1 vertex. For now, I explored two vertex cannings with opposed philosophies :
+For now, we set $a_1$ (the n), the objective is equivalent to placing every vertex of the medium in a grid s.t. every cell of the grid contains at most 1 vertex. For now, I explored two vertex cannings with opposed philosophies :
 \begin{enumerate}
 	\item \textbf{TopDistanceXStorted} vertex canning\\
 	This vertex canning was developed to rely as much as possible on the graph structure of the medium, making as little use as possible of its spatial aspect. It was developed quite early in the project, before soft-bordered media appeared, so it only works on hard-bordered media. It works in the following way :\\
@@ -194,9 +196,9 @@ Since a vertex has two coordinates, the objective is equivalent to placing every
 	- Second, place the leftmost vertex of each line in the first cell of its line, the second leftmost vertex of each line in the second cell of its line, repeating until all vertices are placed in the grid.
 	
 	\item \textbf{RoundedCoordinates} vertex canning\\
-	This vertex canning was developed to rely exclusively on the spatial aspect of the medium, completing ignoring its graph structure. It works in the following way :\\
+	This vertex canning was developed to rely exclusively on the spatial embedding of the medium, completing ignoring its graph structure. It works in the following way :\\
 	- First set a counter to 1.\\
-	- Multiply the spatial coordinates of each vertex by the counter and round the result. Use the two integer obtained as indexes to put each vertex in the grid.\\
+	- Multiply the spatial coordinates of each vertex by the counter and round the result. Use the two integers obtained as a 2D index to put each vertex in the grid.\\
 	- If two vertices share the same cell, increment the counter by one and go back to the previous step. Otherwise, we have a vertex canning.
 \end{enumerate}
 

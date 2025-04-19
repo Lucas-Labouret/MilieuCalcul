@@ -2,25 +2,25 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {A}What is Blob Computing ?}{3}{section.3}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.1}Definition and Structure of a Computing Medium}{3}{subsection.4}%
+\contentsline {subsection}{\numberline {A.1}Definition and Structure of a Computing Medium}{4}{subsection.4}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {A.2}An Example of Computation : the Voronoï Diagram}{5}{subsection.7}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {A.3}Objective : Cannings}{6}{subsection.9}%
+\contentsline {subsection}{\numberline {A.3}Objective : Cannings}{7}{subsection.9}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {B}Preliminary Work}{6}{section.19}%
+\contentsline {section}{\numberline {B}Preliminary Work}{7}{section.19}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.1}Delaunay Triangulation}{6}{subsection.20}%
+\contentsline {subsection}{\numberline {B.1}Delaunay Triangulation}{7}{subsection.20}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {B.2}Farthest Point Optimization}{7}{subsection.21}%
+\contentsline {subsection}{\numberline {B.2}Farthest Point Optimization}{8}{subsection.21}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {1}Borders and Media}{7}{section.22}%
+\contentsline {section}{\numberline {1}Borders and Media}{8}{section.22}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.1}Choice of Border}{7}{subsection.23}%
+\contentsline {subsection}{\numberline {1.1}Choice of Border}{8}{subsection.23}%
 \defcounter {refsection}{0}\relax 
-\contentsline {subsection}{\numberline {1.2}Different Types of Medium}{7}{subsection.24}%
+\contentsline {subsection}{\numberline {1.2}Different Types of Medium}{8}{subsection.24}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {2}Canning and Evaluation}{7}{section.25}%
+\contentsline {section}{\numberline {2}Canning and Evaluation}{8}{section.25}%
 \defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.1}Vertex Cannings}{8}{subsection.26}%
 \defcounter {refsection}{0}\relax 
@@ -30,6 +30,6 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3}GUI}{9}{section.32}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{\numberline {4}Conclusion}{10}{section.39}%
+\contentsline {section}{\numberline {4}Conclusion}{11}{section.39}%
 \defcounter {refsection}{0}\relax 
-\contentsline {section}{References}{10}{section*.40}%
+\contentsline {section}{References}{11}{section*.40}%
