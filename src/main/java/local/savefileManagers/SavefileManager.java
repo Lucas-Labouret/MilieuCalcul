@@ -111,22 +111,26 @@ public abstract class SavefileManager {
         String line = reader.readLine();
         lineCounter++;
         if(line == null) {
+            reader.close();
             throw new IOException("Empty file");
         }
         line = line.trim();
         if (!line.equals("-- Dimensions --")) {
+            reader.close();
             throw new IOException("Expected '-- Dimensions --' but got '" + line + "' on line " + lineCounter);
         }
 
         line = reader.readLine();
         lineCounter++;
         if (line == null) {
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
         line = line.trim();
 
         String[] dimensions = line.split(" ");
         if (dimensions.length != 2) {
+            reader.close();
             throw new IOException("Expected dimensions but got '" + line + "' on line " + lineCounter);
         }
         try {
@@ -134,26 +138,31 @@ public abstract class SavefileManager {
             medium.setHeight(Double.parseDouble(dimensions[1]));
         }
         catch (NumberFormatException e) {
+            reader.close();
             throw new IOException("Expected dimensions but got '" + line + "' on line " + lineCounter);
         }
 
         line = reader.readLine();
         lineCounter++;
         if (line == null){
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
         line = line.trim();
         if (!line.isEmpty()) {
+            reader.close();
             throw new IOException("Expected an empty line but got '" + line + "' on line " + lineCounter);
         }
 
         line = reader.readLine();
         lineCounter++;
         if (line == null){
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
         line = line.trim();
         if (!line.equals("-- Vertices --")) {
+            reader.close();
             throw new IOException("Expected '-- Vertices --' but got '" + line + "' on line " + lineCounter);
         }
 
@@ -164,9 +173,10 @@ public abstract class SavefileManager {
 
                 String[] vertexLine = line.split(" ");
                 if (vertexLine.length != 8) {
+                    reader.close();
                     throw new IOException(
                             "Expected a line of the form '<index>: <x> <y> <border> <top> <left> <right> <bottom>' " +
-                                    "but got '" + line + "' on line " + lineCounter
+                            "but got '" + line + "' on line " + lineCounter
                     );
                 }
                 try {
@@ -175,9 +185,10 @@ public abstract class SavefileManager {
                     indexToVertex.put(index, vertex);
                     medium.add(vertex);
                 } catch (NumberFormatException e) {
+                    reader.close();
                     throw new IOException(
                             "Expected a line of the form '<index>: <x> <y> <border> <top> <left> <right> <bottom>' " +
-                                    "but got '" + line + "' on line " + lineCounter
+                            "but got '" + line + "' on line " + lineCounter
                     );
                 }
             }
@@ -189,10 +200,12 @@ public abstract class SavefileManager {
         line = reader.readLine();
         lineCounter++;
         if (line == null){
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
         line = line.trim();
         if (!line.equals("-- Neighbors --")) {
+            reader.close();
             throw  new IOException("Expected '-- Neighbors --' but got '" + line + "' on line " + lineCounter);
         }
         try {
@@ -208,6 +221,7 @@ public abstract class SavefileManager {
                         indexToVertex.get(index).addNeighbor(indexToVertex.get(neighborIndex));
                     }
                 } catch (NumberFormatException e) {
+                    reader.close();
                     throw new IOException(
                             "Expected line of the form '<index>: <neighbor index 1> <neighbor index 2> ...' " +
                             "but got '" + line + "' on line " + lineCounter
@@ -223,10 +237,12 @@ public abstract class SavefileManager {
         lineCounter++;
 
         if (line == null){
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
         line = line.trim();
         if (!line.equals("-- Hard Border --")) {
+            reader.close();
             throw new IOException("Expected '-- Hard Border --' but got '" + line + "' on line " + lineCounter);
         }
 
@@ -234,10 +250,12 @@ public abstract class SavefileManager {
         lineCounter++;
 
         if (line == null){
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
         line = line.trim();
         if (line.isEmpty()) {
+            reader.close();
             throw new IOException(
                     "Expected line of the form '<index 1> <index 2> ...' " +
                     "but got '" + line + "' on line " + lineCounter
@@ -254,6 +272,7 @@ public abstract class SavefileManager {
             }
             medium.setHardBorder(hardBorder);
         } catch (NumberFormatException e) {
+            reader.close();
             throw new IOException(
                     "Expected line of the form '<index 1> <index 2> ...' " +
                     "but got '" + line + "' on line " + lineCounter
@@ -264,29 +283,35 @@ public abstract class SavefileManager {
         lineCounter++;
 
         if (line == null){
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
         if (!line.isEmpty()) {
+            reader.close();
             throw new IOException("Expected an empty line but got '" + line + "' on line " + lineCounter);
         }
 
         line = reader.readLine();
         lineCounter++;
         if (line == null){
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
         line = line.trim();
         if (!line.equals("-- Soft Border --")) {
+            reader.close();
             throw new IOException("Expected '-- Soft Border --' but got '" + line + "' on line " + lineCounter);
         }
 
         line = reader.readLine();
         lineCounter++;
         if (line == null){
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
         line = line.trim();
         if (line.isEmpty()) {
+            reader.close();
             throw new IOException(
                     "Expected line of the form '<index 1> <index 2> ...' " +
                     "but got '" + line + "' on line " + lineCounter
@@ -312,6 +337,7 @@ public abstract class SavefileManager {
             }
             medium.setSoftBorder(softBorder);
         } catch (NumberFormatException e) {
+            reader.close();
             throw new IOException(
                     "Expected line of the form '<index 1> <index 2> ...' " +
                     "but got '" + line + "' on line " + lineCounter

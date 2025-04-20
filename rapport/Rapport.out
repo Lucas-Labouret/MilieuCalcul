@@ -1,17 +1,17 @@
 \BOOKMARK [1][-]{section.3}{What is Blob Computing ?}{}% 1
 \BOOKMARK [2][-]{subsection.4}{Definition and Structure of a Computing Medium}{section.3}% 2
-\BOOKMARK [2][-]{subsection.7}{An Example of Computation : the Vorono\357 Diagram}{section.3}% 3
-\BOOKMARK [2][-]{subsection.9}{Objective : Cannings}{section.3}% 4
-\BOOKMARK [1][-]{section.19}{Preliminary Work}{}% 5
-\BOOKMARK [2][-]{subsection.20}{Delaunay Triangulation}{section.19}% 6
-\BOOKMARK [2][-]{subsection.21}{Farthest Point Optimization}{section.19}% 7
-\BOOKMARK [1][-]{section.22}{Borders and Media}{}% 8
-\BOOKMARK [2][-]{subsection.23}{Choice of Border}{section.22}% 9
-\BOOKMARK [2][-]{subsection.24}{Different Types of Medium}{section.22}% 10
-\BOOKMARK [1][-]{section.25}{Canning and Evaluation}{}% 11
-\BOOKMARK [2][-]{subsection.26}{Vertex Cannings}{section.25}% 12
-\BOOKMARK [2][-]{subsection.30}{From Vertex to Total Cannings}{section.25}% 13
-\BOOKMARK [2][-]{subsection.31}{Evaluation}{section.25}% 14
-\BOOKMARK [1][-]{section.32}{GUI}{}% 15
-\BOOKMARK [1][-]{section.39}{Conclusion}{}% 16
-\BOOKMARK [1][-]{section*.40}{References}{}% 17
+\BOOKMARK [2][-]{subsection.9}{An Example of Computation : the Vorono\357 Diagram}{section.3}% 3
+\BOOKMARK [2][-]{subsection.11}{Objective : Cannings}{section.3}% 4
+\BOOKMARK [1][-]{section.21}{Preliminary Work}{}% 5
+\BOOKMARK [2][-]{subsection.22}{Delaunay Triangulation}{section.21}% 6
+\BOOKMARK [2][-]{subsection.23}{Farthest Point Optimization}{section.21}% 7
+\BOOKMARK [1][-]{section.24}{Borders and Media}{}% 8
+\BOOKMARK [2][-]{subsection.25}{Choice of Border}{section.24}% 9
+\BOOKMARK [2][-]{subsection.26}{Different Types of Medium}{section.24}% 10
+\BOOKMARK [1][-]{section.27}{Canning and Evaluation}{}% 11
+\BOOKMARK [2][-]{subsection.28}{Vertex Cannings}{section.27}% 12
+\BOOKMARK [2][-]{subsection.32}{From Vertex to Total Cannings}{section.27}% 13
+\BOOKMARK [2][-]{subsection.33}{Evaluation}{section.27}% 14
+\BOOKMARK [1][-]{section.34}{GUI}{}% 15
+\BOOKMARK [1][-]{section.41}{Conclusion}{}% 16
+\BOOKMARK [1][-]{section*.42}{References}{}% 17

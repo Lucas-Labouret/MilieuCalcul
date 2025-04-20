@@ -70,11 +70,11 @@ IMPORTANT $\longrightarrow$ blobs persist through time
 
 \begin{figure}[H]
 	\centering\includegraphics[width=0.9\linewidth]{assets/handdrawn_medium.png}
-	\caption{Example structure of a medium.}
+	\caption{Example of triangulated medium.}
 	\label{fig:example_structure}
 \end{figure}
 
-In general, a computing medium graph where each vertex, edge, and face is associated with a processing element capable of executing minimal computation, storing information, and communicating with its neighbors. Here, we focus exclusively in specific mediums which are weakly Delaunay triangulated, hence the term "computing medium" in the rest of this report will refer to those unless specified otherwise.
+In its most general form, a computing medium is simply a set of processing elements distrubuted in some space which are locally connected. Here, we focus exclusively on a specific kind of meia called "triangulated computin media", hence the term "computing medium" in the rest of this report will refer to those unless specified otherwise. A triangulated medium is represented as a weakly Delaunay-triangulated graph where each vertex, edge, and face is associated with a processing element capable of executing minimal computation, storing information, and communicating with its neighbors.
 
 Vertices, edges and faces are called "simplicial loci" (or "S-loci" for short). They determine the overall structure of their medium. Each S-locus controls a set of "transfer loci" (or "t-loci"). T-loci come in pairs that handle the communication between two S-loci. For example, if a vertex was connected to an edge, there would be a pair of t-loci (one belonging to the vertex and the other belonging to the edge) between them.
 
@@ -102,7 +102,14 @@ A medium is said to be crystalline if a repeating structure emerges in the place
 
 For now, we consider PEs to be immobile and synchronous, although lifting these two constraints will probably be the subject of future research.\\
 
-A blob of a given medium $M$ is a connected sub-graph $M'$ of $M$ such that all the vertices of $M'$ share a common property (e.g.: all their values are even, or all their values are 1, etc.). Depending on the program, these blobs are able to grow, shrink, merge, divide and more, which is the computational basis of blob computing\supercite{blob_computing2}.
+Blobs form the computational basis of blob computing. A blob of a given medium $M$ is a connected sub-graph $M'$ of $M$ such that all the vertices of $M'$ share a common property (e.g.: all their values are even, or all their values are 1, etc.). Formally, it is a "True" connected component of a boolean field over the vertices (see \cite{blob_computing2}).
+
+Importantly, blobs are persistent through time, meaning that two blobs at two different points in time can be considered one and the same under the right conditions, even though blobs are able to change their shape over time. This is possible for two reasons :
+\begin{enumerate}[noitemsep, nosep]
+	\item Blobs maintain their connexity, they tipycally don't merge or divide unless instructed otherwise.
+	\item Blobs only change shape at their border : at each time step they can grow to unocupied vertices adjecent to their border, or they can lose vertices that are part of their border.
+\end{enumerate}
+Therefore, two blobs at two consecutive timestep are "the same blob" if they only differ at their border. We can then extend the notion to any number of timestep through its transitive closure.
 
 \subsection{An Example of Computation : the Voronoï Diagram}
 
@@ -147,7 +154,7 @@ The point of this TER is to allow the use of SIMD to optimize the simulation of 
 	\item $\{$Ef$_M\} \mapsto \mathbb{N}^{a_7}$
 	\item $\{$Fv$_M\} \mapsto \mathbb{N}^{a_8}$
 	\item $\{$Fe$_M\} \mapsto \mathbb{N}^{a_9}$
-	\item[] where $a_1, ..., a_9 \geq 1$ are specific to each canning method.
+	\item[] where $a_1, ..., a_9 \geq 1$ are specific to each canning method and designate the number of coordinates assigned to each type of locus.
 \end{enumerate}
 Through misuse of language, the term "canning" will designate either this set of maps, or the algorithm used to build it.
 
@@ -188,7 +195,7 @@ Before we begin our search for total cannings, let us define the notion of parti
 \subsection{Vertex Cannings}
 \label{partial_canning}
 
-For now, we set $a_1$ (the n), the objective is equivalent to placing every vertex of the medium in a grid s.t. every cell of the grid contains at most 1 vertex. For now, I explored two vertex cannings with opposed philosophies :
+To align with the way crystaline media are hendled, we set $a_1 = 2$, i.e. we want to assign 2D integer coordinates to each vertex of the medium. The problem now becomes equivalent to placing the vertices in a 2D grid. The vertex canning is valid if all the vertices have been placed in the grid and if each cell of the grid contains at most one vertex. The coordinates of each vertex then becomes the 2D index of its cell. Based on this idea, I have developped two diffrent vertex cannings with opposite philosophies :
 \begin{enumerate}
 	\item \textbf{TopDistanceXStorted} vertex canning\\
 	This vertex canning was developed to rely as much as possible on the graph structure of the medium, making as little use as possible of its spatial aspect. It was developed quite early in the project, before soft-bordered media appeared, so it only works on hard-bordered media. It works in the following way :\\
@@ -202,6 +209,8 @@ For now, we set $a_1$ (the n), the objective is equivalent to placing every vert
 	- If two vertices share the same cell, increment the counter by one and go back to the previous step. Otherwise, we have a vertex canning.
 \end{enumerate}
 
+Regarding the TopDistanceXStorted algorithm, I first tried sorting the lines using the distance to the leftside border, however it resulted in invalid vertex cannings where two vertices would share the same cell.
+
 \begin{figure}[H]
 	\centering\includegraphics[width=0.45\linewidth]{assets/TopDistanceXSorted.png}
 	\centering\includegraphics[width=0.45\linewidth]{assets/RoundedCoordinates.png}
@@ -209,6 +218,8 @@ For now, we set $a_1$ (the n), the objective is equivalent to placing every vert
 	Two vertices are joint by a green line if they are consecutive on a line of the grid, and a yellow line if they are consecutive in a column.}
 	\label{fig:topdist_vs_rounded}
 \end{figure}
+
+Intuitively from figure~\ref{fig:topdist_vs_rounded}, we can infer that RoundedCoordinates is better as it creates a more "grid-like" canning, whereas the columns in TopDistanceXSorted seem to "drift" to the left. We will confirm this intuition later.
 
 \subsection{From Vertex to Total Cannings}
 
