@@ -1,11 +1,16 @@
 \documentclass{article}
 
 \usepackage{caption}
+\usepackage{subcaption}
+
 \usepackage{enumitem}
+
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage[section]{placeins}
+
 \usepackage{amssymb}
+\usepackage{amsmath}
 
 \usepackage[
 	backend=bibtex
@@ -30,12 +35,12 @@
 }
 
 \author{
-    Auteur~:\\
+    Author~:\\
     Lucas Labouret\\
     M1 QDCS, Université Paris-Saclay\\
     \small lucas.labouret@universite-paris-saclay.fr
     \and
-    Encadrant~:\\
+    Supervisor~:\\
     Frédéric Gruau\\
     LISN\\
     \small frederic.gruau@universite-paris-saclay.fr
@@ -55,13 +60,11 @@
 \tableofcontents
 \newpage
 
-\renewcommand{\thesection}{\Alph{section}}
-
 \section*{Introduction}
 \label{introduction}
 \addcontentsline{toc}{section}{\nameref{introduction}}
 
-This TER took place at the LISN from January to April 2025 under the supervision of Frédéric Gruau. It is the continuation of a research project I did under him last year as part of my Licence degree's curriculum. It is part of a long term research project about the concept of "blob computing"\supercite{blob_computing1}. During this TER, I performed research about the simulation of blob computing on classical computers, and wrote a GUI application that allows to visualize and interact with my results.
+This TER took place at the LISN from January to April 2025 under the supervision of Frédéric Gruau. It is the continuation of a research project I did under him last year  my Licence degree's curriculum. It is part of a long term research project about the concept of "blob computing"\supercite{blob_computing1}. During this TER, I performed research about the simulation of blob computing on classical computers, and wrote a GUI application that allows users to visualize and interact with my results.
 
 \section{What is Blob Computing ?}
 
@@ -79,9 +82,13 @@ We aim to achieve this through the use of arbitrarily many processing elements (
 	\label{fig:example_structure}
 \end{figure}
 
-In its most general form, a computing medium is simply a set of processing elements distributed in some space which are locally connected. Here, we focus exclusively on a specific kind of media called "triangulated computing media", hence the term "computing medium" in the rest of this report will refer to those unless specified otherwise. A triangulated medium is represented as a weakly Delaunay-triangulated graph where each vertex, edge, and face is associated with a processing element capable of executing minimal computation, storing information, and communicating with its neighbors.
+In its most general form, a computing medium is simply a set of processing elements distributed in some space which are locally connected. Here, we focus exclusively on a specific kind of media called "triangulated computing media", hence the term "computing medium" in the rest of this report will refer to those unless specified otherwise. A triangulated medium is represented as a Delaunay-triangulated graph where each vertex, edge, and face is associated with a processing element capable of executing minimal computation, storing information, and communicating with its neighbors.
 
-Vertices, edges and faces are called "simplicial loci" (or "S-loci" for short). They determine the overall structure of their medium. Each S-locus controls a set of "transfer loci" (or "t-loci"). T-loci come in pairs that handle the communication between two S-loci. For example, if a vertex was connected to an edge, there would be a pair of t-loci (one belonging to the vertex and the other belonging to the edge) between them.
+Vertices, edges, and faces are called "simplicial loci" (or "S-loci" for short). They determine the overall structure of the medium. Each S-locus controls a set of "transfer loci" (or "t-loci"). T-loci come in pairs that handle the communication between two S-loci. For example, if a vertex was connected to an edge, there would be a pair of t-loci (one belonging to the vertex and the other belonging to the edge) between them.
+
+\newcommand{\footnoteNbVeVf}{
+	Although importantly, for a sufficiently homogeneous medium (see below), we conjecture that vertices that are not part of its border always control 4 to 8 Ve's and the same number of Vf's. This conjecture seems to hold experimentally.
+}
 
 Obviously, there are 3 types of S-loci~: Vertex, Edge, Face. T-loci are divided into 6 types~: 
 \begin{itemize}[noitemsep,nosep]
@@ -92,7 +99,7 @@ Obviously, there are 3 types of S-loci~: Vertex, Edge, Face. T-loci are divided 
 	\item Fv linking a  Face   to a  Vertex
 	\item Fe linking a  Face   to an Edge
 \end{itemize}
-Figure~\ref{fig:example_structure} show an example of how all these loci are put together to form a medium. For reference, a vertex controls any number of Ve's and Vf's, an edge controls two Ev's and two Ef's, and a face controls three Fv's and three Fe's.
+Figure~\ref{fig:example_structure} shows an example of how all these loci are put together to form a medium. For reference, a vertex controls any number of Ve's and Vf's\footnote{\footnoteNbVeVf}, an edge controls two Ev's and two Ef's, and a face controls three Fv's and three Fe's.
 
 A medium is said to be crystalline if a repeating structure emerges in the placement if its vertices. It is amorphous when no such structure emerges. Additionally, it is homogeneous if the average point density is approximately constant and there are no
 “holes” or “clusters”, and it is isotropic if the directions of the edges of the medium follow a uniform distribution over $[0, \pi[$. This report mainly focuses on amorphous homogeneous isotropic (AHI) media.
@@ -111,7 +118,7 @@ Blobs form the computational basis of blob computing. A blob of a given medium $
 
 Importantly, blobs are persistent through time, meaning that two blobs at two different points in time can be considered one and the same under the right conditions, even though blobs are able to change their shape over time. This is possible for two reasons~:
 \begin{enumerate}[noitemsep, nosep]
-	\item Blobs maintain their connexity, they typically don't merge or divide unless instructed otherwise.
+	\item Blobs maintain their connectivity, they typically do not merge or divide unless instructed otherwise.
 	\item Blobs only change shape at their border~: at each time step they can grow to unoccupied vertices adjacent to their border, or they can lose vertices that are part of their border.
 \end{enumerate}
 Therefore, two blobs at two consecutive timestep are "the same blob" if they only differ at their border. We can then extend the notion to any number of timestep through its transitive closure.
@@ -131,15 +138,15 @@ Therefore, two blobs at two consecutive timestep are "the same blob" if they onl
 	\label{fig:voronoi_spread}
 \end{figure}
 
-The basic idea is the following~: we start with a set of "seeds" distributed over the vertices of the network. Each seed is now the center of a blob. Then, at each synchronous step, the blobs will spread to their adjacent vertices if this wouldn't cause them to merge with another blob, until no blob can spread further. It can be implemented with very few types of local operations that are applied simultaneously to every S-locus in the network~:
+The basic idea is the following~: we start with a set of "seeds" distributed over the vertices of the network. Each seed is now the center of a blob. Then, at each synchronous step, the blobs will spread to their adjacent vertices if this would not cause them to merge with another blob, until no blob can spread further. It can be implemented with very few types of local operations that are applied simultaneously to every S-locus in the network~:
 \begin{itemize}
-	\item Multi-cast\\
+	\item Multi-cast :\\
 	The S-locus copies its value into its t-loci of a given type.
-	\item Rotation\\
+	\item Rotation :\\
 	Since t-loci are spatially arranged around their S-loci, we can define a clockwise and counter-clockwise neighbor. T-loci can perform logical operations on their and their neighbors' values.
-	\item Reduction\\
+	\item Reduction :\\
 	The S-locus stores the result of a commutative and associative operation applied to the values of its t-loci of a given type.
-	\item Transfer\\
+	\item Transfer :\\
 	Each of the S-locus' t-loci exchanges its value with the value of its pair. 
 \end{itemize}
 In fact, clever association of these primitives allows to program everything a computing medium is capable of, such as sorting arrays of integer or multiplying matrices\supercite{blob_computing2}.
@@ -148,66 +155,84 @@ In fact, clever association of these primitives allows to program everything a c
 
 Up until now, Gruau mainly focused on hexagonal crystalline media. He built a plateform allowing efficient simulation of blob computation on classical hardware using SIMD\supercite{Voronoi, platform_CA2}. 
 
-The point of this TER is to allow the use of SIMD to optimize the simulation of AHI media as well. We do this through the development of the notion of "total canning", or simply "canning". Given a medium $M$, a canning is a set of 9 injective maps which assign some integer coordinates to each locus of $M$~:
+The goal of this TER is to allow the use of SIMD to optimize the simulation of AHI media as well. We do this through the development of the notion of "total canning", or simply "canning". Given a medium $M$, a canning is a set of 9 injective maps which assign some integer coordinates to each locus of $M$~:
 \begin{enumerate}[noitemsep,nosep]
-	\item $\{$Vertex$_M\} \mapsto \mathbb{N}^{a_1}$
-	\item $\{$Edge$_M\} \mapsto \mathbb{N}^{a_2}$
-	\item $\{$Face$_M\} \mapsto \mathbb{N}^{a_3}$
-	\item $\{$Ve$_M\} \mapsto \mathbb{N}^{a_4}$
-	\item $\{$Vf$_M\} \mapsto \mathbb{N}^{a_5}$
-	\item $\{$Ev$_M\} \mapsto \mathbb{N}^{a_6}$
-	\item $\{$Ef$_M\} \mapsto \mathbb{N}^{a_7}$
-	\item $\{$Fv$_M\} \mapsto \mathbb{N}^{a_8}$
-	\item $\{$Fe$_M\} \mapsto \mathbb{N}^{a_9}$
-	\item[] where $a_1, ..., a_9 \geq 1$ are specific to each canning method and designate the number of coordinates assigned to each type of locus.
+	\item $\{$Vertex$_M\} \mapsto \mathbb{N}^{a_\text V}$
+	\item $\{$Edge$_M\} \mapsto \mathbb{N}^{a_\text E}$
+	\item $\{$Face$_M\} \mapsto \mathbb{N}^{a_\text F}$
+	\item $\{$Ve$_M\} \mapsto \mathbb{N}^{a_\text{Ve}}$
+	\item $\{$Vf$_M\} \mapsto \mathbb{N}^{a_\text{Vf}}$
+	\item $\{$Ev$_M\} \mapsto \mathbb{N}^{a_\text{Ev}}$
+	\item $\{$Ef$_M\} \mapsto \mathbb{N}^{a_\text{Ef}}$
+	\item $\{$Fv$_M\} \mapsto \mathbb{N}^{a_\text{Fv}}$
+	\item $\{$Fe$_M\} \mapsto \mathbb{N}^{a_\text{Fe}}$
+	\item[] where $a_\text V, ..., a_\text{Fe} \geq 1$ are specific to each canning method and designate the number of coordinates assigned to each type of locus. We call $a_T$ the arity of type $T$ under a given canning.
 \end{enumerate}
-Through misuse of language, the term "canning" will designate either this set of maps, or the algorithm used to build it.
+Informally, the term "canning" will designate either this set of maps, or the algorithm used to build it.
 
 The objective is twofold~: firstly, we want to find a way to measure the efficiency of a canning on a given medium. Secondly, we want to create a canning that is efficient on most -if not all- media.
 
 \section{Preliminary Work}
 
-In this section, I briefly introduce some work I did last year during another internship with Gruau to generate AHI media. While it isn't the main focus of this year's TER, it is what made it possible in its current form.
+In this section, I briefly introduce some work I did last year during another internship with Gruau to generate AHI media. While it is not the main focus of this year's TER, it is what made it possible in its current form.
 
 \subsection{Delaunay Triangulation}
 
-A Delaunay triangulation is a particular type of triangulation where a triplet of vertices form a face iif no other vertex can be found inside the circumcircle of the triplet. We relax this definition slightly by allowing the hull of the graph not to be convex. It presents interested properties for our purpose as the edges of the triangulation tend to remain "localized" (i.e. vertices that are connected tend to be spatially close).
+A Delaunay triangulation is a particular type of triangulation where a triplet of vertices form a face if and only if no other vertex can be found inside the circumcircle of the triplet. Normally, the edges forming the convex hull of the embedded graph would be part of the triangulation, however we will allow the removal of those edges under certain conditions as detailed below. This particular type of triangulation presents interesting properties for our purpose as the edges of the triangulation tend to remain "localized" (i.e. vertices that are connected tend to be spatially close).
 
-I used the triangulation algorithm described in \cite{build_delaunay}. However, there is a bug in my implementation where vertically-aligned are often handled incorrectly, which I couldn't fix before the end of my internship last year. Since this problem wasn't particularly consequential this year either, I didn't take the time to fix it this year either.
+I used the triangulation algorithm described in \cite{build_delaunay}. However, there is a bug in my implementation where vertically-aligned vertices are often handled incorrectly, which I could not fix before the end of my internship last year. Since this problem was not particularly consequential, I did not take the time to fix it this year either.
 
-Additionally, the FPO algorithm (see \ref{fpo}) performs a lot of removals and insertions to the set of vertices. Currently, each time this happens, the entire set is retriangulated. This is a vastly inefficient approach to the problem. If I had the time, I would've liked to implement the removal and addition algorithms described in \cite{build_delaunay, remove_delaunay}.
+Additionally, the FPO algorithm (see \ref{fpo}) performs a lot of removals and insertions to the set of vertices. Currently, each time this happens, the entire set is retriangulated. This is a vastly inefficient approach to the problem. If I had the time, I would have liked to implement the removal and addition algorithms described in \cite{build_delaunay, remove_delaunay}.
 
 \subsection{Farthest Point Optimization}
 \label{fpo}
 
 The Farthest Point Optimization algorithm \supercite{FPO} allows the construction of the irregular yet homogeneous sets of points that we need for blob computing. It yields better results than more common algorithm like Poisson-Disk sampling or Lloyd algorithm, and fits naturally into the project as it relies heavily on the Delaunay triangulation.
 
-The implementation of FPO in my case wasn't straightforward. This is because the article applied the algorithm to sets of points in the unit torus, while the media use bounded subsets of the Euclidean plane instead. In particular, I had to adapt the algorithm to work around the existence of borders with no predetermined shape, and that can contain fixed points that cannot be moved even though they can still influence the placement of other points.
-
-\renewcommand{\thesection}{\arabic{section}}
-\setcounter{section}{0}
+The implementation of FPO in my case was not straightforward. This is because the article applied the algorithm to sets of points in the unit torus, while the media uses bounded subsets of the Euclidean plane instead. In particular, I had to adapt the algorithm to work around the existence of borders with predetermined shape, and that can contain fixed points that cannot be moved even though they can still influence the placement of other points.
 
 \section{Borders and Media}
 
 The border of a medium is the set composed of both the edges separating the outer face of the graph from the inner faces of the graph, and the vertices at the ends of those edges.
 
-The method we chose to handle the borders of our media is crucial, as impacts how the media are optimized, how they are canned afterward, and decide some useful properties they have for performing computations. Ultimately, we decided to study two broad types of borders : "soft" and "hard" borders.
+The method we chose to handle the borders of our media is crucial, as it impacts how the media are optimized, how they are canned afterward, and decide some useful properties they have for performing computations. Ultimately, we decided to study two broad types of borders : "soft" and "hard" borders.
 
 \subsection{Soft Borders}
 
 Soft borders are the least restrictive of the two types. A medium has a soft border if all of its vertices are allowed to be moved anywhere in a bounded, connected region of the Euclidean plane during FPO. This region can take any shape.
 
-This method of handling the border tends to connect vertices that would normally be too far apart from each other if they were on the inside of the medium, breaking its locality. To solve this issue, we allow the iterative removal of the edges of the border that connects points which would otherwise be "too far apart".
+This method of handling the border tends to connect vertices that would normally be too far apart from each other if they were inside the medium, breaking its locality. To solve this issue, we allow the iterative removal of the edges of the border that connects vertices which would otherwise be "too far apart".
 
-We initially considered two types of soft bordered media : soft square media, where the vertices are confined into a square, and soft circle media, where the vertices are confined into a circle. However, we quickly abandoned soft circle media as they currently don't have any application for computing.
+\begin{figure}[h]
+	\centering\includegraphics[width=0.45\linewidth]{assets/softBorder_lossOfLocality.png}
+	\caption{
+		Loss of locality without border correction.
+	}
+	\label{fig:softLossLocality}
+\end{figure}
+
+We initially considered two types of soft bordered media : soft square media, where the vertices are confined into a square, and soft circle media, where the vertices are confined into a circle. However, we quickly abandoned soft circle media as they currently do not have any application for computing.
 
 \subsection{Hard Borders}
 
-A hard bordered medium is a media whose border (both the edges and the vertices) is fixed even before FPO. Hard borders are a lot more restrictive than soft borders, but they also offer many advantages over them. In particular, since we can decide the placement of the vertices of the borders, it means they can arranged in a way that makes them easy to mirror or to fold into tori. This has interesting properties once the media is used for computation.
+A hard bordered medium is a media whose border (both the edges and the vertices) is fixed even before FPO. Hard borders are a lot more restrictive than soft borders, but they also offer many advantages over them. In particular, since we can decide the placement of the vertices of the borders, it means they can arranged in a way that makes them easy to mirror or to fold into tori. This has interesting properties once the media is used for computation. However, one must be careful when constructing such media, as over/under-filling can lead to a loss of homogeneity or locality near the border.
 
-However, one must be careful when constructing such media, as over/under-filling can lead to a loss of homogeneity or locality near the border.
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering \includegraphics[width=0.9\linewidth]{assets/hardOverFilled_lossOfLocality.png}
+		\caption{Loss of locality in over-filled medium.}
+		\label{fig:hardLossLocality}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering \includegraphics[width=0.9\linewidth]{assets/hardUnderfilled_lossOfHomogeneity.png}
+		\caption{Loss of homogeneity in under-filled medium.}
+		\label{fig:hardLossHomogeneity}
+	\end{subfigure}
+	\caption{Effects of over- and under-filling.}
+\end{figure}
 
-We focused on two types of hard border : a hard square with evenly placed vertices, and a hard rectangle with ratio $1\colon\sqrt{3}$. Initially, we also tried to work with a border following a hexagonal lattice to approach previous work, but we ended dropping the idea as we would either experience the loss of homogeneity/locality mentioned above, or FPO would end converging back to a hexagonal crystal, losing the isotropicism of the media.
+Initially, we tried to work with a border following a hexagonal lattice to approach previous work, but we ended dropping the idea as we would either experience the loss of homogeneity/locality mentioned above, or FPO would end converging back to a hexagonal crystal, losing the isotropicism of the media. Instead, we focused on two types of hard border : a hard square with evenly placed vertices, and a hard rectangle with ratio $1\colon\sqrt{3}$. We chose this ratio as it is the ratio of the minimal over maximal radius of a regular hexagon. This allows some semblance of hexagonal structure in the border while avoiding the problems we encountered with an outright hexagonal pattern.
 
 \subsection{About Hybrid Borders}
 
@@ -220,7 +245,7 @@ Before we begin our search for total cannings, let us define the notion of parti
 \subsection{Vertex Cannings}
 \label{partial_canning}
 
-To align with the way crystaline media are hendled, we set $a_1 = 2$, i.e. we want to assign 2D integer coordinates to each vertex of the medium. The problem now becomes equivalent to placing the vertices in a 2D grid. The vertex canning is valid if all the vertices have been placed in the grid and if each cell of the grid contains at most one vertex. The coordinates of each vertex then becomes the 2D index of its cell. Based on this idea, I have developped two diffrent vertex cannings with opposite philosophies~:
+To align with the way crystaline media are hendled, we set $a_V = 2$, i.e. we want to assign 2D integer coordinates to each vertex of the medium. The problem now becomes equivalent to placing the vertices in a 2D grid. The vertex canning is valid if all the vertices have been placed in the grid and if each cell of the grid contains at most one vertex. The coordinates of each vertex then becomes the 2D index of its cell. Based on this idea, I have developped two diffrent vertex cannings with opposite philosophies~:
 \begin{enumerate}
 	\item \textbf{TopDistanceXStorted} vertex canning\\
 	This vertex canning was developed to rely as much as possible on the graph structure of the medium, making as little use as possible of its embedding. It was developed quite early in the project, before soft-bordered media appeared, so it only works on hard-bordered media. It works in the following way~:\\
@@ -234,7 +259,7 @@ To align with the way crystaline media are hendled, we set $a_1 = 2$, i.e. we wa
 	- If two vertices share the same cell, increment the counter by one and go back to the previous step. Otherwise, we have a vertex canning.
 \end{enumerate}
 
-Regarding the TopDistanceXStorted algorithm, I first tried sorting the lines using the distance to the leftside border, however it resulted in invalid vertex cannings where two vertices would share the same cell.
+Regarding the TopDistanceXStorted algorithm, I first tried sorting the lines using the distance to the left-side border, however it resulted in invalid vertex cannings where two vertices would share the same cell.
 
 \begin{figure}[h]
 	\centering\includegraphics[width=0.45\linewidth]{assets/TopDistanceXSorted.png}
@@ -271,41 +296,41 @@ Now, given a vertex $v$, an edge $e$ and a face $f$ we write
 	\item $Fe(f)$ the set of Fe t-loci belonging to $f$\\
 \end{itemize}
 
-Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we set $a_2 = a_3 = a_4 = a_5 = a_1+1 = 3$. Similarly, Ev's and Ef's will be indexed relative to edges so we set $a_6 = a_7 = a_2+1 = 4$, and Fv's and Fe's will be indexed relative to faces so we set $a_8 = a_9 = a_3+1 = 4$. Now, the attribution of coordinates works in the following way :
+Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we set the arities $a_\text E = a_\text F = a_\text{Ve} = a_\text{Vf} = a_\text V+1 = 3$. Similarly, Ev's and Ef's will be indexed relative to edges so we set $a_\text{Ev} = a_\text{Ef} = a_\text E+1 = 4$, and Fv's and Fe's will be indexed relative to faces so we set $a_\text{Fv} = a_\text{Fe} = a_\text F+1 = 4$. Now, the attribution of coordinates works in the following way :
 \begin{itemize}
 	\item \textbf{Edges}~:\\
 	For each vertex $v$
 	\begin{itemize}[noitemsep, nosep, label=-]
-		\item Select a first edge. If it exists and it is in $E(v)$, it is the edge joining $v$ to the next vertex in its line. Otherwise, start on the left of $v$ and walk clockwise around it, selecting the first edge in $E(v)$ that you cross.
-		\item Sort $E(v)$ clockwise around $v$ starting from your first edge.
-		\item Number your edges, starting at 0 and incrementing by 1 in the order of your sorted $E(v)$.
+		\item Select a first edge.\\
+		If it exists and it is in $E(v)$, it is the edge joining $v$ to the next vertex in its line.\\
+		Otherwise, start on the left of $v$ and walk clockwise around it, selecting the first edge in $E(v)$ that you cross.
+		\item Assign each edge in $E(v)$ an integer between 0 and $|E(v)|-1$, starting from the first edge and sorted clockwise around $v$.
 		\item Edge number $p$ now has coordinates $(p, y_v, x_v)$.
 	\end{itemize}
 	
 	\item \textbf{Faces}~:\\
 	For each vertex $v$
 	\begin{itemize}[noitemsep, nosep, label=-]
-		\item Select a first face. If it exists and it is in $F(v)$, it is the face joining $v$ to the next vertex in its line and to $v$'s next neighbor clockwise. Otherwise, start on the left of $v$ and walk clockwise around it, selecting the first face in $F(v)$ that you cross.
-		\item Sort $F(v)$ clockwise around $v$ starting from your first face.
-		\item Number your faces, starting at 0 and incrementing by 1 in the order of your sorted $F(v)$.
+		\item Select a first face.\\
+		If it exists and it is in $F(v)$, it is the face joining $v$ to the next vertex in its line and to $v$'s next neighbor clockwise.\\
+		Otherwise, start on the left of $v$ and walk clockwise around it, selecting the first face in $F(v)$ that you cross.
+		\item Assign each face in $F(v)$ an integer between 0 and $|F(v)|-1$, starting from the first face and sorted clockwise around $v$.
 		\item Face number $p$ now has coordinates $(p, y_v, x_v)$.
 	\end{itemize}
 	
 	\item \textbf{Ve's}~:\\
 	For each vertex $v$
 	\begin{itemize}[noitemsep, nosep, label=-]
-		\item Select a first Ve. If it exists, it is the Ve linking $v$ to the edge joining $v$ to the next vertex in its line. Otherwise, start on the left of $v$ and walk clockwise around it, selecting the Ve in $Ve(v)$ linking $v$ to the first edge in $E(v)$ that you cross.
-		\item Sort $Ve(v)$ clockwise around $v$ starting from your first Ve.
-		\item Number your Ve's, starting at 0 and incrementing by 1 in the order of your sorted $Ve(v)$.
+		\item Select a first Ve. It is the Ve linking to $v$'s first edge.
+		\item Assign each Ve in $Ve(v)$ an integer between 0 and $|Ve(v)|-1$, starting from the first Ve and sorted clockwise around $v$.
 		\item Ve number $p$ now has coordinates $(p, y_v, x_v)$.
 	\end{itemize}
 	
 	\item \textbf{Vf's}~:\\
 	For each vertex $v$
 	\begin{itemize}[noitemsep, nosep, label=-]
-		\item Select a first Vf. If it exists, it is the Vf linking $v$ to the face joining $v$ to the next vertex in its line and to $v$'s next neighbor clockwise. Otherwise, start on the left of $v$ and walk clockwise around it, selecting the Vf in $Vf(v)$ linking $v$ to the first face in $F(v)$ that you cross.
-		\item Sort $Ve(v)$ clockwise around $v$ starting from your first Ve.
-		\item Number your Vf's, starting at 0 and incrementing by 1 in the order of your sorted $Vf(v)$.
+		\item Select a first Vf. It is the Vf linking to $v$'s first face.
+		\item Assign each Vf in $Vf(v)$ an integer between 0 and $|Vf(v)|-1$, starting from the first Vf and sorted clockwise around $v$.
 		\item Vf number $p$ now has coordinates $(p, y_v, x_v)$.
 	\end{itemize}
 	
@@ -313,7 +338,7 @@ Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we s
 	For each Edge $e$ 
 	\begin{itemize}[noitemsep, nosep, label=-]
 		\item We note $(p, y_e, x_e)$ its coordinates.
-		\item The Ev linking to the vertex $e$ belongs to has coordinates $(0, p, y_e, x_e)$.
+		\item The Ev linking to the vertex to which $e$ belongs has coordinates $(0, p, y_e, x_e)$.
 		\item The other Ev has coordinates $(1, p, y_e, x_e)$.
 	\end{itemize}
 	
@@ -321,7 +346,7 @@ Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we s
 	For each Edge $e$ 
 	\begin{itemize}[noitemsep, nosep, label=-]
 		\item We note $(p, y_e, x_e)$ its coordinates, and $v$ the vertex it belongs to.
-		\item We consider that $e$ "faces" $v$, which let us distinguish between a right Ef and a left Ef.
+		\item We consider that $e$ "faces" the vertex to which it belongs, which let us distinguish between a right Ef and a left Ef.
 		\item The right Ef has coordinates $(0, p, y_e, x_e)$.
 		\item The left Ef has coordinates $(1, p, y_e, x_e)$.
 	\end{itemize}
@@ -331,7 +356,7 @@ Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we s
 	\begin{itemize}[noitemsep, nosep, label=-]
 		\item We note $(p, y_f, x_f)$ its coordinates, and $v$ the vertex it belongs to.
 		\item We call "first Fv" the Fv linking to $v$
-		\item Starting from the first Fv, we number the Fv's 0 through 2 clockwise around $f$.
+		\item Assign each Fv in $Fv(f)$ an integer between 0 and 2, starting from the first Fv and sorted clockwise around $f$.
 		\item Fv number $q$ now has coordinates $(q, p, y_f, x_f)$
 	\end{itemize}
 	
@@ -340,7 +365,7 @@ Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we s
 	\begin{itemize}[noitemsep, nosep, label=-]
 		\item We note $(p, y_f, x_f)$ its coordinates, and $v$ the vertex it belongs to.
 		\item We call "first Fe" the Fe clockwise-next to the Fv linking to $v$
-		\item Starting from the first Fe, we number the Fe's 0 through 2 clockwise around $f$.
+		\item Assign each Fe in $Fe(f)$ an integer between 0 and 2, starting from the first Fe and sorted clockwise around $f$.
 		\item Fe number $q$ now has coordinates $(q, p, y_f, x_f)$
 	\end{itemize}
 \end{itemize}
@@ -350,17 +375,17 @@ Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we s
 \subsubsection{Definition}
 
 \newcommand{\footnoteConstantFactor}{
-	For example, there is exactly 2 Ev per edge, and there are at most 3 times as many edges as there are vertices, so Ev-Ve communication will have a constant factor of 6.
+	For example, there is exactly 2 Ev per edge, and there are at most 3 times as many edges as there are vertices, so Ev-Ve communication will have a constant factor of 6. This factor can be seen as the density of a given type of locus relative to the vertices.
 }
 
-Finally, now that we have total cannings, we want a way to evaluate them. First we remember that the point of a canning is to allow the use of SIMD to simulate the execution of a computing media. Therefore, we want can decide how good a canning is by deciding how many operations are needed to simulate each an execution step, and how well they can be parallelized. While it is possible to compute this exactly, for now we only focus on finding an upper bound. We do this by noticing that since
+Finally, now that we have total cannings, we want a way to evaluate them. First we remember that the goal of a canning is to allow the use of SIMD to simulate the execution of a computing media. Therefore, we can decide how good a canning is by deciding how many operations are needed to simulate each an execution step, and how well they can be parallelized. While it is possible to compute this exactly, for now we only focus on finding an upper bound. We do this by noticing that since
 \begin{enumerate}[noitemsep, nosep]
-	\item each t-locus in a canning is indexed relative to vertex and
+	\item each t-locus in a canning is indexed relative to a vertex and
 	\item all communications are uniquely determined by the triangulated graph, which is itself (with probability 1 in general) uniquely determined by the placement of the vertices,
 \end{enumerate}
 we can find an upper bound for each communication type with a single computation over the canning of the vertices, which will be accurate up to a constant factor that depends on the type of communication\footnote{\footnoteConstantFactor}.
 
-This upper is given by a $\Delta y$, which designates the maximum distance between two lines of vertices that interact with each other, and a $\Delta x$, which designates the maximum distance between two columns of vertices that interact with each other. Together, they allow computing $\mathcal{A}_{max} = (2\Delta y + 1)(2\Delta x + 1)$ the maximum area of interaction around any vertices.
+This upper bound is given by a $\Delta y$, which designates the maximum distance between two lines of vertices that interact with each other, and a $\Delta x$, which designates the maximum distance between two columns of vertices that interact with each other. Together, they allow computing $\mathcal{A}_{max} = (2\Delta y + 1)(2\Delta x + 1)$ the maximum area of interaction around any vertices.
 
 Together with the constant factor we defined earlier, this $\mathcal{A}_{max}$ forms the upper bound were looking for. Therefore $\mathcal{A}_{max}$ is a suitable measurement of the performance of a canning, which we wish to minimize.
 
@@ -383,7 +408,7 @@ A large portion of the TER was focused on the development of a software equipped
 \end{enumerate}
 $ $
 
-If developing a GUI for this application ended up being time-consuming, it was incredibly helpful all around while debugging everything else. Overall it was probably a net positive on development time alone, and that is still neglecting the advantage of being able to see what I am doing.\\
+If developing a GUI for this application ended up being time-consuming, it proved to be an incredibly helpful tool. It was an invaluable resource while debugging and for general development, and it allowed me to develop a visual intuition for media and cannings.
 $ $
 
 Below are some pictures of the kind of visualization the GUI provides.
@@ -410,6 +435,18 @@ Below are some pictures of the kind of visualization the GUI provides.
 \section*{Conclusion}
 \label{conclusion}
 \addcontentsline{toc}{section}{\nameref{conclusion}}
+
+This TER was a very enriching experience which allowed me to delve once again in the fascinating world of blob computing and computing media. Over the course of the project I was brought to perform many different tasks such as bibliographical work, theoretical development of cannings and their concrete implementation, and building a GUI application. It was particularly satisfying to see how ideas developed on paper could translate into working software, and how the GUI made the concepts more tangible.
+
+However, while I am happy about my first results, there remains a lot of work to be done. For this reason, this TER will be extended into a full-time internship. In the foreseeable future, I will focus on three tasks :
+\begin{itemize}[label=-]
+	\item Reworking the border correction of soft-bordered media, potentially retroactively modifying it after it has been canned to optimize said canning.
+	\item Implementing an exact measurement of the performance of a canning.\\
+	While $\mathcal{A}_{max}$ is a good as a first indicator, I am unsure if it is a very tight bound on performance (although I conjecture it is for large media).
+	\item Improve vertex canning algorithms, and write a simulated annealing algorithm to optimize existing cannings.
+\end{itemize}
+
+Overall, this internship allowed me to sharpen both my research and technical skills, and gave me the opportunity to contribute meaningfully to an interesting and evolving research project.
 
 \printbibliography[heading=bibintoc]
 

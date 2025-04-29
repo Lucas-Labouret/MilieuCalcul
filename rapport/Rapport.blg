@@ -1,4 +1,4 @@
-This is BibTeX, Version 0.99d (TeX Live 2025 - Flatpak)
+This is BibTeX, Version 0.99d (TeX Live 2019/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: Rapport.aux
 The style file: biblatex.bst
@@ -19,47 +19,47 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: Rapport-blx.bib
 Database file #2: refs.bib
-Biblatex version: 3.20
+Biblatex version: 3.13
 Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 You've used 9 entries,
-            6402 wiz_defined-function locations,
-            1292 strings with 20126 characters,
-and the built_in function-call counts, 62055 in all, are:
-= -- 4746
+            6365 wiz_defined-function locations,
+            1282 strings with 20029 characters,
+and the built_in function-call counts, 52068 in all, are:
+= -- 3555
 > -- 1128
 < -- 415
-+ -- 1759
++ -- 1215
 - -- 387
-* -- 4135
-:= -- 6465
+* -- 3548
+:= -- 5001
 add.period$ -- 0
 call.type$ -- 9
 change.case$ -- 275
 chr.to.int$ -- 49
 cite$ -- 16
-duplicate$ -- 6708
-empty$ -- 5302
+duplicate$ -- 5476
+empty$ -- 4647
 format.name$ -- 542
-if$ -- 12849
+if$ -- 11097
 int.to.chr$ -- 0
 int.to.str$ -- 25
 missing$ -- 0
 newline$ -- 354
 num.names$ -- 547
-pop$ -- 2842
+pop$ -- 2767
 preamble$ -- 1
 purify$ -- 315
 quote$ -- 0
-skip$ -- 2021
+skip$ -- 2019
 stack$ -- 0
-substring$ -- 7849
+substring$ -- 5500
 swap$ -- 1572
 text.length$ -- 249
 text.prefix$ -- 8
 top$ -- 1
 type$ -- 294
 warning$ -- 0
-while$ -- 846
+while$ -- 710
 width$ -- 0
 write$ -- 346

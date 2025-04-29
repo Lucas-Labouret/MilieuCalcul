@@ -1,21 +1,43 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\nameref {introduction}}{3}{section*.3}%
-\contentsline {section}{\numberline {A}What is Blob Computing ?}{3}{section.4}%
-\contentsline {subsection}{\numberline {A.1}Definition and Structure of a Computing Medium}{3}{subsection.5}%
-\contentsline {subsection}{\numberline {A.2}An Example of Computation~: the Voronoï Diagram}{5}{subsection.10}%
-\contentsline {subsection}{\numberline {A.3}Objective~: Cannings}{6}{subsection.12}%
-\contentsline {section}{\numberline {B}Preliminary Work}{7}{section.22}%
-\contentsline {subsection}{\numberline {B.1}Delaunay Triangulation}{7}{subsection.23}%
-\contentsline {subsection}{\numberline {B.2}Farthest Point Optimization}{8}{subsection.24}%
-\contentsline {section}{\numberline {1}Borders and Media}{8}{section.25}%
-\contentsline {subsection}{\numberline {1.1}Soft Borders}{8}{subsection.26}%
-\contentsline {subsection}{\numberline {1.2}Hard Borders}{8}{subsection.27}%
-\contentsline {subsection}{\numberline {1.3}About Hybrid Borders}{9}{subsection.28}%
-\contentsline {section}{\numberline {2}Canning and Evaluation}{9}{section.29}%
-\contentsline {subsection}{\numberline {2.1}Vertex Cannings}{9}{subsection.30}%
-\contentsline {subsection}{\numberline {2.2}From Vertex to Total Cannings}{10}{subsection.34}%
-\contentsline {subsection}{\numberline {2.3}Evaluation}{13}{subsection.35}%
-\contentsline {subsubsection}{\numberline {2.3.1}Definition}{13}{subsubsection.36}%
-\contentsline {subsubsection}{\numberline {2.3.2}Some results}{13}{subsubsection.40}%
-\contentsline {section}{\numberline {3}GUI}{14}{section.41}%
-\contentsline {section}{\nameref {conclusion}}{15}{section*.49}%
-\contentsline {section}{References}{15}{section*.50}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1}What is Blob Computing ?}{3}{section.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.1}Definition and Structure of a Computing Medium}{3}{subsection.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.2}An Example of Computation\nobreakspace {}: the Voronoï Diagram}{5}{subsection.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.3}Objective\nobreakspace {}: Cannings}{6}{subsection.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2}Preliminary Work}{7}{section.23}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1}Delaunay Triangulation}{7}{subsection.24}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2}Farthest Point Optimization}{8}{subsection.25}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3}Borders and Media}{8}{section.26}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1}Soft Borders}{8}{subsection.27}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2}Hard Borders}{9}{subsection.29}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3}About Hybrid Borders}{10}{subsection.31}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4}Canning and Evaluation}{10}{section.32}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.1}Vertex Cannings}{10}{subsection.33}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2}From Vertex to Total Cannings}{11}{subsection.37}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.3}Evaluation}{13}{subsection.38}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.3.1}Definition}{13}{subsubsection.39}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {4.3.2}Some results}{14}{subsubsection.43}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5}GUI}{14}{section.44}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\nameref {conclusion}}{16}{section*.52}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{References}{16}{section*.53}%
