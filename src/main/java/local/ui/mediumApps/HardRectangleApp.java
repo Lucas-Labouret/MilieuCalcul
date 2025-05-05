@@ -21,7 +21,7 @@ public class HardRectangleApp extends MediumApp {
 
         this.width = width;
 
-        topToolBar.getItems().addAll(ptCountInput, widthInput, gen, tri, fpo);
+        topToolBar.getItems().addAll(ptCountInput, widthInput, gen, tri, fpo, msk);
         setTop(topToolBar);
 
         savefileManager = new HardRectangleManager();

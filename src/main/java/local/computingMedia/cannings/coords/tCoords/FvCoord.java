@@ -9,6 +9,10 @@ public record FvCoord(int side, FaceCoord face) {
         }
     }
 
+    public FvCoord(int side, int theta, int Y, int X){
+        this(side, new FaceCoord(theta, Y, X));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;

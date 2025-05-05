@@ -1,16 +1,19 @@
 package local.ui.mediumApps;
 
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import local.computingMedia.cannings.Canning;
-import local.computingMedia.cannings.MasksComputer;
+import local.computingMedia.cannings.evaluation.MasksComputer;
 import local.computingMedia.cannings.VertexCanningCompleter;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordVCanning;
 import local.computingMedia.cannings.vertexCannings.TopDistanceXSortedLinesVCanning;
 import local.computingMedia.media.Medium;
 import local.ui.utils.InformationBar;
+import local.ui.utils.MaskLister;
 import local.ui.utils.MediumDrawer;
 import local.savefileManagers.SavefileManager;
 import local.ui.utils.SidePanel;
@@ -37,6 +40,7 @@ public abstract class MediumApp extends BorderPane {
     protected final Button gen;
     protected final Button tri;
     protected final Button fpo;
+    protected final Button msk;
 
     protected final InformationBar savefileInfo;
     protected SavefileManager savefileManager;
@@ -73,6 +77,8 @@ public abstract class MediumApp extends BorderPane {
         tri.setOnAction(event -> triangulate());
         fpo = new Button("FPO");
         fpo.setOnAction(event -> fpoIteration());
+        msk = new Button("Masks");
+        msk.setOnAction(event -> showMasks());
 
         fillSidePanel();
 
@@ -122,6 +128,18 @@ public abstract class MediumApp extends BorderPane {
         else medium.optimizeToSetIterations(fpoIterations);
         drawPane.redraw();
         updateInfoBars();
+    }
+
+    private void showMasks() {
+        Stage stage = new Stage();
+        stage.initOwner(getScene().getWindow());
+        stage.setTitle("Masks");
+
+        MaskLister maskLister = new MaskLister(canning);
+        Scene scene = new Scene(maskLister);
+
+        stage.setScene(scene);
+        stage.show();
     }
 
     private void save(){

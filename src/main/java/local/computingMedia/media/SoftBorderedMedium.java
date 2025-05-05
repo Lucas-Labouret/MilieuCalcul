@@ -75,8 +75,12 @@ public abstract class SoftBorderedMedium extends Medium {
                     break;
                 }
             }
-            assert commonNeighbor != null;
-            double angle = Vertex.getAngle(current.value, commonNeighbor, next.value);
+            double angle;
+            try{ angle = Vertex.getAngle(current.value, commonNeighbor, next.value); }
+            catch (NullPointerException e) {
+                current = current.next;
+                continue;
+            }
             if (0.75 * Math.PI < angle && angle < 1.25 * Math.PI) {
                 current.value.removeNeighbor(next.value);
                 current.addNext(commonNeighbor);

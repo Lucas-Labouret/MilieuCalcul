@@ -32,6 +32,7 @@ public class Delaunay {
     }
 
     public static void buildDT(Medium medium){
+        if (medium.size() <= 2) throw new IllegalArgumentException("Medium must contain at least 3 vertices");
     /*
         HashMap<BucketKey, Medium> buckets = new HashMap<>();
         double n = medium.size();
