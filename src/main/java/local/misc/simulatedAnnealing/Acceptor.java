@@ -1,4 +1,4 @@
-package local.computingMedia.cannings.simulatedAnnealing;
+package local.misc.simulatedAnnealing;
 
 @FunctionalInterface
 public interface Acceptor {

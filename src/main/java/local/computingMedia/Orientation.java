@@ -1,4 +1,4 @@
-package local.misc;
+package local.computingMedia;
 
 public enum Orientation {
     Collinear,

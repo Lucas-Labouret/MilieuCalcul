@@ -2,8 +2,8 @@ package local.savefileManagers;
 
 import local.computingMedia.sLoci.Vertex;
 import local.computingMedia.media.Medium;
-import local.misc.LinkedList;
-import local.misc.Node;
+import local.misc.linkedList.LinkedList;
+import local.misc.linkedList.Node;
 
 import java.io.*;
 import java.util.ArrayList;

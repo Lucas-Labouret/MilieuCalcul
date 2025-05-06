@@ -3,7 +3,7 @@ package local.computingMedia.media;
 import local.computingMedia.sLoci.*;
 import local.computingMedia.optimization.Delaunay;
 import local.computingMedia.optimization.FPO;
-import local.misc.LinkedList;
+import local.misc.linkedList.LinkedList;
 
 import java.util.*;
 

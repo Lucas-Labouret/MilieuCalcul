@@ -45,6 +45,16 @@ public class Face {
         return "(" + a.toString() + ", " + b.toString() + ", " + c.toString() + ")";
     }
 
+    public static double area(Vertex a , Vertex b, Vertex c) {
+        return Math.abs(
+                ((a.getX() - c.getX()) * (b.getY() - a.getY()) -
+                 (a.getX() - b.getX()) * (c.getY() - a.getY())) / 2
+        );
+    }
+    public double area() {
+        return area(a, b, c);
+    }
+
     public Vertex getCircumcenter() {
         double xa = a.getX(), ya = a.getY();
         double xb = b.getX(), yb = b.getY();

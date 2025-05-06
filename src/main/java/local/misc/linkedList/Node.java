@@ -1,4 +1,4 @@
-package local.misc;
+package local.misc.linkedList;
 
 public class Node<T> {
     public Node<T> next = null;

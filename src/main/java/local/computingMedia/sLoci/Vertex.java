@@ -1,6 +1,6 @@
 package local.computingMedia.sLoci;
 
-import local.misc.Orientation;
+import local.computingMedia.Orientation;
 
 import java.util.*;
 
@@ -105,7 +105,10 @@ public class Vertex {
     }
 
     public double distanceFrom(Vertex other) {
-        return Math.sqrt((this.x - other.x)*(this.x - other.x) + (this.y - other.y)*(this.y - other.y));
+        return Edge.length(this, other);
+    }
+    public double distanceFrom(Edge edge) {
+        return edge.distanceFrom(this);
     }
 
     public static double cross(Vertex center, Vertex a, Vertex b) {

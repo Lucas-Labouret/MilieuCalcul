@@ -1,8 +1,8 @@
 package local.computingMedia.media;
 
 import local.computingMedia.sLoci.Vertex;
-import local.misc.LinkedList;
-import local.misc.Node;
+import local.misc.linkedList.LinkedList;
+import local.misc.linkedList.Node;
 
 import java.util.ArrayList;
 

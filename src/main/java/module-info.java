@@ -22,4 +22,6 @@ module local.furthestpointoptimization {
     exports local.computingMedia.cannings.coords.tCoords;
     exports local.computingMedia.cannings.vertexCannings;
     exports local.computingMedia.cannings.evaluation;
+    exports local.misc.linkedList;
+    exports local.computingMedia;
 }

@@ -56,6 +56,10 @@ public class Edge {
         return length(start, end);
     }
 
+    public double distanceFrom(Vertex vertex) {
+        return 2*Face.area(vertex, start, end) / length();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

@@ -1,4 +1,4 @@
-package local.misc;
+package local.misc.linkedList;
 
 public class LinkedList<T> {
     public Node<T> head;
