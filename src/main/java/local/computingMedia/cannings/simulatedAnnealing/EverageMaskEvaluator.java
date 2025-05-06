@@ -11,6 +11,7 @@ public class EverageMaskEvaluator implements Evaluator<VertexCanning, Medium> {
     @Override
     public double evaluate(VertexCanning candidate, Medium environment) {
         Canning canning = new VertexCanningCompleter(candidate);
+        canning.setMedium(environment);
         canning.can();
 
         MasksComputer masksComputer = new MasksComputer(canning);

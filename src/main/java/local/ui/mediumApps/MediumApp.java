@@ -9,8 +9,10 @@ import javafx.stage.Stage;
 import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.evaluation.MasksComputer;
 import local.computingMedia.cannings.VertexCanningCompleter;
+import local.computingMedia.cannings.simulatedAnnealing.VertexCanningNearestNeighborAnnealer;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordVCanning;
 import local.computingMedia.cannings.vertexCannings.TopDistanceXSortedLinesVCanning;
+import local.computingMedia.cannings.vertexCannings.VertexCanningAnnealer;
 import local.computingMedia.media.Medium;
 import local.ui.utils.InformationBar;
 import local.ui.utils.MaskLister;
@@ -35,6 +37,7 @@ public abstract class MediumApp extends BorderPane {
 
     protected Medium medium;
     protected Canning canning;
+    protected VertexCanningNearestNeighborAnnealer annealer;
     protected MasksComputer masksComputer;
 
     protected final Button gen;
@@ -54,6 +57,7 @@ public abstract class MediumApp extends BorderPane {
 
     public MediumApp() {
         canning = DEFAULT_CANNING();
+        annealer = new VertexCanningNearestNeighborAnnealer(500);
         masksComputer = new MasksComputer(canning);
 
         topToolBar = new ToolBar();
@@ -306,10 +310,12 @@ public abstract class MediumApp extends BorderPane {
         RadioButton defaultCanning = new RadioButton("Default");
         RadioButton roundedCoordCanning = new RadioButton("Rounded Coordinates");
         RadioButton topDistanceXSortedCanning = new RadioButton("Top Distance Y Sorted");
+        RadioButton AnnealedRoundedCoordCanning = new RadioButton("Annealed Rounded Coordinates");
 
         defaultCanning.setToggleGroup(canGroup);
         roundedCoordCanning.setToggleGroup(canGroup);
         topDistanceXSortedCanning.setToggleGroup(canGroup);
+        AnnealedRoundedCoordCanning.setToggleGroup(canGroup);
 
         defaultCanning.setSelected(true);
 
@@ -320,8 +326,14 @@ public abstract class MediumApp extends BorderPane {
                 setCanning(new VertexCanningCompleter(new RoundedCoordVCanning()));
             } else if (newVal == topDistanceXSortedCanning) {
                 setCanning(new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning()));
+            } else if (newVal == AnnealedRoundedCoordCanning) {
+                setCanning(new VertexCanningCompleter(new VertexCanningAnnealer(
+                        new RoundedCoordVCanning(),
+                        new VertexCanningNearestNeighborAnnealer(10000)
+                )));
             }
         });
+
 
         //FPO
         ToggleGroup fpoGroup = new ToggleGroup();
@@ -352,7 +364,6 @@ public abstract class MediumApp extends BorderPane {
             catch (NumberFormatException e) { return; }
             setConvergenceTolerance(conv);
         });
-
 
         //Add to side panel
         VBox graphics = new VBox(
@@ -385,7 +396,8 @@ public abstract class MediumApp extends BorderPane {
         VBox canning = new VBox(
                 defaultCanning,
                 roundedCoordCanning,
-                topDistanceXSortedCanning
+                topDistanceXSortedCanning,
+                AnnealedRoundedCoordCanning
         );
         canning.setSpacing(5);
         sidePanel.add(new TitledPane("Canning", canning));

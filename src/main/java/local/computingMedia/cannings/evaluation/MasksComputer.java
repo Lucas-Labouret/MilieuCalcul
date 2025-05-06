@@ -117,7 +117,7 @@ public class MasksComputer {
             int line = coord.face().vertex().Y();
             maskSet.computeIfAbsent(line, k -> new HashSet<>()).add(mask);
 
-            System.out.println(coord + " -> " + facingCoord + " = " + mask);
+            //System.out.println(coord + " -> " + facingCoord + " = " + mask);
         }
         return maskSet;
     }

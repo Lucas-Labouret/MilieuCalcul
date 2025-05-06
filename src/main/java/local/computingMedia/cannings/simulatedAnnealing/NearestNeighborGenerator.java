@@ -57,7 +57,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
     }
 
     private void addNeighborNS(Vertex vertex, VertexCoord neighborCoord) {
-        if (neighborCoord.Y() < 0 || neighborCoord.Y() >= environment.getHeight()) return;
+        if (neighborCoord.Y() < 0 || neighborCoord.Y() >= candidate.getHeight()) return;
 
         if (coordToVertex.containsKey(neighborCoord)){
             Vertex neighbor = coordToVertex.get(neighborCoord);
@@ -70,7 +70,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             neighborCanning.getVertexCanning().put(neighbor, vertexToCoord.get(vertex));
 
             double distance = vertex.distanceFrom(neighbor);
-            potentialNeighbors.add(maxDistance - distance, neighborCanning);
+            potentialNeighbors.add(getWeight(distance), neighborCanning);
         } else {
             Vertex leftend = null;
             Vertex rightend = null;
@@ -111,12 +111,12 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             }
 
             double distance = vertex.distanceFrom(new Edge(leftend, rightend));
-            potentialNeighbors.add(maxDistance - distance, neighborCanning);
+            potentialNeighbors.add(getWeight(distance), neighborCanning);
         }
     }
 
     private void addNeighborEW(Vertex vertex, VertexCoord neighborCoord) {
-        if (neighborCoord.X() < 0 || neighborCoord.X() >= environment.getWidth()) return;
+        if (neighborCoord.X() < 0 || neighborCoord.X() >= candidate.getWidth()) return;
 
         if (coordToVertex.containsKey(neighborCoord)) {
             Vertex neighbor = coordToVertex.get(neighborCoord);
@@ -129,7 +129,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             neighborCanning.getVertexCanning().put(neighbor, vertexToCoord.get(vertex));
 
             double distance = vertex.distanceFrom(neighbor);
-            potentialNeighbors.add(maxDistance - distance, neighborCanning);
+            potentialNeighbors.add(getWeight(distance), neighborCanning);
         } else {
             Vertex upend = null;
             Vertex lowend = null;
@@ -170,7 +170,14 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             }
 
             double distance = vertex.distanceFrom(new Edge(upend, lowend));
-            potentialNeighbors.add(maxDistance - distance, neighborCanning);
+            potentialNeighbors.add(getWeight(distance), neighborCanning);
         }
+    }
+
+    private double getWeight(double distance) {
+        double x = (maxDistance - distance)/maxDistance;
+        double res = -Math.log(1-x)/x - 1;
+        res = Math.pow(res, 3);
+        return res;
     }
 }

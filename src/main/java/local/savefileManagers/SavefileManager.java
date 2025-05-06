@@ -211,7 +211,6 @@ public abstract class SavefileManager {
         try {
             while (!(line = reader.readLine()).isEmpty()) {
                 lineCounter++;
-                System.out.println(line);
                 line = line.trim();
 
                 String[] neighborLine = line.split(" ");
