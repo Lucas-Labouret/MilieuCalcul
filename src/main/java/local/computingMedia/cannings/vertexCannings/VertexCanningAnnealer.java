@@ -30,18 +30,15 @@ public class VertexCanningAnnealer implements VertexCanning {
         annealedCanning = annealer.optimize(baseCanning, medium);
     }
 
-    @Override
-    public HashMap<Vertex, VertexCoord> getVertexCanning() {
+    @Override public HashMap<Vertex, VertexCoord> getVertexCanning() {
         return annealedCanning.getVertexCanning();
     }
 
-    @Override
-    public int getWidth() {
+    @Override public int getWidth() {
         return annealedCanning.getWidth();
     }
-
-    @Override
-    public int getHeight() {
+    @Override public int getHeight() {
         return annealedCanning.getHeight();
     }
+    @Override public double getDensity() { return medium.size()/(double)(getHeight()*getWidth()); }
 }

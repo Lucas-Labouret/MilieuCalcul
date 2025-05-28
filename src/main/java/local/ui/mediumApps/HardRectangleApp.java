@@ -2,13 +2,13 @@ package local.ui.mediumApps;
 
 import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.VertexCanningCompleter;
-import local.computingMedia.cannings.vertexCannings.RoundedCoordVCanning;
+import local.computingMedia.cannings.vertexCannings.RoundedCoordDichotomyVCanning;
 import local.computingMedia.media.HardRectangleMedium;
 import local.savefileManagers.HardRectangleManager;
 import local.ui.utils.TBIntInput;
 
 public class HardRectangleApp extends MediumApp {
-    @Override public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordVCanning()); }
+    @Override public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordDichotomyVCanning()); }
 
     private final TBIntInput ptCountInput;
     private final TBIntInput widthInput;

@@ -10,7 +10,7 @@ import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.evaluation.MasksComputer;
 import local.computingMedia.cannings.VertexCanningCompleter;
 import local.computingMedia.cannings.simulatedAnnealing.VertexCanningNearestNeighborAnnealer;
-import local.computingMedia.cannings.vertexCannings.RoundedCoordVCanning;
+import local.computingMedia.cannings.vertexCannings.RoundedCoordDichotomyVCanning;
 import local.computingMedia.cannings.vertexCannings.TopDistanceXSortedLinesVCanning;
 import local.computingMedia.cannings.vertexCannings.VertexCanningAnnealer;
 import local.computingMedia.media.Medium;
@@ -193,7 +193,7 @@ public abstract class MediumApp extends BorderPane {
         String maskText = "Canning : delta Y=" + deltaY +
                           ", delta X=" + deltaX +
                           ", covered area=" + upperBound +
-                          ", density=" + medium.size()/(double)(canning.getHeight()*canning.getWidth());
+                          ", density=" + canning.getDensity();
 
 
         maskInfoBar.setText(maskText);
@@ -325,12 +325,12 @@ public abstract class MediumApp extends BorderPane {
             if (newVal == defaultCanning) {
                 setCanning(DEFAULT_CANNING());
             } else if (newVal == roundedCoordCanning) {
-                setCanning(new VertexCanningCompleter(new RoundedCoordVCanning()));
+                setCanning(new VertexCanningCompleter(new RoundedCoordDichotomyVCanning()));
             } else if (newVal == topDistanceXSortedCanning) {
                 setCanning(new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning()));
             } else if (newVal == AnnealedRoundedCoordCanning) {
                 setCanning(new VertexCanningCompleter(new VertexCanningAnnealer(
-                        new RoundedCoordVCanning(),
+                        new RoundedCoordDichotomyVCanning(),
                         new VertexCanningNearestNeighborAnnealer(500)
                 )));
             }

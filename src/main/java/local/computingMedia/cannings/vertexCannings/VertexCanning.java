@@ -14,4 +14,5 @@ public interface VertexCanning {
 
     int getWidth();
     int getHeight();
+    double getDensity();
 }

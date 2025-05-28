@@ -13,9 +13,10 @@ public class TopLeftDistanceVCanning implements VertexCanning {
 
     @Override public int getWidth() { return -1; }
     @Override public int getHeight() { return -1; }
+    @Override public double getDensity() { return -1; }
 
-    public void setMedium(Medium medium) { this.medium = medium; }
-    public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
+    @Override public void setMedium(Medium medium) { this.medium = medium; }
+    @Override public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
 
     @Override
     public void can() {

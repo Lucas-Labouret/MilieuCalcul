@@ -6,18 +6,19 @@ import local.computingMedia.media.Medium;
 
 import java.util.HashMap;
 
-public class RoundedCoordVCanning implements VertexCanning {
+public class RoundedCoordDichotomyVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;
 
     private int width = 0;
     private int height = 0;
 
-    public int getWidth() { return width; }
-    public int getHeight() { return height; }
+    @Override public int getWidth() { return width; }
+    @Override public int getHeight() { return height; }
+    @Override public double getDensity() { return medium.size()/(double)(height*width); }
 
-    public void setMedium(Medium medium) { this.medium = medium; }
-    public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
+    @Override public void setMedium(Medium medium) { this.medium = medium; }
+    @Override public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
 
     private HashMap<VertexCoord, Vertex> getCoordVertexMap(Medium medium){
         HashMap<VertexCoord, Vertex> coordVertexMap = new HashMap<>();

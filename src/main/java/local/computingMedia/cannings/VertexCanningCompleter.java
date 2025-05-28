@@ -36,6 +36,7 @@ public class VertexCanningCompleter implements Canning {
 
     @Override public int getWidth() { return vertexCanner.getWidth(); }
     @Override public int getHeight() { return vertexCanner.getHeight(); }
+    @Override public double getDensity() { return vertexCanner.getDensity(); }
 
     @Override public HashMap<Vertex, VertexCoord> getVertexCanning() { return vertexCanning; }
     @Override public HashMap<Edge  , EdgeCoord  > getEdgeCanning()   { return edgeCanning;   }
