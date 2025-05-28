@@ -13,15 +13,19 @@ import java.util.HashMap;
 
 public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexCanning, Medium> {
     private final WeightedRandomCollection<VertexCanning> potentialNeighbors = new WeightedRandomCollection<>();
+
     private VertexCanning candidate;
     private Medium environment;
+
     private HashMap<Vertex, VertexCoord> vertexToCoord;
     private HashMap<VertexCoord, Vertex> coordToVertex;
-    private double maxDistance;
+
+    private final HashMap<VertexCanning , Double> distances = new HashMap<>();
 
     @Override
     public VertexCanning generate(VertexCanning candidate, Medium environment) {
         potentialNeighbors.clear();
+        distances.clear();
         this.candidate = candidate;
         this.environment = environment;
 
@@ -34,10 +38,6 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
 
         this.vertexToCoord = vertexToCoord;
         this.coordToVertex = coordToVertex;
-
-        this.maxDistance = Math.sqrt(
-                environment.getWidth() * environment.getWidth() + environment.getHeight() * environment.getHeight()
-        );
 
         for (Vertex vertex : environment){
             VertexCoord coord = vertexToCoord.get(vertex);
@@ -53,25 +53,29 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             addNeighborEW(vertex, east);
             addNeighborEW(vertex, west);
         }
+        buildPotentialNeighbors();
         return potentialNeighbors.next();
+    }
+
+    private void addSwap(Vertex vertex, VertexCoord neighborCoord) {
+        Vertex neighbor = coordToVertex.get(neighborCoord);
+
+        SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
+                (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
+                candidate.getWidth(), candidate.getHeight()
+        );
+        neighborCanning.getVertexCanning().put(vertex, neighborCoord);
+        neighborCanning.getVertexCanning().put(neighbor, vertexToCoord.get(vertex));
+
+        double distance = vertex.distanceFrom(neighbor);
+        distances.put(neighborCanning, distance);
     }
 
     private void addNeighborNS(Vertex vertex, VertexCoord neighborCoord) {
         if (neighborCoord.Y() < 0 || neighborCoord.Y() >= candidate.getHeight()) return;
 
-        if (coordToVertex.containsKey(neighborCoord)){
-            Vertex neighbor = coordToVertex.get(neighborCoord);
-
-            SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
-                    (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
-                    candidate.getWidth(), candidate.getHeight()
-            );
-            neighborCanning.getVertexCanning().put(vertex, neighborCoord);
-            neighborCanning.getVertexCanning().put(neighbor, vertexToCoord.get(vertex));
-
-            double distance = vertex.distanceFrom(neighbor);
-            potentialNeighbors.add(getWeight(distance), neighborCanning);
-        } else {
+        if (coordToVertex.containsKey(neighborCoord)) return; //addSwap(vertex, neighborCoord);
+        else {
             Vertex leftend = null;
             Vertex rightend = null;
 
@@ -111,26 +115,15 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             }
 
             double distance = vertex.distanceFrom(new Edge(leftend, rightend));
-            potentialNeighbors.add(getWeight(distance), neighborCanning);
+            distances.put(neighborCanning, distance);
         }
     }
 
     private void addNeighborEW(Vertex vertex, VertexCoord neighborCoord) {
         if (neighborCoord.X() < 0 || neighborCoord.X() >= candidate.getWidth()) return;
 
-        if (coordToVertex.containsKey(neighborCoord)) {
-            Vertex neighbor = coordToVertex.get(neighborCoord);
-
-            SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
-                    (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
-                    candidate.getWidth(), candidate.getHeight()
-            );
-            neighborCanning.getVertexCanning().put(vertex, neighborCoord);
-            neighborCanning.getVertexCanning().put(neighbor, vertexToCoord.get(vertex));
-
-            double distance = vertex.distanceFrom(neighbor);
-            potentialNeighbors.add(getWeight(distance), neighborCanning);
-        } else {
+        if (coordToVertex.containsKey(neighborCoord)) return; //addSwap(vertex, neighborCoord);
+        else {
             Vertex upend = null;
             Vertex lowend = null;
 
@@ -170,14 +163,28 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             }
 
             double distance = vertex.distanceFrom(new Edge(upend, lowend));
-            potentialNeighbors.add(getWeight(distance), neighborCanning);
+            distances.put(neighborCanning, distance);
         }
     }
 
-    private double getWeight(double distance) {
-        double x = (maxDistance - distance)/maxDistance;
-        double res = -Math.log(1-x)/x - 1;
-        res = Math.pow(res, 3);
-        return res;
+    private double convexFunction(double weight) {
+        //return ( Math.exp(weight)-1 )/( Math.E-1 );
+        return weight*weight;
+    }
+    private double makeConvexer(double weight, int iter) {
+        for (int i = 0; i < iter; i++) weight = convexFunction(weight);
+        return weight;
+    }
+
+    private void buildPotentialNeighbors() {
+        double maxDistance = distances.values().stream().max(Double::compare).get();
+        double averageDistance = distances.values().stream().mapToDouble(Double::doubleValue).average().getAsDouble();
+        if (maxDistance == 0) return;
+        for (VertexCanning neighbor : distances.keySet()) {
+            double distance = distances.get(neighbor);
+            double weight = makeConvexer(1 - distance/maxDistance, 3);
+            if (weight < averageDistance/(3*maxDistance)) continue;
+            potentialNeighbors.add(weight, neighbor);
+        }
     }
 }

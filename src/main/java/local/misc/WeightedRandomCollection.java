@@ -33,6 +33,10 @@ public class WeightedRandomCollection<E> {
         map.clear();
         total = 0;
     }
+
+    public int size() {
+        return map.size();
+    }
 }
 
 

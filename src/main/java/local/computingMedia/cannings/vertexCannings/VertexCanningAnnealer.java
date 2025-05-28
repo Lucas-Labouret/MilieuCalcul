@@ -3,7 +3,7 @@ package local.computingMedia.cannings.vertexCannings;
 import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 import local.computingMedia.media.Medium;
 import local.computingMedia.sLoci.Vertex;
-import local.misc.simulatedAnnealing.StandardAnnealer;
+import local.misc.simulatedAnnealing.Annealer;
 
 import java.util.HashMap;
 
@@ -11,9 +11,9 @@ public class VertexCanningAnnealer implements VertexCanning {
     private Medium medium;
     private final VertexCanning baseCanning;
     private VertexCanning annealedCanning;
-    private final StandardAnnealer<VertexCanning, Medium> annealer;
+    private final Annealer<VertexCanning, Medium> annealer;
 
-    public VertexCanningAnnealer(VertexCanning baseCanning, StandardAnnealer<VertexCanning, Medium> annealer) {
+    public VertexCanningAnnealer(VertexCanning baseCanning, Annealer<VertexCanning, Medium> annealer) {
         this.baseCanning = baseCanning;
         this.annealer = annealer;
     }

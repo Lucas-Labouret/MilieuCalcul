@@ -22,13 +22,14 @@ public class RoundedCoordVCanning implements VertexCanning {
     private HashMap<VertexCoord, Vertex> getCoordVertexMap(Medium medium){
         HashMap<VertexCoord, Vertex> coordVertexMap = new HashMap<>();
 
-        int scale = 1;
+        double topScale = 1;
+        double botScale = 0;
         while (true){
             boolean exit = true;
             for (Vertex vertex : medium){
                 VertexCoord coord = new VertexCoord(
-                    (int) Math.round(scale*vertex.getY()),
-                    (int) Math.round(scale*vertex.getX())
+                    (int) Math.round(topScale*vertex.getY()),
+                    (int) Math.round(topScale*vertex.getX())
                 );
                 if (coordVertexMap.get(coord) == null) coordVertexMap.put(coord, vertex);
                 else {
@@ -36,10 +37,32 @@ public class RoundedCoordVCanning implements VertexCanning {
                     break;
                 } 
             }
-            if (exit) return coordVertexMap;
+            if (exit) break;
             coordVertexMap.clear();
-            scale++;
+            botScale = topScale;
+            topScale *= 2;
         }
+
+        while (Math.abs(topScale - botScale) > 1e-6){
+            double midScale = (topScale + botScale) / 2;
+            HashMap<VertexCoord, Vertex> newCoordVertexMap = new HashMap<>();
+            for (Vertex vertex : medium){
+                VertexCoord coord = new VertexCoord(
+                    (int) Math.round(midScale*vertex.getY()),
+                    (int) Math.round(midScale*vertex.getX())
+                );
+                if (newCoordVertexMap.get(coord) == null) newCoordVertexMap.put(coord, vertex);
+                else break;
+            }
+            if (newCoordVertexMap.size() == coordVertexMap.size()) {
+                coordVertexMap = newCoordVertexMap;
+                botScale = midScale;
+            } else {
+                topScale = midScale;
+            }
+        }
+
+        return coordVertexMap;
     }
 
     private boolean xOverlap(Vertex[][] grid, int y1, int y2, int xMax){

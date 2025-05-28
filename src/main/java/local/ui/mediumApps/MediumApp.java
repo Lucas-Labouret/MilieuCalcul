@@ -194,6 +194,8 @@ public abstract class MediumApp extends BorderPane {
                           ", delta X=" + deltaX +
                           ", covered area=" + upperBound +
                           ", density=" + medium.size()/(double)(canning.getHeight()*canning.getWidth());
+
+
         maskInfoBar.setText(maskText);
     }
 
@@ -329,7 +331,7 @@ public abstract class MediumApp extends BorderPane {
             } else if (newVal == AnnealedRoundedCoordCanning) {
                 setCanning(new VertexCanningCompleter(new VertexCanningAnnealer(
                         new RoundedCoordVCanning(),
-                        new VertexCanningNearestNeighborAnnealer(10000)
+                        new VertexCanningNearestNeighborAnnealer(500)
                 )));
             }
         });

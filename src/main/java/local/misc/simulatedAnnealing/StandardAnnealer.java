@@ -23,7 +23,7 @@ public class StandardAnnealer<C, E> extends Annealer<C, E> {
         double oldScore;
         double newScore = evaluator.evaluate(candidate, environment);
         for (int i = 0; i < maxIterations; i++) {
-            System.out.println("Iteration " + i + " of " + maxIterations);
+            System.out.println("Iteration " + (i+1) + " of " + maxIterations);
             double heat = heatRegulator.progress();
             C neighbor = randomNeighborGenerator.generate(candidate, environment);
             oldScore = newScore;

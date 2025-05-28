@@ -5,6 +5,6 @@ public class StandardAcceptor implements Acceptor {
     public boolean accept(double oldScore, double newScore, double heat) {
         double delta = oldScore - newScore;
         if (delta < 0) return true;
-        return Math.random() < Math.exp(-delta / heat);
+        return false; // Math.random() < Math.exp(-delta / heat);
     }
 }
