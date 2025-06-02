@@ -93,10 +93,12 @@ public class MediumDrawer extends Pane {
 
     public void setMedium(Medium medium) {
         this.medium = medium;
+        recan();
         redraw();
     }
     public void setCanning(Canning canning) {
         this.canning = canning;
+        recan();
         redraw();
     }
 
@@ -184,9 +186,17 @@ public class MediumDrawer extends Pane {
         redraw();
     }
 
-    private void initEnv() {
+    private void recan(){
         SUCCESSFULLY_CANNED = false;
+        try { canning.can(); }
+        catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        SUCCESSFULLY_CANNED = true;
+    }
 
+    private void initEnv() {
         xmax = medium.getMaxX();
         xmin = medium.getMinX();
         ymax = medium.getMaxY();
@@ -206,9 +216,7 @@ public class MediumDrawer extends Pane {
         offsetX = (paneWidth - width * scale) / 2;
         offsetY = (paneHeight - height * scale) / 2;
 
-        try { canning.can(); }
-        catch (Exception e) { return; }
-        SUCCESSFULLY_CANNED = true;
+        if (!SUCCESSFULLY_CANNED) return;
 
         for (VertexCoord coord : canning.getVertexCanning().values()) {
             canningWidth = Math.max(canningWidth, coord.X());

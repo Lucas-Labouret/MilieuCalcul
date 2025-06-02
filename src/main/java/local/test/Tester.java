@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Tester {
-    private static final String OUTPUT_DIR = "testResults/";
+    private static final String OUTPUT_DIR = "src/main/java/local/test/testResults/";
     private static final String EXTENSION = ".csv";
 
     private static final HashMap<String, SavefileManager> savefileManagers = new HashMap<>() {{
@@ -201,12 +201,16 @@ public class Tester {
                     if (neighbor.getX() < v.getX()) westCount++;
                     else if (neighbor.getX() > v.getX()) eastCount++;
                 }
-                if (northCount >= maxCount || southCount >= maxCount || eastCount >= maxCount || westCount >= maxCount) {
-                    System.out.println("    Cardinal isotropism violation in " + mediumName + " at vertex (" + v.getX() + ", " + v.getY() + "):");
+                if (northCount >= maxCount || southCount >= maxCount) {
+                    System.out.println("    Vertical isotropism violation in " + mediumName + " at vertex (" + v.getX() + ", " + v.getY() + "):");
+                    totalErrors++;
+                }
+                if (eastCount >= maxCount || westCount >= maxCount) {
+                    System.out.println("    Horizontal isotropism violation in " + mediumName + " at vertex (" + v.getX() + ", " + v.getY() + "):");
                     totalErrors++;
                 }
             }
-            if (totalErrors > 0) System.out.println("Total cardinal isotropism violations in " + mediumName + ": " + totalErrors);
+            System.out.println("Total cardinal isotropism violations in " + mediumName + ": " + totalErrors);
         }
     }
 }

@@ -178,12 +178,10 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
 
     private void buildPotentialNeighbors() {
         double maxDistance = distances.values().stream().max(Double::compare).get();
-        double averageDistance = distances.values().stream().mapToDouble(Double::doubleValue).average().getAsDouble();
         if (maxDistance == 0) return;
         for (VertexCanning neighbor : distances.keySet()) {
             double distance = distances.get(neighbor);
             double weight = makeConvexer(1 - distance/maxDistance, 3);
-            if (weight < averageDistance/(3*maxDistance)) continue;
             potentialNeighbors.add(weight, neighbor);
         }
     }
