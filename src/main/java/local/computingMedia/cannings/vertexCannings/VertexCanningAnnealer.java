@@ -40,5 +40,4 @@ public class VertexCanningAnnealer implements VertexCanning {
     @Override public int getHeight() {
         return annealedCanning.getHeight();
     }
-    @Override public double getDensity() { return medium.size()/(double)(getHeight()*getWidth()); }
 }

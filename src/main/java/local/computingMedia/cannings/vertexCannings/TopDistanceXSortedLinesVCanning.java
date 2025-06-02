@@ -16,7 +16,6 @@ public class TopDistanceXSortedLinesVCanning implements VertexCanning {
 
     @Override public int getWidth() { return width; }
     @Override public int getHeight() { return height; }
-    @Override public double getDensity() { return medium.size()/(double)(height*width); }
 
     @Override public void setMedium(Medium medium) { this.medium = medium; }
     @Override public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }

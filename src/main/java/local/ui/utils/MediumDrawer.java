@@ -39,6 +39,13 @@ public class MediumDrawer extends Pane {
     private static final Color FV_COLOR = Color.ORANGE;
     private static final Color VF_COLOR = Color.RED;
 
+    private static final Color CANNING_LINE_COLOR = Color.GOLD;
+    private static final Color CANNING_COLUMN_COLOR = Color.GREEN;
+    private static final Color CANNING_GRID_1_COLOR = Color.color(.9, .9, .9);
+    private static final Color CANNING_GRID_2_COLOR = Color.WHITE;
+    private static final Color CANNING_GRID_HOLE_COLOR = Color.color(1, .9 , .9);
+
+
     private static final Color OFF_COLOR = Color.LIGHTGRAY;
 
     private static final Color COORD_COLOR = Color.BLACK;
@@ -59,6 +66,7 @@ public class MediumDrawer extends Pane {
     private boolean SHOW_FV_VF_COORDS = false;
 
     private boolean SHOW_CANNING = false;
+    private boolean SHOW_CANNING_GRID = true;
     private boolean SUCCESSFULLY_CANNED = false;
 
     private boolean SHOW_TRANSFER_EF_FE = false;
@@ -160,6 +168,10 @@ public class MediumDrawer extends Pane {
         SHOW_CANNING = showCanning;
         redraw();
     }
+    public void setShowCanningGrid(boolean showCanningGrid) {
+        SHOW_CANNING_GRID = showCanningGrid;
+        redraw();
+    }
 
     public void setShowTransferEfFe(boolean showTransferEfFe) {
         SHOW_TRANSFER_EF_FE = showTransferEfFe;
@@ -218,12 +230,8 @@ public class MediumDrawer extends Pane {
 
         if (!SUCCESSFULLY_CANNED) return;
 
-        for (VertexCoord coord : canning.getVertexCanning().values()) {
-            canningWidth = Math.max(canningWidth, coord.X());
-            canningHeight = Math.max(canningHeight, coord.Y());
-        }
-        canningWidth++;
-        canningHeight++;
+        canningWidth = canning.getWidth();
+        canningHeight = canning.getHeight();
 
         canningGrid = new HashMap<>();
         for (Vertex vertex : medium) {
@@ -233,28 +241,32 @@ public class MediumDrawer extends Pane {
     }
     public void redraw() {
         setStyle(BG_STYLE);
+        getChildren().clear();
+
         if (medium == null) {
-            getChildren().clear();
             getChildren().add(new Label("Nothing to show"));
             return;
         }
 
         initEnv();
-        getChildren().clear();
 
-        if (SHOW_EDGES && EDGES_AS_LINES              ) drawLines();
-        if (SHOW_EDGES && !EDGES_AS_LINES             ) drawEdges();
-        if (SHOW_FACES                                ) drawFaces();
+        if (SHOW_CANNING_GRID   && SUCCESSFULLY_CANNED) drawCanningGrid();
+
         if (SHOW_TRANSFER_EF_FE && SUCCESSFULLY_CANNED) drawTransferEfFe();
         if (SHOW_TRANSFER_FE_EF && SUCCESSFULLY_CANNED) drawTransferFeEf();
         if (SHOW_TRANSFER_EV_VE && SUCCESSFULLY_CANNED) drawTransferEvVe();
         if (SHOW_TRANSFER_VE_EV && SUCCESSFULLY_CANNED) drawTransferVeEv();
         if (SHOW_TRANSFER_FV_VF && SUCCESSFULLY_CANNED) drawTransferFvVf();
         if (SHOW_TRANSFER_VF_FV && SUCCESSFULLY_CANNED) drawTransferVfFv();
-        if (SHOW_CANNING        && SUCCESSFULLY_CANNED) drawCanning();
+
         if (SHOW_EF_FE          && SUCCESSFULLY_CANNED) drawEfFe();
         if (SHOW_EV_VE          && SUCCESSFULLY_CANNED) drawEvVe();
         if (SHOW_FV_VF          && SUCCESSFULLY_CANNED) drawFvVf();
+
+        if (SHOW_EDGES && EDGES_AS_LINES              ) drawLines();
+        if (SHOW_EDGES && !EDGES_AS_LINES             ) drawEdges();
+        if (SHOW_CANNING        && SUCCESSFULLY_CANNED) drawCanning();
+        if (SHOW_FACES                                ) drawFaces();
         if (SHOW_VERTICES                             ) drawVertices();
     }
 
@@ -565,8 +577,6 @@ public class MediumDrawer extends Pane {
     }
 
     private void drawCanning() {
-        if (canning == null) return;
-
         for (int j = 0; j < canningHeight; j++) {
             int i1, i2;
             i1 = 0;
@@ -594,7 +604,7 @@ public class MediumDrawer extends Pane {
                 double y2 = (v2.getY() - ymin) * scale + offsetY;
 
                 Line line = new Line(x1, y1, x2, y2);
-                line.setStroke(Color.GREEN);
+                line.setStroke(CANNING_COLUMN_COLOR);
                 line.setStrokeWidth(2);
 
                 getChildren().add(line);
@@ -639,7 +649,7 @@ public class MediumDrawer extends Pane {
                 double y2 = (v2.getY() - ymin) * scale + offsetY;
 
                 Line line = new Line(x1, y1, x2, y2);
-                line.setStroke(Color.GOLD);
+                line.setStroke(CANNING_LINE_COLOR);
                 line.setStrokeWidth(2);
 
                 getChildren().add(line);
@@ -655,6 +665,24 @@ public class MediumDrawer extends Pane {
                 } while (v2 == null && j2 < canningHeight-1);
 
             } while (j1 < canningHeight && j2 < canningHeight && v2 != null);
+        }
+    }
+
+    private void drawCanningGrid() {
+        double cellWidth = width*scale / (canningWidth-1);
+        double cellHeight = height*scale / (canningHeight-1);
+
+        for (int y = 0; y < canningHeight; y++) for (int x = 0; x < canningWidth; x++) {
+            double xPos = offsetX + x * cellWidth - cellWidth / 2;
+            double yPos = offsetY + y * cellHeight - cellHeight / 2;
+
+            Rectangle rect = new Rectangle(xPos, yPos, cellWidth, cellHeight);
+            if (canningGrid.get(new VertexCoord(y, x)) == null) rect.setFill(CANNING_GRID_HOLE_COLOR);
+            else rect.setFill( (x+y) % 2 == 0 ? CANNING_GRID_1_COLOR : CANNING_GRID_2_COLOR);
+            rect.setStroke(Color.BLACK);
+
+            getChildren().add(rect);
+
         }
     }
 }

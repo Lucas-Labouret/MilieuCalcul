@@ -30,5 +30,4 @@ public class SimpleVertexCanning implements VertexCanning {
 
     @Override public int getWidth() { return width; }
     @Override public int getHeight() { return height; }
-    @Override public double getDensity() { return vertexCanning.size()/(double)(height*width); }
 }

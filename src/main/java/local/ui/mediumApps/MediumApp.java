@@ -11,6 +11,7 @@ import local.computingMedia.cannings.evaluation.MasksComputer;
 import local.computingMedia.cannings.VertexCanningCompleter;
 import local.computingMedia.cannings.simulatedAnnealing.VertexCanningNearestNeighborAnnealer;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordDichotomyVCanning;
+import local.computingMedia.cannings.vertexCannings.RoundedCoordIncrementalVCanning;
 import local.computingMedia.cannings.vertexCannings.TopDistanceXSortedLinesVCanning;
 import local.computingMedia.cannings.vertexCannings.VertexCanningAnnealer;
 import local.computingMedia.media.Medium;
@@ -226,6 +227,7 @@ public abstract class MediumApp extends BorderPane {
         CheckBox showFvVfCoords = new CheckBox("coordinates");
 
         CheckBox showCanning = new CheckBox("Canning");
+        CheckBox showCanningGrid = new CheckBox("Grid");
 
         CheckBox transferEfFe = new CheckBox("Ef -> Fe");
         CheckBox transferFeEf = new CheckBox("Fe -> Ef");
@@ -250,6 +252,7 @@ public abstract class MediumApp extends BorderPane {
         showFvVfCoords.setSelected(false);
 
         showCanning.setSelected(false);
+        showCanningGrid.setSelected(false);
 
         transferEfFe.setSelected(false);
         transferFeEf.setSelected(false);
@@ -274,6 +277,7 @@ public abstract class MediumApp extends BorderPane {
         showFvVfCoords.allowIndeterminateProperty().set(false);
 
         showCanning.allowIndeterminateProperty().set(false);
+        showCanningGrid.allowIndeterminateProperty().set(false);
 
         transferEfFe.allowIndeterminateProperty().set(false);
         transferFeEf.allowIndeterminateProperty().set(false);
@@ -298,6 +302,7 @@ public abstract class MediumApp extends BorderPane {
         showFvVfCoords.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowFvVfCoords(newVal));
 
         showCanning.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowCanning(newVal));
+        showCanningGrid.selectedProperty().addListener((obs, oldVal, newVal) -> {drawPane.setShowCanningGrid(newVal);});
 
         transferEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferEfFe(newVal));
         transferFeEf.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferFeEf(newVal));
@@ -310,12 +315,14 @@ public abstract class MediumApp extends BorderPane {
         ToggleGroup canGroup = new ToggleGroup();
 
         RadioButton defaultCanning = new RadioButton("Default");
-        RadioButton roundedCoordCanning = new RadioButton("Rounded Coordinates");
-        RadioButton topDistanceXSortedCanning = new RadioButton("Top Distance Y Sorted");
-        RadioButton AnnealedRoundedCoordCanning = new RadioButton("Annealed Rounded Coordinates");
+        RadioButton roundedCoordIncrementalCanning = new RadioButton("Rounded Coordinates Incremental");
+        RadioButton roundedCoordDichotomyCanning = new RadioButton("Rounded Coordinates Dichotomy");
+        RadioButton topDistanceXSortedCanning = new RadioButton("Top Distance X Sorted");
+        RadioButton AnnealedRoundedCoordCanning = new RadioButton("Annealed Rounded Coordinates Dichotomy");
 
         defaultCanning.setToggleGroup(canGroup);
-        roundedCoordCanning.setToggleGroup(canGroup);
+        roundedCoordIncrementalCanning.setToggleGroup(canGroup);
+        roundedCoordDichotomyCanning.setToggleGroup(canGroup);
         topDistanceXSortedCanning.setToggleGroup(canGroup);
         AnnealedRoundedCoordCanning.setToggleGroup(canGroup);
 
@@ -324,7 +331,9 @@ public abstract class MediumApp extends BorderPane {
         canGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == defaultCanning) {
                 setCanning(DEFAULT_CANNING());
-            } else if (newVal == roundedCoordCanning) {
+            } else if (newVal == roundedCoordIncrementalCanning) {
+                setCanning(new VertexCanningCompleter(new RoundedCoordIncrementalVCanning()));
+            } else if (newVal == roundedCoordDichotomyCanning) {
                 setCanning(new VertexCanningCompleter(new RoundedCoordDichotomyVCanning()));
             } else if (newVal == topDistanceXSortedCanning) {
                 setCanning(new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning()));
@@ -383,7 +392,9 @@ public abstract class MediumApp extends BorderPane {
                 subCheckBox(showEvVeCoords),
                 showFvVf,
                 subCheckBox(showFvVfCoords),
+                new Label("Canning"),
                 showCanning,
+                showCanningGrid,
                 new Label("Transfers"),
                 transferEfFe,
                 transferFeEf,
@@ -397,7 +408,8 @@ public abstract class MediumApp extends BorderPane {
 
         VBox canning = new VBox(
                 defaultCanning,
-                roundedCoordCanning,
+                roundedCoordIncrementalCanning,
+                roundedCoordDichotomyCanning,
                 topDistanceXSortedCanning,
                 AnnealedRoundedCoordCanning
         );

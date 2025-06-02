@@ -14,5 +14,7 @@ public interface VertexCanning {
 
     int getWidth();
     int getHeight();
-    double getDensity();
+    default double getDensity(){
+        return getVertexCanning().size()/(double)(getHeight() * getWidth());
+    }
 }
