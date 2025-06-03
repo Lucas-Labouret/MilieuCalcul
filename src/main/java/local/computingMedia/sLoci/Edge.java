@@ -60,6 +60,12 @@ public class Edge {
         return 2*Face.area(vertex, start, end) / length();
     }
 
+    public double angleFromXAxis() {
+        double dx = end.getX() - start.getX();
+        double dy = end.getY() - start.getY();
+        return Math.atan2(dy, dx);
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
