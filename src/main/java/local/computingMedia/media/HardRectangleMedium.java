@@ -4,18 +4,28 @@ import java.util.ArrayList;
 
 import local.computingMedia.sLoci.Vertex;
 
+/**
+ * A rectangular medium with a hard border.
+ * The vertices are evenly distributed along the borders.
+ * The vertices inside the rectangle are randomly distributed.
+ */
 @SuppressWarnings("serial")
 public class HardRectangleMedium extends HardBorderedMedium {
     public HardRectangleMedium() {}
 
-    public HardRectangleMedium(Vertex... vertices) {
-        super(vertices);
+    public HardRectangleMedium(double width, double height, Vertex... vertices) {
+        super(width, height, vertices);
     }
 
     public HardRectangleMedium copy() {
-        return new HardRectangleMedium(this.toArray(new Vertex[0]));
+        return new HardRectangleMedium(width, height, this.toArray(new Vertex[0]));
     }
 
+    /**
+     * @param width The spatial width of the rectangle.
+     * @param vertexWidth The number of vertices along each side (minimum 2).
+     * @param count The number of random vertices inside the rectangle.
+     */
     public HardRectangleMedium(double width, int vertexWidth, int count) {
         if (vertexWidth < 2) throw new IllegalArgumentException("Vertex width must be at least 2");
         vertexWidth--;

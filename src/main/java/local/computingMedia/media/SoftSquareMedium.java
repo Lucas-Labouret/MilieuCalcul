@@ -2,6 +2,9 @@ package local.computingMedia.media;
 
 import local.computingMedia.sLoci.Vertex;
 
+/**
+ * A square soft-bordered medium.
+ */
 @SuppressWarnings("serial")
 public class SoftSquareMedium extends SoftBorderedMedium {
     public SoftSquareMedium() {}

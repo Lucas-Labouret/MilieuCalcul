@@ -12,16 +12,30 @@ import local.misc.simulatedAnnealing.RandomNeighborGenerator;
 import java.util.HashMap;
 
 public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexCanning, Medium> {
+    // A random selector for potential neighbors of a vertex canning.
     private final WeightedRandomCollection<VertexCanning> potentialNeighbors = new WeightedRandomCollection<>();
 
+    // The candidate vertex canning and the environment in which it is defined.
     private VertexCanning candidate;
     private Medium environment;
 
     private HashMap<Vertex, VertexCoord> vertexToCoord;
     private HashMap<VertexCoord, Vertex> coordToVertex;
 
+    // A map to store potential neighbors and their distances from the candidate vertex canning.
     private final HashMap<VertexCanning , Double> distances = new HashMap<>();
 
+    /**
+     * Generates a new neighbor for the given candidate vertex canning.
+     * The neighbors can be generated in two ways:
+     * 1. By repositioning a vertex to an adjacent cell, if there is no vertex in that position.
+     * 2. By merging two adjacent lines or columns into a single line or column if that would cause vertices to overlap.
+     * The generated neighbor is randomly selected from the potential neighbors, with a bias towards closer neighbors.
+     *
+     * @param candidate The candidate vertex canning to generate a neighbor for.
+     * @param environment The medium in which the vertex canning is defined.
+     * @return A new vertex canning that is a neighbor of the candidate.
+     */
     @Override
     public VertexCanning generate(VertexCanning candidate, Medium environment) {
         potentialNeighbors.clear();
@@ -39,6 +53,16 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
         this.vertexToCoord = vertexToCoord;
         this.coordToVertex = coordToVertex;
 
+        addAllRepositioning();
+        addAllMergeLines();
+        addAllMergeColumns();
+
+        buildPotentialNeighbors();
+        return potentialNeighbors.next();
+    }
+
+    /** Adds all repositioning to the potential neighbors. */
+    private void addAllRepositioning() {
         for (Vertex vertex : environment){
             VertexCoord coord = vertexToCoord.get(vertex);
 
@@ -47,31 +71,16 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             VertexCoord east  = new VertexCoord(coord.Y()     , coord.X()+1);
             VertexCoord west  = new VertexCoord(coord.Y()     , coord.X()-1);
 
-            addNeighborNS(vertex, north);
-            addNeighborNS(vertex, south);
+            addRepositionNS(vertex, north);
+            addRepositionNS(vertex, south);
 
-            addNeighborEW(vertex, east);
-            addNeighborEW(vertex, west);
+            addRepositionEW(vertex, east);
+            addRepositionEW(vertex, west);
         }
-        buildPotentialNeighbors();
-        return potentialNeighbors.next();
     }
 
-    private void addSwap(Vertex vertex, VertexCoord neighborCoord) {
-        Vertex neighbor = coordToVertex.get(neighborCoord);
-
-        SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
-                (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
-                candidate.getWidth(), candidate.getHeight()
-        );
-        neighborCanning.getVertexCanning().put(vertex, neighborCoord);
-        neighborCanning.getVertexCanning().put(neighbor, vertexToCoord.get(vertex));
-
-        double distance = vertex.distanceFrom(neighbor);
-        distances.put(neighborCanning, distance);
-    }
-
-    private void addNeighborNS(Vertex vertex, VertexCoord neighborCoord) {
+    /** Adds an east/west repositioning of a vertex to the potential neighbors if it is valid. */
+    private void addRepositionNS(Vertex vertex, VertexCoord neighborCoord) {
         if (neighborCoord.Y() < 0 || neighborCoord.Y() >= candidate.getHeight()) return;
 
         if (coordToVertex.containsKey(neighborCoord)) return; //addSwap(vertex, neighborCoord);
@@ -119,7 +128,8 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
         }
     }
 
-    private void addNeighborEW(Vertex vertex, VertexCoord neighborCoord) {
+    /** Adds a north/south repositioning of a vertex to the potential neighbors if it is valid. */
+    private void addRepositionEW(Vertex vertex, VertexCoord neighborCoord) {
         if (neighborCoord.X() < 0 || neighborCoord.X() >= candidate.getWidth()) return;
 
         if (coordToVertex.containsKey(neighborCoord)) return; //addSwap(vertex, neighborCoord);
@@ -167,21 +177,144 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
         }
     }
 
-    private double convexFunction(double weight) {
-        //return ( Math.exp(weight)-1 )/( Math.E-1 );
-        return weight*weight;
+    /** Adds all merges of two lines to potential neighbors. */
+    private void addAllMergeLines() {
+        for (int y = 0; y < candidate.getHeight()-1; y++) {
+            int topLineLength = 0;
+            int botLineLength = 0;
+            double topLineAverageY = 0;
+            double botLineAverageY = 0;
+            boolean overlap = false;
+
+            for (int x = 0; x < candidate.getWidth(); x++) {
+                VertexCoord topCoord = new VertexCoord(y, x);
+                if (coordToVertex.get(topCoord) != null) {
+                    topLineLength++;
+                    topLineAverageY += coordToVertex.get(topCoord).getY();
+                }
+
+                VertexCoord botCoord = new VertexCoord(y+1, x);
+                if (coordToVertex.get(botCoord) != null) {
+                    botLineLength++;
+                    botLineAverageY += coordToVertex.get(botCoord).getY();
+                }
+
+                if (coordToVertex.get(topCoord) != null && coordToVertex.get(botCoord) != null) {
+                    overlap = true;
+                    break;
+                }
+            }
+
+            if (overlap) continue; // If there is an overlap, skip this pair of lines.
+
+            // If one of the lines is empty, we can merge it and consider its distance to its neighbor to be 0.
+            if (topLineLength == 0 || botLineLength == 0) {
+                addMergeLines(y, 0);
+                continue;
+            }
+
+            topLineAverageY /= topLineLength;
+            botLineAverageY /= botLineLength;
+            double distance = Math.abs(topLineAverageY - botLineAverageY);
+            addMergeLines(y, distance);
+        }
     }
-    private double makeConvexer(double weight, int iter) {
-        for (int i = 0; i < iter; i++) weight = convexFunction(weight);
+
+    /** Adds all merges of two columns to potential neighbors. */
+    private void addAllMergeColumns() {
+        for (int x = 0; x < candidate.getWidth()-1; x++) {
+            int leftColLength = 0;
+            int rightColLength = 0;
+            double leftColAverageX = 0;
+            double rightColAverageX = 0;
+            boolean overlap = false;
+
+            for (int y = 0; y < candidate.getHeight(); y++) {
+                VertexCoord leftCoord = new VertexCoord(y, x);
+                if (coordToVertex.get(leftCoord) != null) {
+                    leftColLength++;
+                    leftColAverageX += coordToVertex.get(leftCoord).getX();
+                }
+
+                VertexCoord rightCoord = new VertexCoord(y, x+1);
+                if (coordToVertex.get(rightCoord) != null) {
+                    rightColLength++;
+                    rightColAverageX += coordToVertex.get(rightCoord).getX();
+                }
+
+                if (coordToVertex.get(leftCoord) != null && coordToVertex.get(rightCoord) != null) {
+                    overlap = true;
+                    break;
+                }
+            }
+
+            if (overlap) continue; // If there is an overlap, skip this pair of columns.
+
+            // If one of the columns is empty, we can merge it and consider its distance to its neighbor to be 0.
+            if (leftColLength == 0 || rightColLength == 0) {
+                addMergeColumns(x, 0);
+                continue;
+            }
+
+            leftColAverageX /= leftColLength;
+            rightColAverageX /= rightColLength;
+            double distance = Math.abs(leftColAverageX - rightColAverageX);
+            addMergeColumns(x, distance);
+        }
+    }
+
+    /** Merges the lines y and y+1 and adds the resulting vertex canning to potential neighbors. */
+    private void addMergeLines(int y, double distance) {
+        SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
+                new HashMap<>(), candidate.getWidth(), candidate.getHeight()-1
+        );
+        for (Vertex vertex : vertexToCoord.keySet()) {
+            VertexCoord coord = vertexToCoord.get(vertex);
+
+            // Shift up all vertices in the line y+1 and after.
+            // This will merge the two lines y and y+1, and fill the empty line left by the merge.
+            if (coord.Y() <= y) neighborCanning.getVertexCanning().put(vertex, coord);
+            else neighborCanning.getVertexCanning().put(vertex, new VertexCoord(coord.Y()-1, coord.X()));
+        }
+        distances.put(neighborCanning, distance);
+    }
+
+    /** Merges the columns x and x+1, and adds the resulting vertex canning to potential neighbors. */
+    private void addMergeColumns(int x, double distance) {
+        SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
+                new HashMap<>(), candidate.getWidth()-1, candidate.getHeight()
+        );
+        for (Vertex vertex : vertexToCoord.keySet()) {
+            VertexCoord coord = vertexToCoord.get(vertex);
+
+            // Shift up all vertices in the line y+1 and after.
+            // This will merge the two lines y and y+1, and fill the empty line left by the merge.
+            if (coord.X() <= x) neighborCanning.getVertexCanning().put(vertex, coord);
+            else neighborCanning.getVertexCanning().put(vertex, new VertexCoord(coord.Y(), coord.X()-1));
+        }
+        distances.put(neighborCanning, distance);
+    }
+
+    /** Defines a function that is convex over [0, 1] */
+    private interface ConvexFunction {
+        double apply(double weight);
+    }
+    /**
+     * Makes the difference between high and low weights more extreme.
+     * This is useful to make the selection of neighbors more biased towards closer ones.
+     */
+    private double makeConvexer(ConvexFunction f, double weight, int iter) {
+        for (int i = 0; i < iter; i++) weight = f.apply(weight);
         return weight;
     }
 
+    /** Builds the potential neighbors based on the distances calculated. */
     private void buildPotentialNeighbors() {
         double maxDistance = distances.values().stream().max(Double::compare).get();
         if (maxDistance == 0) return;
         for (VertexCanning neighbor : distances.keySet()) {
             double distance = distances.get(neighbor);
-            double weight = makeConvexer(1 - distance/maxDistance, 3);
+            double weight = makeConvexer(x -> x*x, 1 - distance/maxDistance, 3);
             potentialNeighbors.add(weight, neighbor);
         }
     }

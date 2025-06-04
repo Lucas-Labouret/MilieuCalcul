@@ -6,7 +6,14 @@ import local.computingMedia.media.Medium;
 
 import java.util.HashMap;
 
-@Deprecated //Gave the same coord to multiple vertices
+/**
+ * This vertex canning implementation calculates the distance of each vertex to the top and left sides of the medium
+ * and uses these distances as the coordinates for canning.
+ * <p>
+ * It is deprecated because it sometimes assigns the same coordinates to multiple vertices.
+ * </p>
+ */
+@Deprecated
 public class TopLeftDistanceVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;

@@ -6,6 +6,13 @@ import local.computingMedia.media.Medium;
 
 import java.util.HashMap;
 
+/**
+ * RoundedCoordDichotomyVCanning is a vertex canning implementation that scales the spatial coordinates of each vertex
+ * by a given factor, then rounds them to the nearest integer values to use as canning coordinates.
+ * <p>
+ * It uses a dichotomy search to find an optimal scaling factor.
+ * </p>
+ */
 public class RoundedCoordDichotomyVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;
@@ -22,8 +29,11 @@ public class RoundedCoordDichotomyVCanning implements VertexCanning {
     private HashMap<VertexCoord, Vertex> getCoordVertexMap(Medium medium){
         HashMap<VertexCoord, Vertex> coordVertexMap = new HashMap<>();
 
+        // Current bounds for the dichotomy search
         double topScale = 1;
         double botScale = 0;
+
+        // First, we find an upper bound for the scaling factor
         while (true){
             boolean exit = true;
             for (Vertex vertex : medium){
@@ -43,6 +53,8 @@ public class RoundedCoordDichotomyVCanning implements VertexCanning {
             topScale *= 2;
         }
 
+        // Now we perform a dichotomy search to find an optimal scaling factor
+        // We stop when the difference between the bounds becomes small enough
         while (Math.abs(topScale - botScale) > 1e-6){
             double midScale = (topScale + botScale) / 2;
             HashMap<VertexCoord, Vertex> newCoordVertexMap = new HashMap<>();
@@ -64,64 +76,20 @@ public class RoundedCoordDichotomyVCanning implements VertexCanning {
 
         return coordVertexMap;
     }
-
-    private boolean xOverlap(Vertex[][] grid, int y1, int y2, int xMax){
-        for (int x = 0; x < xMax; x++)
-            if (grid[y1][x] != null && grid[y2][x] != null) return true;
-        return false;
-    }
-
-    private boolean yOverlap(Vertex[][] grid, int x1, int x2, int yMax){
-        for (int y = 0; y < yMax; y++)
-            if (grid[y][x1] != null && grid[y][x2] != null) return true;
-        return false;
-    }
-
-    private void collapse(Vertex[][] grid, int yMax, int xMax){
-        int y = 0, x = 0;
-        while (y+1 < yMax || x+1 < xMax){
-            if (y + 1 < yMax) {
-                if (!xOverlap(grid, y, y+1, xMax)){
-                    for (int y_ = y+1; y_ < yMax; y_++) for (int x_ = 0; x_ < xMax; x_++) { 
-                        grid[y_-1][x_] = grid[y_][x_];
-                        grid[y_][x_] = null;
-                    }
-                    yMax--;
-                } else y++;
-            }
-
-            if (x + 1 < xMax) {
-                if (!yOverlap(grid, x, x+1, yMax)){
-                    for (int x_ = x+1; x_ < xMax; x_++) for (int y_ = 0; y_ < yMax; y_++) {
-                        grid[y_][x_-1] = grid[y_][x_];
-                        grid[y_][x_] = null;                        
-                    }
-                    xMax--;
-                } else x++;
-            }
-        }
-        width = xMax;
-        height = yMax;
-    }
     
     @Override
     public void can(){
         HashMap<VertexCoord, Vertex> coordVertexMap = getCoordVertexMap(medium);
 
+        HashMap<Vertex, VertexCoord> result = new HashMap<>();
         int yMax = 0, xMax = 0;
         for (VertexCoord coord : coordVertexMap.keySet()){
+            result.put(coordVertexMap.get(coord), coord);
             if (coord.Y() > yMax) yMax = coord.Y();
             if (coord.X() > xMax) xMax = coord.X();
         }
-        yMax++; xMax++;
-
-        width = xMax;
-        height = yMax;
-
-        HashMap<Vertex, VertexCoord> result = new HashMap<>();
-        for (VertexCoord coord : coordVertexMap.keySet()){
-            result.put(coordVertexMap.get(coord), coord);
-        }
+        width = xMax+1;
+        height = yMax+1;
         vertexCanning = result;
     }
 }

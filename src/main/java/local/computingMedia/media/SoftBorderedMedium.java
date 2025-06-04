@@ -6,6 +6,12 @@ import local.misc.linkedList.Node;
 
 import java.util.ArrayList;
 
+/**
+ * A medium with a soft border.
+ * <p>
+ * The vertices of the border are not predefined. Instead, the border by correcting the convex hull of the medium,
+ * eliminating edges that are too long and replacing them with the outermost edges remaining.
+ */
 @SuppressWarnings("serial")
 public abstract class SoftBorderedMedium extends Medium {
     public SoftBorderedMedium() {}

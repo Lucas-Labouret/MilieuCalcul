@@ -6,6 +6,9 @@ import local.computingMedia.sLoci.Vertex;
 
 import java.util.HashMap;
 
+/**
+ * A container for a prebuilt vertex canning.
+ */
 public class SimpleVertexCanning implements VertexCanning {
     private final HashMap<Vertex, VertexCoord> vertexCanning;
     private final int width;

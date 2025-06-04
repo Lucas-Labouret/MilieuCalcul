@@ -1,5 +1,8 @@
 package local.computingMedia.cannings.evaluation;
 
+/**
+ * Encodes a mask as a vector of four integers.
+ */
 public record MaskIndex(int side, int theta, int Y, int X) {
     @Override
     public int hashCode() {

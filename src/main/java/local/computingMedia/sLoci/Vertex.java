@@ -22,21 +22,22 @@ public class Vertex {
     private final boolean isRightBorder;
     private final boolean isBottomBorder;
 
-
     public Vertex(double x, double y) {
         this(x, y, false, false, false, false, false);
     }
 
+    /** Constructor for Vertex with border flag */
     public Vertex(double x, double y, boolean isBorder) {
         this(x, y, isBorder, false, false, false, false);
     }
 
+    /** Constructor for Vertex with border flags */
     public Vertex(
             double x, double y,
             boolean isBorder,
             boolean isTopBorder, boolean isLeftBorder, boolean isRightBorder, boolean isBottomBorder
     ) {
-        this.x = x + randomEps();
+        this.x = x + randomEps(); // Adding a small random epsilon to avoid issues with points being perfectly aligned
         this.y = y + randomEps();
         this.isBorder = isBorder;
         this.isTopBorder = isTopBorder;
@@ -45,6 +46,7 @@ public class Vertex {
         this.isBottomBorder = isBottomBorder;
     }
 
+    /** Copy constructor for Vertex */
     public Vertex(Vertex vertex) {
         this(
                 vertex.getX(), vertex.getY(),
@@ -59,6 +61,7 @@ public class Vertex {
     public void setX(double x) { this.x = x; }
     public void setY(double y) { this.y = y; }
 
+    // Used for debugging when printing vertices
     public void setId(String id) { this.id = id; }
     public String getId() { return id; }
 
@@ -68,12 +71,22 @@ public class Vertex {
     public boolean isRightBorder() { return isRightBorder; }
     public boolean isBottomBorder() { return isBottomBorder; }
 
+    /** Check if this vertex has v as neighbor */
     public boolean hasNeighbors(Vertex v) { return neighbors.contains(v); }
+    /**
+     * Adds v as a neighbor to this vertex and vice versa if v and this vertex aren't already neighbors.
+     * There is no need to call addNeighbor on v, as this method ensures that the relationship is mutual.
+     */
     public void addNeighbor(Vertex v) { if (neighbors.add(v)) v.addNeighbor(this); }
+    /**
+     * Removes v as a neighbor from this vertex and vice versa if v is a neighbor of this vertex.
+     * There is no need to call removeNeighbor on v, as this method ensures that the relationship is mutual.
+     */
     public void removeNeighbor(Vertex v) { if (neighbors.remove(v)) v.removeNeighbor(this); }
 
     public HashSet<Vertex> getNeighbors() { return neighbors; }
 
+    /** @return the set of all the faces that have this vertex as a vertex */
     public HashSet<Face> getSurroundingFaces() {
         HashSet<Face> faces = new HashSet<>();
         for (Vertex n1 : neighbors) for (Vertex n2 : neighbors) {
@@ -104,12 +117,16 @@ public class Vertex {
         return id;
     }
 
+    /** @return the distance between this vertex and another vertex */
     public double distanceFrom(Vertex other) {
         return Edge.length(this, other);
     }
+
+    /** @return the distance between this vertex and an edge */
     public double distanceFrom(Edge edge) {
         return edge.distanceFrom(this);
     }
+
 
     public static double cross(Vertex center, Vertex a, Vertex b) {
         return (a.x-center.x)*(b.y-center.y) - (a.y-center.y)*(b.x-center.x);
@@ -119,6 +136,7 @@ public class Vertex {
         return Vertex.cross(this, a, b);
     }
 
+    /** @return the orientation of the triplet (a, b, c) */
     public static Orientation orientation(Vertex a, Vertex b, Vertex c) {
         double rawOrientation = (b.getY() - a.getY()) * (c.getX() - b.getX()) - (b.getX() - a.getX()) * (c.getY() - b.getY());
 
@@ -127,6 +145,7 @@ public class Vertex {
         else return Orientation.Clockwise;
     }
 
+    /** @return true if all vertices in the list are collinear, false otherwise */
     public static boolean allCollinear(List<Vertex> vertices) {
         if (vertices.size() < 3) {
             return true;
@@ -145,10 +164,17 @@ public class Vertex {
         return true;
     }
 
+    /** @return true if the triplet (a, b, c) is oriented counter-clockwise, false otherwise */
     public static boolean ccw(Vertex a, Vertex b, Vertex c){
         return orientation(a, b, c) == Orientation.CounterClockwise;
     }
 
+    /**
+     * Checks if the vertex is inside the polygon using the ray-casting algorithm.
+     * @param vertex the vertex to check
+     * @param polygon the polygon represented as a list of vertices
+     * @return true if the vertex is inside the polygon, false otherwise
+     */
     public static boolean insidePolygon(Vertex vertex, ArrayList<Vertex> polygon){
         if (polygon == null) return true;
 
@@ -165,6 +191,12 @@ public class Vertex {
         return intersections % 2 == 1;
     }
 
+    /**
+     * Checks if the vertex is inside the polygon or on its border.
+     * @param vertex the vertex to check
+     * @param polygon the polygon represented as a list of vertices
+     * @return true if the vertex is inside or on the border of the polygon, false otherwise
+     */
     public static boolean insidePolygonOrOnBorder(Vertex vertex, ArrayList<Vertex> polygon) {
         if (insidePolygon(vertex, polygon)) {
             return true;
@@ -180,18 +212,26 @@ public class Vertex {
         return false;
     }
 
+    /**
+     * Sorts the neighbors of this vertex in counter-clockwise order around this vertex, starting from the positive x-axis.
+     * @return a list of neighbors sorted in counter-clockwise order
+     */
     public ArrayList<Vertex> sortNeighborsCW() {
         ArrayList<Vertex> sortedNeighbors = new ArrayList<>(this.getNeighbors());
         sortedNeighbors.sort(new CompareByAngleDistance(this, new Vertex(this.getX() + 1, this.getY()), true));
         return sortedNeighbors;
     }
 
+    /**
+     * @return the angle in radians between the vectors (a, b) and (b, c).
+     */
     public static double getAngle(Vertex a, Vertex b, Vertex c) {
         double angle = Math.atan2(c.getY() - b.getY(), c.getX() - b.getX()) - Math.atan2(a.getY() - b.getY(), a.getX() - b.getX());
         if (angle < 0) angle += 2 * Math.PI;
         return angle;
     }
 
+    /** Compares two vertices first by their x-coordinate, then by their y-coordinate. */
     public static class CompareByXThenY implements Comparator<Vertex> {
         @Override
         public int compare(Vertex p1, Vertex p2) {
@@ -203,6 +243,7 @@ public class Vertex {
         }
     }
 
+    /** Compares two vertices by their distance to the origin (0, 0). */
     public static class CompareByDistanceToOrigin implements Comparator<Vertex> {
         @Override
         public int compare(Vertex p1, Vertex p2) {
@@ -217,6 +258,7 @@ public class Vertex {
         double calculate(Vertex vertex);
     }
 
+    /** Compares two vertices by the angle they make with a given reference. */
     public static class CompareByAngle implements Comparator<Vertex> {
         private final AngleCalculator calculator;
 
@@ -232,6 +274,7 @@ public class Vertex {
         }
     }
 
+    /** Compares two vertices by the angle they make with a center vertex and a reference vertex, optionally in clockwise order, then by their distance to the origin. */
     public static class CompareByAngleDistance implements Comparator<Vertex> {
         private final Vertex center, ref;
         private final boolean clockwise;

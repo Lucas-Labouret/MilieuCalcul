@@ -11,6 +11,17 @@ import local.computingMedia.tLoci.Vf;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * Computes the masks derived from a canning.
+ * It provides methods to calculate deltas, average masks, and maximum masks for different types of transfers.
+ * <p>
+ * Deltas are calculated based on the maximum differences in coordinates between vertices and their neighbors.
+ * They represent an upper bound for the communication time of the medium.
+ * </p><<p>
+ * Average masks are computed by averaging the number of unique masks used for transfers across all lines,
+ * while maximum masks return the maximum number of unique masks used in any single line.
+ * </p>
+ */
 public class MasksComputer {
     private Canning canning;
 
@@ -20,6 +31,13 @@ public class MasksComputer {
 
     public void setCanning(Canning canning) { this.canning = canning; }
 
+    /**
+     * Computes the deltas for the canning.
+     * Deltas are calculated as the maximum differences in Y and X coordinates between vertices and their neighbors.
+     * The upper bound is calculated as (2*deltaY + 1) * (2*deltaX + 1) and is the maximum area covered by a line of vertices during a communication.
+     *
+     * @return an array containing deltaY, deltaX, and the upper bound.
+     */
     public int[] getDeltas(){
         HashMap<Vertex, VertexCoord> vCanning = canning.getVertexCanning();
 
@@ -32,6 +50,7 @@ public class MasksComputer {
         return new int[]{deltaY, deltaX, upperBound};
     }
 
+    /** Computes the average number of unique masks used for EvVe transfers for each a line of vertices. */
     private HashMap<Integer, HashSet<MaskIndex>> maskSetVeEv(){
         HashMap<Integer, HashSet<MaskIndex>> maskSet = new HashMap<>();
         for (Ev ev : canning.getEv()) {
@@ -50,6 +69,11 @@ public class MasksComputer {
         }
         return maskSet;
     }
+
+    /**
+     * Computes the average number of unique masks used for VeEv transfers over a line of vertices.
+     * Result should be identical to the average number of unique masks used for EvVe transfers.
+     */
     public double getAverageVeEv(){
         HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetVeEv();
         int accumulator = 0;
@@ -58,6 +82,11 @@ public class MasksComputer {
         }
         return accumulator / (double)(maskSets.size());
     }
+
+    /**
+     * Computes the maximum number of unique masks used for VeEv transfers.
+     * Result should be identical to the maximum number of unique masks used for EvVe transfers.
+     */
     public int getMaxVeEv(){
         HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetVeEv();
         int max = 0;
@@ -67,6 +96,7 @@ public class MasksComputer {
         return max;
     }
 
+    /** Computes the average number of unique masks used for VfFv transfers for each a line of vertices. */
     private HashMap<Integer, HashSet<MaskIndex>> maskSetVfFv(){
         HashMap<Integer, HashSet<MaskIndex>> maskSet = new HashMap<>();
         for (Vf vf : canning.getVf()) {
@@ -85,6 +115,11 @@ public class MasksComputer {
         }
         return maskSet;
     }
+
+    /**
+     * Computes the average number of unique masks used for VfFv transfers over a line of vertices.
+     * Result should be identical to the average number of unique masks used for FvVf transfers.
+     */
     public double getAverageVfFv(){
         HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetVfFv();
         int accumulator = 0;
@@ -93,6 +128,10 @@ public class MasksComputer {
         }
         return accumulator / (double)(maskSets.size());
     }
+    /**
+     * Computes the maximum number of unique masks used for VfFv transfers.
+     * Result should be identical to the maximum number of unique masks used for FvVf transfers.
+     */
     public int getMaxVfFv(){
         HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetVfFv();
         int max = 0;
@@ -102,6 +141,7 @@ public class MasksComputer {
         return max;
     }
 
+    /** Computes the average number of unique masks used for EfFe transfers for each a line of vertices. */
     private HashMap<Integer, HashSet<MaskIndex>> maskSetEfFe(){
         HashMap<Integer, HashSet<MaskIndex>> maskSet = new HashMap<>();
         for (Fe fe : canning.getFe()) {
@@ -121,6 +161,11 @@ public class MasksComputer {
         }
         return maskSet;
     }
+
+    /**
+     * Computes the average number of unique masks used for EfFe transfers over a line of vertices.
+     * Result should be identical to the average number of unique masks used for FeEf transfers.
+     */
     public double getAverageEfFe(){
         HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetEfFe();
         int accumulator = 0;
@@ -129,6 +174,11 @@ public class MasksComputer {
         }
         return accumulator / (double)(maskSets.size());
     }
+
+    /**
+     * Computes the maximum number of unique masks used for EfFe transfers.
+     * Result should be identical to the maximum number of unique masks used for FeEf transfers.
+     */
     public int getMaxEfFe(){
         HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetEfFe();
         int max = 0;

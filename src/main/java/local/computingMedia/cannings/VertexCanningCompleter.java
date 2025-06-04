@@ -9,6 +9,9 @@ import local.computingMedia.tLoci.*;
 
 import java.util.*;
 
+/**
+ * Create a complete canning from a vertex canning.
+ */
 public class VertexCanningCompleter implements Canning {
     private Medium medium;
     private final VertexCanning vertexCanner;
@@ -17,8 +20,8 @@ public class VertexCanningCompleter implements Canning {
     private HashMap<Edge, EdgeCoord> edgeCanning;
     private HashMap<Face, FaceCoord> faceCanning;
 
-    private HashMap<Vertex, HashSet<Edge>> vertexToManagedEdges;
-    private HashMap<Vertex, HashSet<Face>> vertexToManagedFaces;
+    private HashMap<Vertex, HashSet<Edge>> vertexToManagedEdges; // Maps each vertex to the edges that belong to it
+    private HashMap<Vertex, HashSet<Face>> vertexToManagedFaces; // Maps each vertex to the faces that belong to it
 
     private HashMap<Ef, EfCoord> efCanning;
     private HashMap<Ev, EvCoord> evCanning;
@@ -72,10 +75,15 @@ public class VertexCanningCompleter implements Canning {
         vertexCanner.setMedium(medium);
     }
 
+
     public VertexCanningCompleter(VertexCanning vertexCanning) {
         this.vertexCanner = vertexCanning;
     }
 
+    /**
+     * Initializes the environment for the canning.
+     * This method sets up the vertex canning, fills managed edges and faces, and initializes the various canning maps.
+     */
     private void initEnv() {
         vertexCanner.can();
         vertexCanning = vertexCanner.getVertexCanning();
@@ -101,6 +109,15 @@ public class VertexCanningCompleter implements Canning {
         facingVfFv = new HashMap<>();
     }
 
+    /**
+     * Fills the managed edges for each vertex in the medium.
+     * <p>
+     * An edge is considered managed by a vertex if it is directed from the vertex to a neighbor with a higher coordinate.<br>
+     * This is equivalent to attributing to each vertex the edges that are :<br>
+     * 1. Connected to it and a vertex below it<br>
+     * 2. Connected to it and a neighbor at the same level, on its right.
+     * </p>
+     */
     private void fillManagedEdges() {
         vertexToManagedEdges = new HashMap<>();
 
@@ -113,6 +130,12 @@ public class VertexCanningCompleter implements Canning {
             }
         }
     }
+    /**
+     * Fills the managed faces for each vertex in the medium.
+     * <p>
+     * Face attribution follows mostly the same principle as edge attribution.
+     * </p>
+     */
     private void fillManagedFaces() {
         vertexToManagedFaces = new HashMap<>();
         for (Vertex vertex: medium) {
@@ -135,6 +158,7 @@ public class VertexCanningCompleter implements Canning {
         sCanning();
         tCanning();
     }
+    /** Cans the edges and faces of the medium relative to the vertices. */
     private void sCanning(){
         for (Vertex vertex: medium) {
             VertexCoord vertexCoord = vertexCanning.get(vertex);
@@ -177,6 +201,7 @@ public class VertexCanningCompleter implements Canning {
             }
         }
     }
+    /** Cans the transfer loci of the medium relative to their primary sLoci */
     private void tCanning(){
         for (Vertex vertex: medium) {
             VertexCoord vertexCoord = vertexCanning.get(vertex);

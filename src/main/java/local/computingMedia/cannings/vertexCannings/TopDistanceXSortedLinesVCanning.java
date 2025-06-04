@@ -7,6 +7,14 @@ import local.computingMedia.media.Medium;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * TopDistanceXSortedLinesVCanning is a vertex canning implementation that organizes vertices into lines based on their distance to the top of the medium.
+ * Each line is then sorted by the x-coordinate of the vertices, and the y-coordinate is determined by the distance to the top.
+ * <p>
+ * This canning tend to exhibit a "drifting" effect, where columns of vertices get closer to the left side of the medium as they move downwards.
+ * This effect becomes more pronounced as the media gets larger.
+ * </p>
+ */
 public class TopDistanceXSortedLinesVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
     private Medium medium;

@@ -1,10 +1,14 @@
 package local.misc.simulatedAnnealing;
 
-public class StandardHeatRegulator implements HeatRegulator {
+/**
+ * Standard implementation of the Acceptor interface for simulated annealing.
+ * This implementation has temperature that decreases linearly from 1 to 0 over a set number of iterations.
+ */
+public class StandardTemperatureRegulator implements TemperatureRegulator {
     private final int maxIterations;
     private int currentIteration;
 
-    public StandardHeatRegulator(int maxIterations) {
+    public StandardTemperatureRegulator(int maxIterations) {
         this.maxIterations = maxIterations;
         this.currentIteration = 0;
     }

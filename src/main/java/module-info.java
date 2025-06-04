@@ -2,6 +2,7 @@ module local.furthestpointoptimization {
     requires javafx.controls;
     requires javafx.base;
     requires transitive javafx.graphics;
+    requires jdk.jshell;
 
     opens local.ui to javafx.fxml;
     opens local.ui.mediumApps to javafx.fxml;

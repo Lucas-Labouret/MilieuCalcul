@@ -7,6 +7,10 @@ import local.computingMedia.cannings.vertexCannings.VertexCanning;
 import local.computingMedia.media.Medium;
 import local.misc.simulatedAnnealing.Evaluator;
 
+/**
+ * Evaluator for vertex cannings that computes the average of the masks used for transfers.
+ * The result is negated to minimize the average value.
+ */
 public class EverageMaskEvaluator implements Evaluator<VertexCanning, Medium> {
     @Override
     public double evaluate(VertexCanning candidate, Medium environment) {
@@ -18,6 +22,6 @@ public class EverageMaskEvaluator implements Evaluator<VertexCanning, Medium> {
 
         return (masksComputer.getAverageEfFe()+
                 masksComputer.getAverageVeEv()+
-                masksComputer.getAverageVfFv()) / 3;
+                masksComputer.getAverageVfFv()) / -3;
     }
 }

@@ -9,14 +9,33 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+/**
+ * Manages the saving and loading of media savefiles.
+ * This class saves and loads from MilieuCalcul/save/
+ * It automatically appends the default extension ".vtxs" to the savefile name, therefore it should not be specified in the file's name.
+ */
 public abstract class SavefileManager {
     public static final String DEFAULT_LOCATION  = "save/";
     public static final String DEFAULT_EXTENSION = ".vtxs";
 
     public SavefileManager() {}
 
+    /**
+     * Creates a new instance of the Medium class.
+     * This method should be overridden by subclasses to return the specific type of Medium they handle.
+     *
+     * @return A new instance of the Medium class.
+     */
     protected abstract Medium makeMedium();
 
+    /**
+     * Saves the given Medium to a file with the specified name.
+     * The file will be saved in the default location with the default extension.
+     *
+     * @param medium The Medium to save.
+     * @param name   The name of the savefile (without extension).
+     * @throws IOException If an error occurs during saving.
+     */
     public void save(Medium medium, String name) throws IOException {
         if (medium == null) return;
         String fullName = DEFAULT_LOCATION + name + DEFAULT_EXTENSION;
@@ -100,6 +119,14 @@ public abstract class SavefileManager {
         writer.close();
     }
 
+    /**
+     * Loads a Medium from a file with the specified name.
+     * The file should be in the default location with the default extension.
+     *
+     * @param name The name of the savefile (without extension).
+     * @return The loaded Medium.
+     * @throws IOException If an error occurs during loading.
+     */
     public Medium load(String name) throws IOException {
         String fullName = DEFAULT_LOCATION + name + DEFAULT_EXTENSION;
 
@@ -348,6 +375,13 @@ public abstract class SavefileManager {
         return medium;
     }
 
+    /**
+     * Creates a Vertex from a line of the savefile.
+     * The line should be in the format: "<index>: <x> <y> <border> <top> <left> <right> <bottom>".
+     *
+     * @param vertexLine The line containing vertex information.
+     * @return A Vertex object created from the line.
+     */
     private static Vertex getVertex(String[] vertexLine) {
         double x = Double.parseDouble(vertexLine[1]);
         double y = Double.parseDouble(vertexLine[2]);
