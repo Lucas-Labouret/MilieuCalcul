@@ -7,8 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 
-/** Toolbar int input */
-@SuppressWarnings("unused")
+/** A utility class that provides a simple input field for integer values. */
 public class TBIntInput extends VBox {
 
     private Label text;

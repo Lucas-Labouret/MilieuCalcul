@@ -3,6 +3,10 @@ package local.ui.utils;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 
+/**
+ * A simple information bar that displays a message.
+ * It can be used to show status updates or notifications.
+ */
 public class InformationBar extends Pane {
     private final String BG_STYLE = "-fx-background-color: #f0f0f0;";
 

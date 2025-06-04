@@ -19,7 +19,11 @@ import local.computingMedia.tLoci.*;
 
 import java.util.HashMap;
 
+/**
+ * A class that provides a visual representation of a Medium and its Canning.
+ */
 public class MediumDrawer extends Pane {
+    // Constants for styling and drawing
     private static final String BG_STYLE = "-fx-background-color: #FFFFFF;";
     
     private static final int SLOCI_RADIUS = 5;
@@ -50,6 +54,8 @@ public class MediumDrawer extends Pane {
 
     private static final Color COORD_COLOR = Color.BLACK;
 
+
+    // Flags for toggling visibility of various elements
     private boolean SHOW_VERTICES = true;
     private boolean SHOW_VERTICES_COORDS = false;
     private boolean SHOW_EDGES = true;
@@ -76,6 +82,7 @@ public class MediumDrawer extends Pane {
     private boolean SHOW_TRANSFER_FV_VF = false;
     private boolean SHOW_TRANSFER_VF_FV = false;
 
+    // Display parameters
     double xmax, ymax, xmin, ymin,
            width, height,
            paneWidth, paneHeight,
@@ -84,20 +91,23 @@ public class MediumDrawer extends Pane {
            scale,
            offsetX, offsetY;
 
+    // Canning and Medium data
     int canningWidth, canningHeight;
     HashMap<VertexCoord, Vertex> canningGrid;
-
-    Medium medium;
     Canning canning;
+    Medium medium;
 
+    // Selected vertex for highlighting
     Vertex selection;
 
+    /** Set the medium and canning to be displayed */
     public void setCanning(Canning canning) {
         this.canning = canning;
         this.medium = canning.getMedium();
         redraw();
     }
 
+    // Toggles for visibility of various elements. Using any of these methods will trigger a redraw of the pane.
     public void setShowVertices(boolean showVertices) {
         SHOW_VERTICES = showVertices;
         redraw();
@@ -190,6 +200,7 @@ public class MediumDrawer extends Pane {
         redraw();
     }
 
+    /** Set up the environment variables of the class */
     private void initEnv() {
         xmax = medium.getMaxX();
         xmin = medium.getMinX();
@@ -219,6 +230,8 @@ public class MediumDrawer extends Pane {
             canningGrid.put(coord, vertex);
         }
     }
+
+    /** Redraw the pane with the current medium and canning */
     public void redraw() {
         setStyle(BG_STYLE);
         getChildren().clear();
@@ -230,6 +243,7 @@ public class MediumDrawer extends Pane {
 
         initEnv();
 
+        // /!\ Display order matters
         if (SHOW_CANNING_GRID) drawCanningGrid();
 
         if (SHOW_EF_FE) drawEfFe();
@@ -243,19 +257,21 @@ public class MediumDrawer extends Pane {
         if (SHOW_TRANSFER_FV_VF) drawTransferFvVf();
         if (SHOW_TRANSFER_VF_FV) drawTransferVfFv();
 
-        if (SHOW_EDGES && EDGES_AS_LINES  ) drawLines();
-        if (SHOW_EDGES && !EDGES_AS_LINES ) drawEdges();
-        if (SHOW_CANNING                  ) drawCanning();
-        if (SHOW_FACES                    ) drawFaces();
-        if (SHOW_VERTICES                 ) drawVertices();
+        if (SHOW_EDGES && EDGES_AS_LINES ) drawLines();
+        if (SHOW_EDGES && !EDGES_AS_LINES) drawEdges();
+        if (SHOW_CANNING                 ) drawCanning();
+        if (SHOW_FACES                   ) drawFaces();
+        if (SHOW_VERTICES                ) drawVertices();
     }
 
+    /** Get the color based on the number of neighbors of a vertex, interpolating between a low and a high color. */
     private Color getColorFromNeighborCount(int count) {
         if (count == 0)
             return VERTEX_ISOLATED_COLOR;
         int criticalCount = 6;
-        double sigmoid = 1 / (1 + Math.exp(-(count - criticalCount)));
-        return VERTEX_LOW_COLOR.interpolate(VERTEX_HIGH_COLOR, sigmoid);
+        // Some function of count, resulting in a value between 0 and 1
+        double interpolator = 1 / (1 + Math.exp(-(count - criticalCount)));
+        return VERTEX_LOW_COLOR.interpolate(VERTEX_HIGH_COLOR, interpolator);
     }
     private void drawVertices() {
         for (Vertex v : medium) {

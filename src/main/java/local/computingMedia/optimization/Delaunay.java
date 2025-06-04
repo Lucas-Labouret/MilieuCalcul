@@ -10,6 +10,10 @@ import local.computingMedia.sLoci.Face;
 import local.computingMedia.Orientation;
 import local.computingMedia.sLoci.Vertex;
 
+/**
+ * Set of utilities to build the Delaunay triangulation of a medium.
+ * This implementation uses the divide-and-conquer algorithm presented <a href="https://doi.org/10.1007/BF01840356">here</a>.
+ */
 public class Delaunay {
     private Delaunay(){}
 
@@ -31,7 +35,19 @@ public class Delaunay {
         }
     }
 
+    /**
+     * Builds the Delaunay triangulation of the given medium.
+     * The medium must contain at least 3 vertices.
+     * <p>
+     * Dwyer's optimized the algorithm by partitioning the vertices into buckets based on their coordinates,
+     * and then merging the buckets together. This optimization is not implemented in this version.
+     * </p>
+     *
+     * @param medium the medium to build the triangulation for
+     * @throws IllegalArgumentException if the medium contains less than 3 vertices
+     */
     public static void buildDT(Medium medium){
+        //TODO: implement Dwyer's optimization
         if (medium.size() <= 2) throw new IllegalArgumentException("Medium must contain at least 3 vertices");
     /*
         HashMap<BucketKey, Medium> buckets = new HashMap<>();
@@ -55,20 +71,34 @@ public class Delaunay {
         bucketDT(medium);
     }
 
+    /**
+     * Builds the Delaunay triangulation of each bucket.
+     */
     private static void bucketDT(Medium medium){
         ArrayList<Vertex> vertices = new ArrayList<>(medium);
         vertices.sort(new Vertex.CompareByXThenY());
         _r_bucketDT(vertices, 0, vertices.size());
     }
 
+    /**
+     * Recursive method to build the Delaunay triangulation of the vertices in the given range.
+     * This method assumes that the vertices are sorted by their x-coordinate.
+     *
+     * @param vertices the list of vertices to triangulate
+     * @param left the left index (inclusive)
+     * @param right the right index (exclusive)
+     * @return a list of indices representing the convex hull of the triangulation of the vertices in the given range, sorted counter-clockwise
+     */
     private static ArrayList<Integer> _r_bucketDT(ArrayList<Vertex> vertices, int left, int right){
-        // cas de base
+        // Base case / 2 vertices
+        // We just connect the two vertices together
         if (right - left == 2){
             vertices.get(left).addNeighbor(vertices.get(left+1));
             return new ArrayList<>(List.of(left, left+1));
         }
 
-        // cas de base
+        // Base case / 3 vertices
+        // We connect the three vertices together, and return the indices in counter-clockwise order to form the convex hull
         if (right - left == 3){
             Vertex v1 = vertices.get(left);
             Vertex v2 = vertices.get(left+1);
@@ -91,9 +121,14 @@ public class Delaunay {
             }
         }
 
+        // Recursive case
+
+        // We split the vertices in two halves, and recursively build the triangulation for each half
         int mid = (left + right) / 2;
         ArrayList<Integer> leftHull = _r_bucketDT(vertices, left, mid);
         ArrayList<Integer> rightHull = _r_bucketDT(vertices, mid, right);
+
+        // We merge the two halves together to form the triangulation
         ArrayList<Integer> hull = new ArrayList<>();
         int[] tmp = mergeHull(vertices, leftHull, rightHull, hull);
         int leftLowerBound = tmp[0], rightLowerBound = tmp[1];
@@ -101,6 +136,18 @@ public class Delaunay {
         return hull;
     }
 
+
+    /**
+     * Merges the two convex hulls together to form the convex hull of the triangulation
+     * using the merge algorithm presented <a href="https://dl.acm.org/doi/pdf/10.1145/282918.282923">here</a>.
+     * The two hulls must be sorted counter-clockwise.
+     *
+     * @param vertices (in) the list of vertices to triangulate
+     * @param leftHull (in) the left convex hull
+     * @param rightHull (in) the right convex hull
+     * @param mergedHull (inout) the list to store the merged convex hull
+     * @return the indices of the vertices that form the lower edge connecting the left hull to the right.
+     */
     private static int[] mergeHull(
             ArrayList<Vertex> vertices,
             ArrayList<Integer> leftHull, ArrayList<Integer> rightHull,
@@ -112,6 +159,7 @@ public class Delaunay {
             return new int[]{leftHull.getFirst(), rightHull.getFirst()};
         }
 
+        // Find the rightmost vertex of the left hull and the leftmost vertex of the right hull
         int left = 0;
         for (int i = 1; i < leftHull.size(); i++)
             if (vertices.get(leftHull.get(i)).getX() > vertices.get(leftHull.get(left)).getX()) left = i;
@@ -123,6 +171,8 @@ public class Delaunay {
         final int rightStart = right;
         boolean leftDone;
         boolean rightDone;
+
+        // Find the top edge connecting the left hull to the right hull by having the edge (left, right) "climb up" the left and right hulls
         do {
             int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, -1, Orientation.CounterClockwise);
             rightDone = rightNext == right;
@@ -137,6 +187,7 @@ public class Delaunay {
 
         left = leftStart;
         right = rightStart;
+        // Same process, but now we "climb down" the left and right hulls to find the lower edge connecting the two hulls
         do {
             int rightNext = getNextCandidate(vertices, rightHull, leftHull, right, left, 1, Orientation.Clockwise);
             rightDone = rightNext == right;
@@ -149,6 +200,7 @@ public class Delaunay {
         final int leftLowerBound = left;
         final int rightLowerBound = right;
 
+        // Populate the merged hull with the vertices of the left hull from the upper bound to the lower bound, and the vertices of the right hull from the lower bound to the upper bound
         int i = leftUpperBound;
         while (i != leftLowerBound){
             mergedHull.add(leftHull.get(i));
@@ -162,8 +214,7 @@ public class Delaunay {
         }
         mergedHull.add(rightHull.get(rightUpperBound));
 
-        //System.out.println("llb: " + leftHull.get(leftLowerBound) + ", lub: " + leftHull.get(leftUpperBound) + ", rlb: " + rightHull.get(rightLowerBound) + ", rub: " + rightHull.get(rightUpperBound));
-
+        // Return the indices of the vertices that form the lower edge connecting the left hull to the right hull
         return new int[]{leftHull.get(leftLowerBound), rightHull.get(rightLowerBound)};
     }
 
@@ -278,6 +329,16 @@ public class Delaunay {
         }
     }
 
+
+    /**
+     * Checks if all the vertices in the left and right lists are collinear.
+     * This is used to optimize the merging of the two hulls.
+     *
+     * @param vertices the list of vertices to check
+     * @param left the indices of the left hull
+     * @param right the indices of the right hull
+     * @return true if all the vertices in the left and right hulls are collinear, false otherwise
+     */
     private static boolean allAligned(ArrayList<Vertex> vertices, ArrayList<Integer> left, ArrayList<Integer> right){
         ArrayList<Integer> candidates = new ArrayList<>();
         candidates.addAll(left);

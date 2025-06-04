@@ -6,6 +6,10 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+/**
+ * Main class for the Blob application.
+ * This class initializes the JavaFX application, and serves as the entry point.
+ */
 public class Main extends Application {
 
     public static final int WIDTH = 600;

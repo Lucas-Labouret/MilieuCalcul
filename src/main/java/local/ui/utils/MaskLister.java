@@ -7,6 +7,10 @@ import javafx.scene.layout.GridPane;
 import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.evaluation.MasksComputer;
 
+/**
+ * A utility class that displays the maximum and average values of various mask metrics.
+ * It is designed to be used in a JavaFX application to show the results of mask computations.
+ */
 public class MaskLister extends GridPane {
     public MaskLister(MasksComputer masksComputer) {
         setAlignment(Pos.CENTER);

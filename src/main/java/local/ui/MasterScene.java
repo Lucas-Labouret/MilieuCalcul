@@ -7,7 +7,10 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import local.ui.mediumApps.*;
 
-// Singleton
+/**
+ * MasterScene is the main scene that allows switching between different medium applications. <br>
+ * It provides methods to facilitate the addition of new medium applications
+ */
 public class MasterScene extends BorderPane {
     static MasterScene instance;
     public static MasterScene getInstance() {
@@ -49,6 +52,11 @@ public class MasterScene extends BorderPane {
             subScene.setHeight(newVal.doubleValue() - toolBar.getHeight());
     }
 
+    /**
+     * Adds a new medium application to the MasterScene, and creates a button in the toolbar to switch to it.
+     * @param scene The MediumApp instance to be added.
+     * @param name The name of the application, used for the button in the toolbar.
+     */
     public void addScene(MediumApp scene, String name) {
         SubScene subScene = new SubScene(scene, 500, 500);
         scenes.add(subScene);

@@ -24,14 +24,25 @@ import local.ui.utils.SidePanel;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-@FunctionalInterface
-interface CanningFactory {
-    Canning make(Medium medium);
-}
-
+/**
+ * MediumApp is an abstract class that serves as a base for different medium applications.
+ * A MediumApp draws different visualizations for {@link Medium} and  {@link Canning} and provides tools to manipulate them through a GUI.
+ */
 public abstract class MediumApp extends BorderPane {
+    /** A canning factory interface that creates a {@link Canning} instance for a given {@link Medium}. */
+    @FunctionalInterface
+    protected interface CanningFactory {
+        Canning make(Medium medium);
+    }
+
+    /**
+     * Returns the default canning for this MediumApp.
+     * This method should be overridden in subclasses to provide a specific default canning.
+     * @return An instance of a default canning for this MediumApp.
+     */
     public abstract Canning DEFAULT_CANNING();
 
+    // UI components
     protected final ToolBar topToolBar;
     protected final ToolBar botToolBar;
     protected final SidePanel sidePanel;
@@ -41,30 +52,30 @@ public abstract class MediumApp extends BorderPane {
 
     protected final VBox botVBox;
 
-    protected Medium medium;
-    protected Canning canning;
-    protected CanningFactory canningFactory;
-    protected VertexCanningNearestNeighborAnnealer annealer;
-    protected MasksComputer masksComputer;
-
     protected final Button gen;
     protected final Button tri;
     protected final Button fpo;
     protected final Button msk;
 
     protected final InformationBar savefileInfo;
-    protected SavefileManager savefileManager;
     protected final TextField fileName;
     protected final Button saveButton;
     protected final Button loadButton;
 
+    // Model components
+    protected Medium medium;
+    protected Canning canning;
+    protected CanningFactory canningFactory;
+    protected MasksComputer masksComputer;
+    protected SavefileManager savefileManager;
+
+    // User provided parameters for FPO
     protected boolean fpoToConvergence = false;
     protected int fpoIterations = 1;
     protected double convergenceTolerance = 0.9;
 
     public MediumApp() {
         canningFactory = m -> DEFAULT_CANNING();
-        annealer = new VertexCanningNearestNeighborAnnealer(500);
         masksComputer = new MasksComputer(canning);
 
         topToolBar = new ToolBar();
@@ -106,7 +117,13 @@ public abstract class MediumApp extends BorderPane {
         updateDrawPaneSize();
     }
 
+    /**
+     * Generates the medium and canning for this MediumApp.
+     * This method should be overridden in subclasses to provide generation logic specific to each type of medium.
+     */
     abstract protected void generate();
+
+    /** Common actions to be performed during generation. */
     protected void generateCommon(){
         setCanning();
         mediumInfoBar.removeText();
@@ -134,6 +151,7 @@ public abstract class MediumApp extends BorderPane {
         updateInfoBars();
     }
 
+    /** Creates a pop up window to display the masks' information. */
     private void showMasks() {
         Stage stage = new Stage();
         stage.initOwner(getScene().getWindow());
@@ -208,8 +226,14 @@ public abstract class MediumApp extends BorderPane {
     private HBox subCheckBox(CheckBox checkBox) {
         return new HBox(new Label("    ("), checkBox, new Label(")"));
     }
+
+    /**
+     * Fills the side panel with various controls for the MediumApp.
+     * This includes checkboxes for displaying different elements of the medium,
+     * options for canning, and controls for FPO.
+     */
     private void fillSidePanel() {
-        //Graphics
+        //Graphic options
         CheckBox showVertices = new CheckBox("Vertices");
         CheckBox showVerticesCoords = new CheckBox("coordinates");
         CheckBox showEdges = new CheckBox("Edges");
@@ -314,7 +338,7 @@ public abstract class MediumApp extends BorderPane {
         transferFvVf.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferFvVf(newVal));
         transferVfFv.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferVfFv(newVal));
 
-        //Canning
+        //Canning options
         ToggleGroup canGroup = new ToggleGroup();
 
         RadioButton defaultCanning = new RadioButton("Default");
@@ -331,7 +355,9 @@ public abstract class MediumApp extends BorderPane {
 
         defaultCanning.setSelected(true);
 
+
         canGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            // Modify the canning factory to always use the user selected canning
             if (newVal == defaultCanning) {
                 canningFactory = m -> DEFAULT_CANNING();
             } else if (newVal == roundedCoordIncrementalCanning) {
