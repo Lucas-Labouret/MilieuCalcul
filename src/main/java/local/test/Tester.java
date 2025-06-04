@@ -6,6 +6,7 @@ import local.computingMedia.cannings.evaluation.MasksComputer;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordDichotomyVCanning;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordIncrementalVCanning;
 import local.computingMedia.media.Medium;
+import local.computingMedia.sLoci.Edge;
 import local.computingMedia.sLoci.Vertex;
 import local.savefileManagers.HardRectangleManager;
 import local.savefileManagers.SavefileManager;
@@ -58,7 +59,16 @@ public class Tester {
         }
     }
 
-    private static void makeCSV(String methodName, String results) {
+    private static void makeCSV(String methodName, String[][] results) {
+        StringBuilder sb = new StringBuilder();
+        for (String[] line : results) {
+            for (String cell : line) {
+                sb.append(cell == null ? "" : cell).append(",");
+            }
+            sb.setLength(sb.length() - 1);
+            sb.append("\n");
+        }
+
         String fileName = OUTPUT_DIR + methodName + EXTENSION;
         BufferedWriter writer;
         try { writer = new BufferedWriter(new FileWriter(fileName)); }
@@ -66,7 +76,7 @@ public class Tester {
             System.out.println("Error creating file: " + fileName);
             return;
         }
-        try { writer.write(results); }
+        try { writer.write(sb.toString()); }
         catch (Exception e) {
             System.out.println("Error writing to file: " + fileName);
             return;
@@ -108,13 +118,11 @@ public class Tester {
                     continue;
                 }
 
-                Canning incrementalCanning = new VertexCanningCompleter(new RoundedCoordIncrementalVCanning());
-                incrementalCanning.setMedium(medium);
+                Canning incrementalCanning = new VertexCanningCompleter(new RoundedCoordIncrementalVCanning(medium));
                 incrementalCanning.can();
                 MasksComputer incrementalMasks = new MasksComputer(incrementalCanning);
 
-                Canning dichotomyCanning = new VertexCanningCompleter(new RoundedCoordDichotomyVCanning());
-                dichotomyCanning.setMedium(medium);
+                Canning dichotomyCanning = new VertexCanningCompleter(new RoundedCoordDichotomyVCanning(medium));
                 dichotomyCanning.can();
                 MasksComputer dichotomyMasks = new MasksComputer(dichotomyCanning);
 
@@ -148,16 +156,7 @@ public class Tester {
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-        for (String[] line : results) {
-            for (String cell : line) {
-                sb.append(cell == null ? "" : cell).append(",");
-            }
-            sb.setLength(sb.length() - 1);
-            sb.append("\n");
-        }
-
-        makeCSV(methodName, sb.toString());
+        makeCSV(methodName, results);
     }
 
     private static void testAbnormalNeighborCounts(String methodName) {
@@ -212,5 +211,35 @@ public class Tester {
             }
             System.out.println("Total cardinal isotropism violations in " + mediumName + ": " + totalErrors);
         }
+    }
+
+    public static void testEdgeIsotropism(String methodName) {
+        System.out.println("Executing " + methodName);
+
+        String[][] results = new String[sizes.size() + 1][families.size() + 1];
+
+        for (int y = 0; y < sizes.size(); y++) {
+            results[y + 1][0] = sizes.get(y);
+        }
+
+        for (int x = 0; x < families.size(); x++) {
+            results[0][x + 1] = families.get(x);
+        }
+
+        for (int y = 0; y < sizes.size(); y++) for (int x = 0; x < families.size(); x++) {
+            String mediumName = families.get(x) + sizes.get(y);
+            Medium medium;
+            try { medium = savefileManagers.get(families.get(x)).load(mediumName); }
+            catch (Exception e) {
+                System.out.println("Failed to load medium: " + mediumName);
+                continue;
+            }
+
+            MediumStatisticTest test = new MediumStatisticTest(medium);
+            boolean isotropic = test.testIsotropism(0.1);
+            results[y + 1][x + 1] = isotropic ? "Isotropic" : "Anisotropic";
+        }
+
+        makeCSV(methodName, results);
     }
 }

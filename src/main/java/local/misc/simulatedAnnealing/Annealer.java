@@ -4,13 +4,12 @@ package local.misc.simulatedAnnealing;
  * Abstract class representing an annealer for simulated annealing optimization.
  * This class defines the structure for an annealer that can optimize a solution
  * @param <C> the type of the candidate solution
- * @param <E> the type of the environment in which the optimization occurs
  */
-public abstract class Annealer<C, E> {
+public abstract class Annealer<C> {
     protected TemperatureRegulator temperatureRegulator;
     protected Acceptor acceptor;
-    protected Evaluator<C, E> evaluator;
-    protected RandomNeighborGenerator<C, E> randomNeighborGenerator;
+    protected Evaluator<C> evaluator;
+    protected RandomNeighborGenerator<C> randomNeighborGenerator;
 
-    public abstract C optimize(C seed, E environment);
+    public abstract C optimize(C seed);
 }

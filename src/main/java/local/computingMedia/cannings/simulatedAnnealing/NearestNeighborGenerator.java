@@ -11,13 +11,11 @@ import local.misc.simulatedAnnealing.RandomNeighborGenerator;
 
 import java.util.HashMap;
 
-public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexCanning, Medium> {
+public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexCanning> {
     // A random selector for potential neighbors of a vertex canning.
     private final WeightedRandomCollection<VertexCanning> potentialNeighbors = new WeightedRandomCollection<>();
 
-    // The candidate vertex canning and the environment in which it is defined.
     private VertexCanning candidate;
-    private Medium environment;
 
     private HashMap<Vertex, VertexCoord> vertexToCoord;
     private HashMap<VertexCoord, Vertex> coordToVertex;
@@ -33,15 +31,13 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
      * The generated neighbor is randomly selected from the potential neighbors, with a bias towards closer neighbors.
      *
      * @param candidate The candidate vertex canning to generate a neighbor for.
-     * @param environment The medium in which the vertex canning is defined.
      * @return A new vertex canning that is a neighbor of the candidate.
      */
     @Override
-    public VertexCanning generate(VertexCanning candidate, Medium environment) {
+    public VertexCanning generate(VertexCanning candidate) {
         potentialNeighbors.clear();
         distances.clear();
         this.candidate = candidate;
-        this.environment = environment;
 
         HashMap<Vertex, VertexCoord> vertexToCoord = candidate.getVertexCanning();
         HashMap<VertexCoord, Vertex> coordToVertex = new HashMap<>();
@@ -63,7 +59,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
 
     /** Adds all repositioning to the potential neighbors. */
     private void addAllRepositioning() {
-        for (Vertex vertex : environment){
+        for (Vertex vertex : candidate.getMedium()){
             VertexCoord coord = vertexToCoord.get(vertex);
 
             VertexCoord north = new VertexCoord(coord.Y()-1, coord.X()     );
@@ -99,7 +95,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             }
 
             endIndex = neighborCoord.X();
-            while (endIndex < environment.getWidth()){
+            while (endIndex < candidate.getMedium().getWidth()){
                 VertexCoord right = new VertexCoord(neighborCoord.Y(), endIndex);
                 if (coordToVertex.containsKey(right)){
                     rightend = coordToVertex.get(right);
@@ -111,6 +107,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             if (leftend == null && rightend == null) return;
 
             SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
+                    candidate.getMedium(),
                     (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
                     candidate.getWidth(), candidate.getHeight()
             );
@@ -148,7 +145,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             }
 
             endIndex = neighborCoord.Y();
-            while (endIndex < environment.getWidth()) {
+            while (endIndex < candidate.getMedium().getWidth()) {
                 VertexCoord low = new VertexCoord(endIndex, neighborCoord.X());
                 if (coordToVertex.containsKey(low)) {
                     lowend = coordToVertex.get(low);
@@ -160,6 +157,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             if (upend == null && lowend == null) return;
 
             SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
+                    candidate.getMedium(),
                     (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
                     candidate.getWidth(), candidate.getHeight()
             );
@@ -266,7 +264,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
     /** Merges the lines y and y+1 and adds the resulting vertex canning to potential neighbors. */
     private void addMergeLines(int y, double distance) {
         SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
-                new HashMap<>(), candidate.getWidth(), candidate.getHeight()-1
+                candidate.getMedium(), new HashMap<>(), candidate.getWidth(), candidate.getHeight()-1
         );
         for (Vertex vertex : vertexToCoord.keySet()) {
             VertexCoord coord = vertexToCoord.get(vertex);
@@ -282,7 +280,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
     /** Merges the columns x and x+1, and adds the resulting vertex canning to potential neighbors. */
     private void addMergeColumns(int x, double distance) {
         SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
-                new HashMap<>(), candidate.getWidth()-1, candidate.getHeight()
+                candidate.getMedium(), new HashMap<>(), candidate.getWidth()-1, candidate.getHeight()
         );
         for (Vertex vertex : vertexToCoord.keySet()) {
             VertexCoord coord = vertexToCoord.get(vertex);

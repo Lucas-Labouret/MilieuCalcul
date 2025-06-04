@@ -8,7 +8,7 @@ import local.savefileManagers.HardRectangleManager;
 import local.ui.utils.TBIntInput;
 
 public class HardRectangleApp extends MediumApp {
-    @Override public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordDichotomyVCanning()); }
+    @Override public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordDichotomyVCanning(medium)); }
 
     private final TBIntInput ptCountInput;
     private final TBIntInput widthInput;

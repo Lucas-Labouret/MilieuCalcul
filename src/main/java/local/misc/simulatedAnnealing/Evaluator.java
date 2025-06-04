@@ -1,12 +1,11 @@
 package local.misc.simulatedAnnealing;
 
 @FunctionalInterface
-public interface Evaluator<C, E> {
+public interface Evaluator<C> {
     /**
-     * Evaluates the candidate solution in the given environment.
+     * Evaluates the candidate solution.
      * @param candidate the candidate solution to evaluate
-     * @param environment the environment in which the candidate solution is evaluated
      * @return the score of the candidate solution, higher is better
      */
-    double evaluate(C candidate, E environment);
+    double evaluate(C candidate);
 }

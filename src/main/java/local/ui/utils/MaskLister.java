@@ -8,9 +8,7 @@ import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.evaluation.MasksComputer;
 
 public class MaskLister extends GridPane {
-    public MaskLister(Canning canning) {
-        MasksComputer masksComputer = new MasksComputer(canning);
-
+    public MaskLister(MasksComputer masksComputer) {
         setAlignment(Pos.CENTER);
         setHgap(10);
         setVgap(10);

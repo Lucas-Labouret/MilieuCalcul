@@ -16,7 +16,7 @@ import local.misc.simulatedAnnealing.StandardTemperatureRegulator;
  * In both cases, the selection is biased toward modifications of elements that are "close" to each other.
  * </p>
  */
-public class VertexCanningNearestNeighborAnnealer extends StandardAnnealer<VertexCanning, Medium> {
+public class VertexCanningNearestNeighborAnnealer extends StandardAnnealer<VertexCanning> {
     public VertexCanningNearestNeighborAnnealer(int maxIterations) {
         super(
                 maxIterations,

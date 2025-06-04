@@ -13,7 +13,7 @@ import java.util.*;
  * Create a complete canning from a vertex canning.
  */
 public class VertexCanningCompleter implements Canning {
-    private Medium medium;
+    private final Medium medium;
     private final VertexCanning vertexCanner;
 
     private HashMap<Vertex, VertexCoord> vertexCanning;
@@ -36,6 +36,8 @@ public class VertexCanningCompleter implements Canning {
     private HashMap<Ve, Ev> facingVeEv;
     private HashMap<Fv, Vf> facingFvVf;
     private HashMap<Vf, Fv> facingVfFv;
+
+    @Override public Medium getMedium() { return medium; }
 
     @Override public int getWidth() { return vertexCanner.getWidth(); }
     @Override public int getHeight() { return vertexCanner.getHeight(); }
@@ -70,13 +72,8 @@ public class VertexCanningCompleter implements Canning {
     @Override public HashSet<Fv> getFv() { return new HashSet<>(fvCanning.keySet()); }
     @Override public HashSet<Vf> getVf() { return new HashSet<>(vfCanning.keySet()); }
 
-    @Override public void setMedium(Medium medium) {
-        this.medium = medium;
-        vertexCanner.setMedium(medium);
-    }
-
-
     public VertexCanningCompleter(VertexCanning vertexCanning) {
+        this.medium = vertexCanning.getMedium();
         this.vertexCanner = vertexCanning;
     }
 

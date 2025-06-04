@@ -14,25 +14,27 @@ import java.util.HashMap;
  */
 public class RoundedCoordIncrementalVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
-    private Medium medium;
+    private final Medium medium;
 
     private int width = 0;
     private int height = 0;
 
     private final double increment;
 
-    public RoundedCoordIncrementalVCanning() {
-        this(1);
+    public RoundedCoordIncrementalVCanning(Medium medium) {
+        this(medium, 1);
     }
 
-    public RoundedCoordIncrementalVCanning(double increment) {
+    public RoundedCoordIncrementalVCanning(Medium medium, double increment) {
+        this.medium = medium;
         this.increment = increment;
     }
+
+    @Override public Medium getMedium() { return medium; }
 
     @Override public int getWidth() { return width; }
     @Override public int getHeight() { return height; }
 
-    @Override public void setMedium(Medium medium) { this.medium = medium; }
     @Override public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
 
     private HashMap<VertexCoord, Vertex> getCoordVertexMap(Medium medium){

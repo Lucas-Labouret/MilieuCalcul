@@ -12,40 +12,37 @@ import java.util.HashMap;
  * It takes a base vertex canning and applies the annealing process to find an optimal configuration.
  */
 public class VertexCanningAnnealer implements VertexCanning {
-    private Medium medium;
+    private final Medium medium;
     private final VertexCanning baseCanning;
     private VertexCanning annealedCanning;
-    private final Annealer<VertexCanning, Medium> annealer;
+    private final Annealer<VertexCanning> annealer;
 
     /**
      * @param baseCanning the base vertex canning to be optimized. Its "can()" method need not be called before using this class.
      * @param annealer the annealer to be used for optimizing the vertex canning.
      */
-    public VertexCanningAnnealer(VertexCanning baseCanning, Annealer<VertexCanning, Medium> annealer) {
+    public VertexCanningAnnealer(VertexCanning baseCanning, Annealer<VertexCanning> annealer) {
+        this.medium = baseCanning.getMedium();
         this.baseCanning = baseCanning;
         this.annealer = annealer;
     }
 
-    @Override
-    public void setMedium(Medium medium) {
-        this.medium = medium;
-        baseCanning.setMedium(medium);
-    }
-
-    @Override
-    public void can() {
-        baseCanning.can();
-        annealedCanning = annealer.optimize(baseCanning, medium);
-    }
-
-    @Override public HashMap<Vertex, VertexCoord> getVertexCanning() {
-        return annealedCanning.getVertexCanning();
-    }
+    @Override public Medium getMedium() { return medium; }
 
     @Override public int getWidth() {
         return annealedCanning.getWidth();
     }
     @Override public int getHeight() {
         return annealedCanning.getHeight();
+    }
+
+    @Override
+    public void can() {
+        baseCanning.can();
+        annealedCanning = annealer.optimize(baseCanning);
+    }
+
+    @Override public HashMap<Vertex, VertexCoord> getVertexCanning() {
+        return annealedCanning.getVertexCanning();
     }
 }

@@ -16,13 +16,18 @@ import java.util.HashMap;
 @Deprecated
 public class TopLeftDistanceVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
-    private Medium medium;
+    private final Medium medium;
+
+    public TopLeftDistanceVCanning(Medium medium) {
+        this.medium = medium;
+    }
+    
+    @Override public Medium getMedium() { return this.medium; }
 
     @Override public int getWidth() { return -1; }
     @Override public int getHeight() { return -1; }
     @Override public double getDensity() { return -1; }
 
-    @Override public void setMedium(Medium medium) { this.medium = medium; }
     @Override public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
 
     @Override

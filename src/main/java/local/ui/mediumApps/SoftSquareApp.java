@@ -8,7 +8,7 @@ import local.savefileManagers.SoftSquareManager;
 import local.ui.utils.TBIntInput;
 
 public class SoftSquareApp extends MediumApp {
-    public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordDichotomyVCanning()); }
+    public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordDichotomyVCanning(medium)); }
 
     final TBIntInput pointCountField;
 

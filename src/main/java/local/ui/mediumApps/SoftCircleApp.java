@@ -8,7 +8,7 @@ import local.savefileManagers.SoftCircleManager;
 import local.ui.utils.TBIntInput;
 
 public class SoftCircleApp extends MediumApp {
-    public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordDichotomyVCanning()); }
+    public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordDichotomyVCanning(medium)); }
 
     private final TBIntInput ptCountInput;
 

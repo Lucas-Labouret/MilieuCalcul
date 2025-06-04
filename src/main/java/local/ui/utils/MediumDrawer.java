@@ -66,8 +66,8 @@ public class MediumDrawer extends Pane {
     private boolean SHOW_FV_VF_COORDS = false;
 
     private boolean SHOW_CANNING = false;
-    private boolean SHOW_CANNING_GRID = true;
-    private boolean SUCCESSFULLY_CANNED = false;
+    private boolean SHOW_CANNING_GRID = false;
+    private boolean SHOW_CANNING_GRID_HOLES = true;
 
     private boolean SHOW_TRANSFER_EF_FE = false;
     private boolean SHOW_TRANSFER_FE_EF = false;
@@ -92,21 +92,9 @@ public class MediumDrawer extends Pane {
 
     Vertex selection;
 
-    public MediumDrawer(Medium medium, Canning canning) {
-        this.medium = medium;
-        this.canning = canning;
-        this.selection = null;
-        setStyle(BG_STYLE);
-    }
-
-    public void setMedium(Medium medium) {
-        this.medium = medium;
-        recan();
-        redraw();
-    }
     public void setCanning(Canning canning) {
         this.canning = canning;
-        recan();
+        this.medium = canning.getMedium();
         redraw();
     }
 
@@ -172,6 +160,10 @@ public class MediumDrawer extends Pane {
         SHOW_CANNING_GRID = showCanningGrid;
         redraw();
     }
+    public void setShowCanningGridHoles(boolean showCanningGridHoles) {
+        SHOW_CANNING_GRID_HOLES = showCanningGridHoles;
+        redraw();
+    }
 
     public void setShowTransferEfFe(boolean showTransferEfFe) {
         SHOW_TRANSFER_EF_FE = showTransferEfFe;
@@ -198,16 +190,6 @@ public class MediumDrawer extends Pane {
         redraw();
     }
 
-    private void recan(){
-        SUCCESSFULLY_CANNED = false;
-        try { canning.can(); }
-        catch (Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        SUCCESSFULLY_CANNED = true;
-    }
-
     private void initEnv() {
         xmax = medium.getMaxX();
         xmin = medium.getMinX();
@@ -227,8 +209,6 @@ public class MediumDrawer extends Pane {
 
         offsetX = (paneWidth - width * scale) / 2;
         offsetY = (paneHeight - height * scale) / 2;
-
-        if (!SUCCESSFULLY_CANNED) return;
 
         canningWidth = canning.getWidth();
         canningHeight = canning.getHeight();
@@ -250,24 +230,24 @@ public class MediumDrawer extends Pane {
 
         initEnv();
 
-        if (SHOW_CANNING_GRID   && SUCCESSFULLY_CANNED) drawCanningGrid();
+        if (SHOW_CANNING_GRID) drawCanningGrid();
 
-        if (SHOW_TRANSFER_EF_FE && SUCCESSFULLY_CANNED) drawTransferEfFe();
-        if (SHOW_TRANSFER_FE_EF && SUCCESSFULLY_CANNED) drawTransferFeEf();
-        if (SHOW_TRANSFER_EV_VE && SUCCESSFULLY_CANNED) drawTransferEvVe();
-        if (SHOW_TRANSFER_VE_EV && SUCCESSFULLY_CANNED) drawTransferVeEv();
-        if (SHOW_TRANSFER_FV_VF && SUCCESSFULLY_CANNED) drawTransferFvVf();
-        if (SHOW_TRANSFER_VF_FV && SUCCESSFULLY_CANNED) drawTransferVfFv();
+        if (SHOW_EF_FE) drawEfFe();
+        if (SHOW_EV_VE) drawEvVe();
+        if (SHOW_FV_VF) drawFvVf();
 
-        if (SHOW_EF_FE          && SUCCESSFULLY_CANNED) drawEfFe();
-        if (SHOW_EV_VE          && SUCCESSFULLY_CANNED) drawEvVe();
-        if (SHOW_FV_VF          && SUCCESSFULLY_CANNED) drawFvVf();
+        if (SHOW_TRANSFER_EF_FE) drawTransferEfFe();
+        if (SHOW_TRANSFER_FE_EF) drawTransferFeEf();
+        if (SHOW_TRANSFER_EV_VE) drawTransferEvVe();
+        if (SHOW_TRANSFER_VE_EV) drawTransferVeEv();
+        if (SHOW_TRANSFER_FV_VF) drawTransferFvVf();
+        if (SHOW_TRANSFER_VF_FV) drawTransferVfFv();
 
-        if (SHOW_EDGES && EDGES_AS_LINES              ) drawLines();
-        if (SHOW_EDGES && !EDGES_AS_LINES             ) drawEdges();
-        if (SHOW_CANNING        && SUCCESSFULLY_CANNED) drawCanning();
-        if (SHOW_FACES                                ) drawFaces();
-        if (SHOW_VERTICES                             ) drawVertices();
+        if (SHOW_EDGES && EDGES_AS_LINES  ) drawLines();
+        if (SHOW_EDGES && !EDGES_AS_LINES ) drawEdges();
+        if (SHOW_CANNING                  ) drawCanning();
+        if (SHOW_FACES                    ) drawFaces();
+        if (SHOW_VERTICES                 ) drawVertices();
     }
 
     private Color getColorFromNeighborCount(int count) {
@@ -313,7 +293,7 @@ public class MediumDrawer extends Pane {
                 }
             }
 
-            if (SHOW_VERTICES_COORDS && SUCCESSFULLY_CANNED) {
+            if (SHOW_VERTICES_COORDS) {
                 Text coords = new Text(x-15, y-10, canning.getVertexCanning().get(v).toString());
                 coords.setFill(COORD_COLOR);
                 getChildren().add(coords);
@@ -340,7 +320,7 @@ public class MediumDrawer extends Pane {
             Line line = new Line(x1, y1, x2, y2);
             Color color1 = getColorFromNeighborCount(v1.getNeighbors().size());
             Color color2 = getColorFromNeighborCount(v2.getNeighbors().size());
-            if (SHOW_CANNING && SUCCESSFULLY_CANNED) {
+            if (SHOW_CANNING) {
                 color1 = OFF_COLOR;
                 color2 = OFF_COLOR;
             }
@@ -352,7 +332,7 @@ public class MediumDrawer extends Pane {
 
             getChildren().add(line);
 
-            if (SHOW_EDGES_COORDS && SUCCESSFULLY_CANNED) {
+            if (SHOW_EDGES_COORDS) {
                 double xmid = (x1 + x2) / 2;
                 double ymid = (y1 + y2) / 2;
 
@@ -374,11 +354,11 @@ public class MediumDrawer extends Pane {
                     2*SLOCI_RADIUS,
                     2*SLOCI_RADIUS
             );
-            rectangle.setFill((SHOW_CANNING && SUCCESSFULLY_CANNED)? OFF_COLOR: EDGE_COLOR);
+            rectangle.setFill((SHOW_CANNING)? OFF_COLOR: EDGE_COLOR);
 
             getChildren().add(rectangle);
 
-            if (SHOW_EDGES_COORDS && SUCCESSFULLY_CANNED) {
+            if (SHOW_EDGES_COORDS) {
                 Text coords = new Text(x-25, y-10, canning.getEdgeCanning().get(e).toString());
                 coords.setFill(COORD_COLOR);
                 getChildren().add(coords);
@@ -396,11 +376,11 @@ public class MediumDrawer extends Pane {
                     x - SLOCI_RADIUS, y + SLOCI_RADIUS,
                     x + SLOCI_RADIUS, y + SLOCI_RADIUS
             );
-            triangle.setFill((SHOW_CANNING && SUCCESSFULLY_CANNED)? OFF_COLOR: FACE_COLOR);
+            triangle.setFill((SHOW_CANNING)? OFF_COLOR: FACE_COLOR);
 
             getChildren().add(triangle);
 
-            if (SHOW_FACES_COORDS && SUCCESSFULLY_CANNED) {
+            if (SHOW_FACES_COORDS) {
                 Text coords = new Text(x-25, y-10, canning.getFaceCanning().get(f).toString());
                 coords.setFill(COORD_COLOR);
                 getChildren().add(coords);
@@ -413,7 +393,7 @@ public class MediumDrawer extends Pane {
         double x = (v.getX() - xmin) * scale + offsetX;
         double y = (v.getY() - ymin) * scale + offsetY;
 
-        color = (SHOW_CANNING && SUCCESSFULLY_CANNED)? OFF_COLOR: color;
+        color = (SHOW_CANNING)? OFF_COLOR: color;
         Circle circle = new Circle(x, y, SLOCI_RADIUS/2.);
         circle.setFill(color);
         getChildren().add(circle);
@@ -677,9 +657,9 @@ public class MediumDrawer extends Pane {
             double yPos = offsetY + y * cellHeight - cellHeight / 2;
 
             Rectangle rect = new Rectangle(xPos, yPos, cellWidth, cellHeight);
-            if (canningGrid.get(new VertexCoord(y, x)) == null) rect.setFill(CANNING_GRID_HOLE_COLOR);
+            if (canningGrid.get(new VertexCoord(y, x)) == null && SHOW_CANNING_GRID_HOLES)
+                rect.setFill(CANNING_GRID_HOLE_COLOR);
             else rect.setFill( (x+y) % 2 == 0 ? CANNING_GRID_1_COLOR : CANNING_GRID_2_COLOR);
-            rect.setStroke(Color.BLACK);
 
             getChildren().add(rect);
 

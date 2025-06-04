@@ -15,15 +15,20 @@ import java.util.HashMap;
  */
 public class RoundedCoordDichotomyVCanning implements VertexCanning {
     private HashMap<Vertex, VertexCoord> vertexCanning = null;
-    private Medium medium;
+    private final Medium medium;
 
     private int width = 0;
     private int height = 0;
 
+    public RoundedCoordDichotomyVCanning(Medium medium) {
+        this.medium = medium;
+    }
+
+    @Override public Medium getMedium() { return medium; }
+
     @Override public int getWidth() { return width; }
     @Override public int getHeight() { return height; }
 
-    @Override public void setMedium(Medium medium) { this.medium = medium; }
     @Override public HashMap<Vertex, VertexCoord> getVertexCanning() { return this.vertexCanning; }
 
     private HashMap<VertexCoord, Vertex> getCoordVertexMap(Medium medium){

@@ -11,11 +11,8 @@ import java.util.HashMap;
  * This map must cover all vertices of the medium, and each vertex must have a unique coordinate.
  */
 public interface VertexCanning {
-    /**
-     * Sets the medium for which this vertex canning will be applied.
-     * @param medium The medium to set.
-     */
-    void setMedium(Medium medium);
+    /** @return the medium this canning is applied to */
+    Medium getMedium();
 
     /**
      * Applies the canning algorithm to the medium, generating a mapping of vertices to coordinates.

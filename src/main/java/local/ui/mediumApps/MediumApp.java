@@ -24,6 +24,11 @@ import local.ui.utils.SidePanel;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+@FunctionalInterface
+interface CanningFactory {
+    Canning make(Medium medium);
+}
+
 public abstract class MediumApp extends BorderPane {
     public abstract Canning DEFAULT_CANNING();
 
@@ -38,6 +43,7 @@ public abstract class MediumApp extends BorderPane {
 
     protected Medium medium;
     protected Canning canning;
+    protected CanningFactory canningFactory;
     protected VertexCanningNearestNeighborAnnealer annealer;
     protected MasksComputer masksComputer;
 
@@ -57,7 +63,7 @@ public abstract class MediumApp extends BorderPane {
     protected double convergenceTolerance = 0.9;
 
     public MediumApp() {
-        canning = DEFAULT_CANNING();
+        canningFactory = m -> DEFAULT_CANNING();
         annealer = new VertexCanningNearestNeighborAnnealer(500);
         masksComputer = new MasksComputer(canning);
 
@@ -66,7 +72,7 @@ public abstract class MediumApp extends BorderPane {
         mediumInfoBar = new InformationBar();
         maskInfoBar = new InformationBar();
         botToolBar = new ToolBar();
-        drawPane = new MediumDrawer(medium, canning);
+        drawPane = new MediumDrawer();
 
         botVBox = new VBox();
         botVBox.getChildren().addAll(mediumInfoBar, maskInfoBar, botToolBar);
@@ -81,7 +87,7 @@ public abstract class MediumApp extends BorderPane {
         tri = new Button("Triangulate");
         tri.setOnAction(event -> triangulate());
         fpo = new Button("FPO");
-        fpo.setOnAction(event -> fpoIteration());
+        fpo.setOnAction(event -> applyFPO());
         msk = new Button("Masks");
         msk.setOnAction(event -> showMasks());
 
@@ -102,35 +108,28 @@ public abstract class MediumApp extends BorderPane {
 
     abstract protected void generate();
     protected void generateCommon(){
-        canning.setMedium(medium);
-        drawPane.setMedium(medium);
+        setCanning();
         mediumInfoBar.removeText();
         maskInfoBar.removeText();
     }
 
     protected void triangulate() {
-        if (medium != null) {
-            medium.delaunayTriangulate();
-        }
+        if (medium != null) medium.delaunayTriangulate();
+        canning.can();
         drawPane.redraw();
         updateInfoBars();
     }
 
-    public void setFpoToConvergence(boolean fpoToConvergence) {
-        this.fpoToConvergence = fpoToConvergence;
-    }
-    public void setFpoIterations(int fpoIterations) {
-        this.fpoIterations = fpoIterations;
-    }
-    public void setConvergenceTolerance(double convergenceTolerance) {
-        this.convergenceTolerance = convergenceTolerance;
-    }
+    public void setFpoToConvergence(boolean fpoToConvergence) { this.fpoToConvergence = fpoToConvergence; }
+    public void setFpoIterations(int fpoIterations) { this.fpoIterations = fpoIterations; }
+    public void setConvergenceTolerance(double convergenceTolerance) { this.convergenceTolerance = convergenceTolerance; }
 
-    protected void fpoIteration() {
+    protected void applyFPO() {
         if (medium == null) return;
 
         if (fpoToConvergence) medium.optimizeToConvergence(convergenceTolerance);
         else medium.optimizeToSetIterations(fpoIterations);
+        canning.can();
         drawPane.redraw();
         updateInfoBars();
     }
@@ -140,7 +139,7 @@ public abstract class MediumApp extends BorderPane {
         stage.initOwner(getScene().getWindow());
         stage.setTitle("Masks");
 
-        MaskLister maskLister = new MaskLister(canning);
+        MaskLister maskLister = new MaskLister(masksComputer);
         Scene scene = new Scene(maskLister);
 
         stage.setScene(scene);
@@ -161,8 +160,7 @@ public abstract class MediumApp extends BorderPane {
     private void load(){
         try {
             medium = savefileManager.load(getFileName());
-            canning.setMedium(medium);
-            drawPane.setMedium(medium);
+            setCanning();
             updateInfoBars();
         }
         catch (FileNotFoundException e) { savefileInfo.setText("File not found."); }
@@ -172,17 +170,18 @@ public abstract class MediumApp extends BorderPane {
         }
     }
 
-    public void setCanning(Canning canning) {
-        this.canning = canning;
-        this.canning.setMedium(medium);
-        this.masksComputer.setCanning(canning);
+    public void setCanning() {
+        canning = canningFactory.make(medium);
+        canning.can();
         drawPane.setCanning(canning);
-        updateInfoBars();
+        masksComputer.setCanning(canning);
     }
 
     public String getFileName() { return fileName.getText(); }
 
     private void updateInfoBars() {
+        if (medium == null) return;
+
         String mediumText = "Neighbors : max=" + medium.getMaxNeighborsCount() +
                 ", min=" + medium.getInsideMinNeighborsCount() + "(" +medium.getMinNeighborsCount() + ")";
         mediumInfoBar.setText(mediumText);
@@ -228,6 +227,7 @@ public abstract class MediumApp extends BorderPane {
 
         CheckBox showCanning = new CheckBox("Canning");
         CheckBox showCanningGrid = new CheckBox("Grid");
+        CheckBox showCanningGridHoles = new CheckBox("Holes");
 
         CheckBox transferEfFe = new CheckBox("Ef -> Fe");
         CheckBox transferFeEf = new CheckBox("Fe -> Ef");
@@ -253,6 +253,7 @@ public abstract class MediumApp extends BorderPane {
 
         showCanning.setSelected(false);
         showCanningGrid.setSelected(false);
+        showCanningGridHoles.setSelected(true);
 
         transferEfFe.setSelected(false);
         transferFeEf.setSelected(false);
@@ -278,6 +279,7 @@ public abstract class MediumApp extends BorderPane {
 
         showCanning.allowIndeterminateProperty().set(false);
         showCanningGrid.allowIndeterminateProperty().set(false);
+        showCanningGridHoles.allowIndeterminateProperty().set(false);
 
         transferEfFe.allowIndeterminateProperty().set(false);
         transferFeEf.allowIndeterminateProperty().set(false);
@@ -302,7 +304,8 @@ public abstract class MediumApp extends BorderPane {
         showFvVfCoords.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowFvVfCoords(newVal));
 
         showCanning.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowCanning(newVal));
-        showCanningGrid.selectedProperty().addListener((obs, oldVal, newVal) -> {drawPane.setShowCanningGrid(newVal);});
+        showCanningGrid.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowCanningGrid(newVal));
+        showCanningGridHoles.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowCanningGridHoles(newVal));
 
         transferEfFe.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferEfFe(newVal));
         transferFeEf.selectedProperty().addListener((obs, oldVal, newVal) -> drawPane.setShowTransferFeEf(newVal));
@@ -330,19 +333,20 @@ public abstract class MediumApp extends BorderPane {
 
         canGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal == defaultCanning) {
-                setCanning(DEFAULT_CANNING());
+                canningFactory = m -> DEFAULT_CANNING();
             } else if (newVal == roundedCoordIncrementalCanning) {
-                setCanning(new VertexCanningCompleter(new RoundedCoordIncrementalVCanning()));
+                canningFactory = m -> new VertexCanningCompleter(new RoundedCoordIncrementalVCanning(m));
             } else if (newVal == roundedCoordDichotomyCanning) {
-                setCanning(new VertexCanningCompleter(new RoundedCoordDichotomyVCanning()));
+                canningFactory = m -> new VertexCanningCompleter(new RoundedCoordDichotomyVCanning(m));
             } else if (newVal == topDistanceXSortedCanning) {
-                setCanning(new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning()));
+                canningFactory = m -> new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning(m));
             } else if (newVal == AnnealedRoundedCoordCanning) {
-                setCanning(new VertexCanningCompleter(new VertexCanningAnnealer(
-                        new RoundedCoordDichotomyVCanning(),
+                canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
+                        new RoundedCoordDichotomyVCanning(m),
                         new VertexCanningNearestNeighborAnnealer(500)
-                )));
+                ));
             }
+            setCanning();
         });
 
 
@@ -395,6 +399,7 @@ public abstract class MediumApp extends BorderPane {
                 new Label("Canning"),
                 showCanning,
                 showCanningGrid,
+                subCheckBox(showCanningGridHoles),
                 new Label("Transfers"),
                 transferEfFe,
                 transferFeEf,
