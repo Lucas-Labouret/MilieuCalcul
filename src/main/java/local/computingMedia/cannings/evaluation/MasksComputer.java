@@ -17,7 +17,7 @@ import java.util.HashSet;
  * <p>
  * Deltas are calculated based on the maximum differences in coordinates between vertices and their neighbors.
  * They represent an upper bound for the communication time of the medium.
- * </p><<p>
+ * </p><p>
  * Average masks are computed by averaging the number of unique masks used for transfers across all lines,
  * while maximum masks return the maximum number of unique masks used in any single line.
  * </p>

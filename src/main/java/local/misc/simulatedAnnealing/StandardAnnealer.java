@@ -28,11 +28,12 @@ public class StandardAnnealer<C> extends Annealer<C> {
         double newScore = evaluator.evaluate(candidate);
         for (int i = 0; i < maxIterations; i++) {
             System.out.println("Iteration " + (i+1) + " of " + maxIterations);
-            double heat = temperatureRegulator.progress();
+            double temperature = temperatureRegulator.progress();
             C neighbor = randomNeighborGenerator.generate(candidate);
             oldScore = newScore;
             newScore = evaluator.evaluate(neighbor);
-            if (acceptor.accept(oldScore, newScore, heat)) candidate = neighbor;
+            if (acceptor.accept(oldScore, newScore, temperature)) candidate = neighbor;
+            else newScore = oldScore;
         }
         return candidate;
     }

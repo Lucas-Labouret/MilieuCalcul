@@ -100,7 +100,14 @@ public class MediumDrawer extends Pane {
     // Selected vertex for highlighting
     Vertex selection;
 
-    /** Set the medium and canning to be displayed */
+    /**
+     * Set the medium and canning to be displayed
+     * <p>
+     * /!\ Make sure that either<br>
+     * 1. canning.getMedium() is null or<br>
+     * 2. canning.can() has already been called
+     * </p>
+     */
     public void setCanning(Canning canning) {
         this.canning = canning;
         this.medium = canning.getMedium();
@@ -572,6 +579,7 @@ public class MediumDrawer extends Pane {
         }
     }
 
+    /** Draw the lines and columns of the canning by linking canning-adjacent vertices */
     private void drawCanning() {
         for (int j = 0; j < canningHeight; j++) {
             int i1, i2;
@@ -664,6 +672,16 @@ public class MediumDrawer extends Pane {
         }
     }
 
+    /**
+     * Draw the canning grid, optionally with holes for cells that do not contain a vertex.
+     * <p>
+     * This grid does not match the lines/columns drawn by drawCanning() in general,
+     * it is more a visual aid to see how the holes are organized in the grid.
+     * </p><p>
+     * It does however match drawCanning() rather well when used on a RoundedCoordinateVCanning,
+     * though still bot perfectly accurately.
+     * </p>
+     */
     private void drawCanningGrid() {
         double cellWidth = width*scale / (canningWidth-1);
         double cellHeight = height*scale / (canningHeight-1);
@@ -678,7 +696,6 @@ public class MediumDrawer extends Pane {
             else rect.setFill( (x+y) % 2 == 0 ? CANNING_GRID_1_COLOR : CANNING_GRID_2_COLOR);
 
             getChildren().add(rect);
-
         }
     }
 }

@@ -193,6 +193,7 @@ public abstract class MediumApp extends BorderPane {
         canning.can();
         drawPane.setCanning(canning);
         masksComputer.setCanning(canning);
+        updateInfoBars();
     }
 
     public String getFileName() { return fileName.getText(); }
@@ -369,7 +370,7 @@ public abstract class MediumApp extends BorderPane {
             } else if (newVal == AnnealedRoundedCoordCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
                         new RoundedCoordDichotomyVCanning(m),
-                        new VertexCanningNearestNeighborAnnealer(500)
+                        new VertexCanningNearestNeighborAnnealer(100000)
                 ));
             }
             setCanning();

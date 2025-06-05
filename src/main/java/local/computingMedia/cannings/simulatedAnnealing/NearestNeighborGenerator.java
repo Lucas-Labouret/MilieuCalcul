@@ -3,7 +3,6 @@ package local.computingMedia.cannings.simulatedAnnealing;
 import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 import local.computingMedia.cannings.vertexCannings.SimpleVertexCanning;
 import local.computingMedia.cannings.vertexCannings.VertexCanning;
-import local.computingMedia.media.Medium;
 import local.computingMedia.sLoci.Edge;
 import local.computingMedia.sLoci.Vertex;
 import local.misc.WeightedRandomCollection;
@@ -23,6 +22,12 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
     // A map to store potential neighbors and their distances from the candidate vertex canning.
     private final HashMap<VertexCanning , Double> distances = new HashMap<>();
 
+    // We want to encourage moving to lines and columns that are already filled,
+    // and penalise moving to almost empty lines and columns,
+    // so that we can eventually remove lines and columns and increase the density of the vertex canning through merging.
+    private final HashMap<Integer, Double> lineFillPenalty = new HashMap<>();
+    private final HashMap<Integer, Double> columnFillPenalty = new HashMap<>();
+
     /**
      * Generates a new neighbor for the given candidate vertex canning.
      * The neighbors can be generated in two ways:
@@ -37,6 +42,8 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
     public VertexCanning generate(VertexCanning candidate) {
         potentialNeighbors.clear();
         distances.clear();
+        lineFillPenalty.clear();
+        columnFillPenalty.clear();
         this.candidate = candidate;
 
         HashMap<Vertex, VertexCoord> vertexToCoord = candidate.getVertexCanning();
@@ -49,12 +56,48 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
         this.vertexToCoord = vertexToCoord;
         this.coordToVertex = coordToVertex;
 
+        setFillPenalties();
+
         addAllRepositioning();
         addAllMergeLines();
         addAllMergeColumns();
 
         buildPotentialNeighbors();
         return potentialNeighbors.next();
+    }
+
+    private void setFillPenalties(){
+        for (int y = 0; y < candidate.getHeight(); y++) {
+            double density = 0;
+            for (int x = 0; x < candidate.getWidth(); x++) {
+                VertexCoord coord = new VertexCoord(y, x);
+                if (coordToVertex.get(coord) != null) density++;
+            }
+            density /= candidate.getWidth();
+            lineFillPenalty.put(y, density);
+        }
+
+        double maxLineDensity = lineFillPenalty.values().stream().max(Double::compare).orElse(.0);
+        for (int y = 0; y < candidate.getHeight(); y++) {
+            // We want to encourage moving to lines that are already mostly filled, so we make the penalty higher for lower densities.
+            lineFillPenalty.compute(y, (k, density) -> 2 - 2 * density / maxLineDensity);
+        }
+
+        for (int x = 0; x < candidate.getWidth(); x++) {
+            double density = 0;
+            for (int y = 0; y < candidate.getHeight(); y++) {
+                VertexCoord coord = new VertexCoord(y, x);
+                if (coordToVertex.get(coord) != null) density++;
+            }
+            density /= candidate.getHeight();
+            columnFillPenalty.put(x, density);
+        }
+
+        double maxColumnDensity = columnFillPenalty.values().stream().max(Double::compare).orElse(.0);
+        for (int x = 0; x < candidate.getWidth(); x++) {
+            // We want to encourage moving to columns that are already filled, so we make the penalty higher for lower densities.
+            columnFillPenalty.compute(x, (k, density) -> 2 - 2 * density / maxColumnDensity);
+        }
     }
 
     /** Adds all repositioning to the potential neighbors. */
@@ -75,104 +118,97 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
         }
     }
 
-    /** Adds an east/west repositioning of a vertex to the potential neighbors if it is valid. */
+    /** Adds an north/south repositioning of a vertex to the potential neighbors if it is valid. */
     private void addRepositionNS(Vertex vertex, VertexCoord neighborCoord) {
         if (neighborCoord.Y() < 0 || neighborCoord.Y() >= candidate.getHeight()) return;
+        if (coordToVertex.get(neighborCoord) != null) return; //We can't reposition to a cell that already has a vertex.
 
-        if (coordToVertex.containsKey(neighborCoord)) return; //addSwap(vertex, neighborCoord);
-        else {
-            Vertex leftend = null;
-            Vertex rightend = null;
+        // Find the left and right ends of the segment that the vertex would be repositioned to, so we can compute the vertical between the vertex to reposition and the segment.
+        Vertex leftend = null;
+        Vertex rightend = null;
 
-            int endIndex = neighborCoord.X();
-            while (endIndex >= 0){
-                VertexCoord left = new VertexCoord(neighborCoord.Y(), endIndex);
-                if (coordToVertex.containsKey(left)){
-                    leftend = coordToVertex.get(left);
-                    break;
-                }
-                endIndex--;
-            }
-
-            endIndex = neighborCoord.X();
-            while (endIndex < candidate.getMedium().getWidth()){
-                VertexCoord right = new VertexCoord(neighborCoord.Y(), endIndex);
-                if (coordToVertex.containsKey(right)){
-                    rightend = coordToVertex.get(right);
-                    break;
-                }
-                endIndex++;
-            }
-
-            if (leftend == null && rightend == null) return;
-
-            SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
-                    candidate.getMedium(),
-                    (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
-                    candidate.getWidth(), candidate.getHeight()
-            );
-            neighborCanning.getVertexCanning().put(vertex, neighborCoord);
-
-            if (leftend == null){
-                leftend = new Vertex(rightend.getX()-1, rightend.getY());
-            }
-            if (rightend == null){
-                rightend = new Vertex(leftend.getX()+1, leftend.getY());
-            }
-
-            double distance = vertex.distanceFrom(new Edge(leftend, rightend));
-            distances.put(neighborCanning, distance);
+        int endIndex = neighborCoord.X();
+        while (endIndex >= 0){
+            VertexCoord left = new VertexCoord(neighborCoord.Y(), endIndex);
+            leftend = coordToVertex.get(left);
+            if (leftend != null) break;
+            endIndex--;
         }
+
+        endIndex = neighborCoord.X();
+        while (endIndex < candidate.getMedium().getWidth()){
+            VertexCoord right = new VertexCoord(neighborCoord.Y(), endIndex);
+            rightend = coordToVertex.get(right);
+            if (rightend != null) break;
+            endIndex++;
+        }
+
+        // If both ends are null, the target line is empty, so we don't want to refill it.
+        if (leftend == null && rightend == null) return;
+
+        SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
+                candidate.getMedium(),
+                (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
+                candidate.getWidth(), candidate.getHeight()
+        );
+        neighborCanning.getVertexCanning().put(vertex, neighborCoord);
+
+        // If one of the ends is null, we consider the segment to extend infinitely vertically
+        if (leftend == null){
+            leftend = new Vertex(rightend.getX()-1, rightend.getY());
+        }
+        if (rightend == null){
+            rightend = new Vertex(leftend.getX()+1, leftend.getY());
+        }
+
+        double distance = vertex.distanceFrom(new Edge(leftend, rightend)) * lineFillPenalty.get(neighborCoord.Y());
+        distances.put(neighborCanning, distance);
     }
 
-    /** Adds a north/south repositioning of a vertex to the potential neighbors if it is valid. */
+    /** Adds a east/west repositioning of a vertex to the potential neighbors if it is valid. */
     private void addRepositionEW(Vertex vertex, VertexCoord neighborCoord) {
+        // Comments in the method addRepositionNS() apply here as well, but for the east/west direction.
+
         if (neighborCoord.X() < 0 || neighborCoord.X() >= candidate.getWidth()) return;
+        if (coordToVertex.get(neighborCoord) != null) return;
 
-        if (coordToVertex.containsKey(neighborCoord)) return; //addSwap(vertex, neighborCoord);
-        else {
-            Vertex upend = null;
-            Vertex lowend = null;
+        Vertex upend = null;
+        Vertex lowend = null;
 
-            int endIndex = neighborCoord.Y();
-            while (endIndex >= 0) {
-                VertexCoord up = new VertexCoord(endIndex, neighborCoord.X());
-                if (coordToVertex.containsKey(up)) {
-                    upend = coordToVertex.get(up);
-                    break;
-                }
-                endIndex--;
-            }
-
-            endIndex = neighborCoord.Y();
-            while (endIndex < candidate.getMedium().getWidth()) {
-                VertexCoord low = new VertexCoord(endIndex, neighborCoord.X());
-                if (coordToVertex.containsKey(low)) {
-                    lowend = coordToVertex.get(low);
-                    break;
-                }
-                endIndex++;
-            }
-
-            if (upend == null && lowend == null) return;
-
-            SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
-                    candidate.getMedium(),
-                    (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
-                    candidate.getWidth(), candidate.getHeight()
-            );
-            neighborCanning.getVertexCanning().put(vertex, neighborCoord);
-
-            if (upend == null) {
-                upend = new Vertex(lowend.getX(), lowend.getY()+1);
-            }
-            if (lowend == null) {
-                lowend = new Vertex(upend.getX(), upend.getY()-1);
-            }
-
-            double distance = vertex.distanceFrom(new Edge(upend, lowend));
-            distances.put(neighborCanning, distance);
+        int endIndex = neighborCoord.Y();
+        while (endIndex >= 0) {
+            VertexCoord up = new VertexCoord(endIndex, neighborCoord.X());
+            upend = coordToVertex.get(up);
+            if (upend != null) break;
+            endIndex--;
         }
+
+        endIndex = neighborCoord.Y();
+        while (endIndex < candidate.getMedium().getWidth()) {
+            VertexCoord low = new VertexCoord(endIndex, neighborCoord.X());
+            lowend = coordToVertex.get(low);
+            if (lowend != null) break;
+            endIndex++;
+        }
+
+        if (upend == null && lowend == null) return;
+
+        SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
+                candidate.getMedium(),
+                (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
+                candidate.getWidth(), candidate.getHeight()
+        );
+        neighborCanning.getVertexCanning().put(vertex, neighborCoord);
+
+        if (upend == null) {
+            upend = new Vertex(lowend.getX(), lowend.getY()+1);
+        }
+        if (lowend == null) {
+            lowend = new Vertex(upend.getX(), upend.getY()-1);
+        }
+
+        double distance = vertex.distanceFrom(new Edge(upend, lowend)) * columnFillPenalty.get(neighborCoord.X());
+        distances.put(neighborCanning, distance);
     }
 
     /** Adds all merges of two lines to potential neighbors. */
@@ -184,6 +220,8 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
             double botLineAverageY = 0;
             boolean overlap = false;
 
+            // Compute the average y-coordinates of the vertices of each line y and y+1
+            // We compute the distance between these averages to determine how far apart the lines are.
             for (int x = 0; x < candidate.getWidth(); x++) {
                 VertexCoord topCoord = new VertexCoord(y, x);
                 if (coordToVertex.get(topCoord) != null) {
@@ -197,15 +235,17 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
                     botLineAverageY += coordToVertex.get(botCoord).getY();
                 }
 
+                // If both lines have a vertex in the same column, we consider them to overlap.
+                // This means we can't merge them, so we skip this pair of lines.
                 if (coordToVertex.get(topCoord) != null && coordToVertex.get(botCoord) != null) {
                     overlap = true;
                     break;
                 }
             }
 
-            if (overlap) continue; // If there is an overlap, skip this pair of lines.
+            if (overlap) continue;
 
-            // If one of the lines is empty, we can merge it and consider its distance to its neighbor to be 0.
+            // If one of the lines is empty, we can merge and consider the distance to be 0.
             if (topLineLength == 0 || botLineLength == 0) {
                 addMergeLines(y, 0);
                 continue;
@@ -308,7 +348,7 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
 
     /** Builds the potential neighbors based on the distances calculated. */
     private void buildPotentialNeighbors() {
-        double maxDistance = distances.values().stream().max(Double::compare).get();
+        double maxDistance = distances.values().stream().max(Double::compare).orElse(1d);
         if (maxDistance == 0) return;
         for (VertexCanning neighbor : distances.keySet()) {
             double distance = distances.get(neighbor);
