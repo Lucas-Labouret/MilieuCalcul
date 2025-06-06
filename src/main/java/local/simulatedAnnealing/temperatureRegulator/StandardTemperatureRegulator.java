@@ -1,4 +1,4 @@
-package local.misc.simulatedAnnealing;
+package local.simulatedAnnealing.temperatureRegulator;
 
 /**
  * Standard implementation of the Acceptor interface for simulated annealing.

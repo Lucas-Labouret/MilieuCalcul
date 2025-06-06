@@ -9,8 +9,6 @@ module local.furthestpointoptimization {
 
     exports local.computingMedia.media;
     exports local.computingMedia.cannings;
-
-    exports local.misc;
     
     exports local.ui;
     exports local.ui.mediumApps;
@@ -23,8 +21,12 @@ module local.furthestpointoptimization {
     exports local.computingMedia.cannings.coords.tCoords;
     exports local.computingMedia.cannings.vertexCannings;
     exports local.computingMedia.cannings.evaluation;
-    exports local.computingMedia.cannings.simulatedAnnealing;
-    exports local.misc.simulatedAnnealing;
+    exports local.simulatedAnnealing;
     exports local.misc.linkedList;
     exports local.computingMedia;
+    exports local.simulatedAnnealing.acceptor;
+    exports local.simulatedAnnealing.evaluator;
+    exports local.simulatedAnnealing.neighborGenerator;
+    exports local.simulatedAnnealing.temperatureRegulator;
+    exports local.simulatedAnnealing.neighborGenerator.neighborSelector;
 }

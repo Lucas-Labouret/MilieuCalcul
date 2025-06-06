@@ -1,4 +1,4 @@
-package local.misc.simulatedAnnealing;
+package local.simulatedAnnealing.temperatureRegulator;
 
 @FunctionalInterface
 public interface TemperatureRegulator {

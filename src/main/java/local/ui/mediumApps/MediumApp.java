@@ -9,7 +9,7 @@ import javafx.stage.Stage;
 import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.evaluation.MasksComputer;
 import local.computingMedia.cannings.VertexCanningCompleter;
-import local.computingMedia.cannings.simulatedAnnealing.VertexCanningNearestNeighborAnnealer;
+import local.simulatedAnnealing.VertexCanningNearestNeighborAnnealer;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordDichotomyVCanning;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordIncrementalVCanning;
 import local.computingMedia.cannings.vertexCannings.TopDistanceXSortedLinesVCanning;
@@ -370,7 +370,7 @@ public abstract class MediumApp extends BorderPane {
             } else if (newVal == AnnealedRoundedCoordCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
                         new RoundedCoordDichotomyVCanning(m),
-                        new VertexCanningNearestNeighborAnnealer(100000)
+                        new VertexCanningNearestNeighborAnnealer(10000)
                 ));
             }
             setCanning();

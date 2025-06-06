@@ -1,4 +1,4 @@
-package local.misc;
+package local.simulatedAnnealing.neighborGenerator.neighborSelector;
 
 import java.util.NavigableMap;
 import java.util.Random;
@@ -10,7 +10,7 @@ import java.util.TreeMap;
  *
  * @param <E> the type of elements in this collection
  */
-public class WeightedRandomCollection<E> {
+public class WeightedRandomSelector<E> implements NeighborSelector<E> {
     private final NavigableMap<Double, E> map = new TreeMap<>();
     private final Random random = new Random();
     private double total = 0;
@@ -22,7 +22,8 @@ public class WeightedRandomCollection<E> {
      * @param result the element to add
      * @return this collection for method chaining
      */
-    public WeightedRandomCollection<E> add(double weight, E result) {
+    @Override
+    public WeightedRandomSelector<E> add(double weight, E result) {
         if (weight <= 0) return this;
         total += weight;
         map.put(total, result);
@@ -30,18 +31,22 @@ public class WeightedRandomCollection<E> {
     }
 
     /** @return a random element from the collection. */
+    @Override
     public E next() {
+        if (total == 0) throw new IllegalStateException("No elements available to select.");
         double value = random.nextDouble() * total;
         return map.higherEntry(value).getValue();
     }
 
     /** Removes all elements from the collection. */
+    @Override
     public void clear() {
         map.clear();
         total = 0;
     }
 
     /** @return the size of the collection. */
+    @Override
     public int size() {
         return map.size();
     }

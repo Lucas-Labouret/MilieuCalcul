@@ -1,4 +1,4 @@
-package local.misc.simulatedAnnealing;
+package local.simulatedAnnealing.evaluator;
 
 @FunctionalInterface
 public interface Evaluator<C> {

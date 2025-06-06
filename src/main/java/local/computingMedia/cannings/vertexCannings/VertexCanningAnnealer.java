@@ -3,7 +3,7 @@ package local.computingMedia.cannings.vertexCannings;
 import local.computingMedia.cannings.coords.sCoords.VertexCoord;
 import local.computingMedia.media.Medium;
 import local.computingMedia.sLoci.Vertex;
-import local.misc.simulatedAnnealing.Annealer;
+import local.simulatedAnnealing.Annealer;
 
 import java.util.HashMap;
 

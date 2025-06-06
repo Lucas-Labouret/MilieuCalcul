@@ -1,4 +1,9 @@
-package local.misc.simulatedAnnealing;
+package local.simulatedAnnealing;
+
+import local.simulatedAnnealing.acceptor.Acceptor;
+import local.simulatedAnnealing.evaluator.Evaluator;
+import local.simulatedAnnealing.neighborGenerator.NeighborGenerator;
+import local.simulatedAnnealing.temperatureRegulator.TemperatureRegulator;
 
 /**
  * Standard implementation of the Acceptor interface for simulated annealing.
@@ -12,13 +17,13 @@ public class StandardAnnealer<C> extends Annealer<C> {
             TemperatureRegulator temperatureRegulator,
             Evaluator<C> evaluator,
             Acceptor acceptor,
-            RandomNeighborGenerator<C> randomNeighborGenerator
+            NeighborGenerator<C> neighborGenerator
     ) {
         this.maxIterations = maxIterations;
         this.temperatureRegulator = temperatureRegulator;
         this.evaluator = evaluator;
         this.acceptor = acceptor;
-        this.randomNeighborGenerator = randomNeighborGenerator;
+        this.neighborGenerator = neighborGenerator;
     }
 
     public C optimize(C seed) {
@@ -29,7 +34,7 @@ public class StandardAnnealer<C> extends Annealer<C> {
         for (int i = 0; i < maxIterations; i++) {
             System.out.println("Iteration " + (i+1) + " of " + maxIterations);
             double temperature = temperatureRegulator.progress();
-            C neighbor = randomNeighborGenerator.generate(candidate);
+            C neighbor = neighborGenerator.generate(candidate);
             oldScore = newScore;
             newScore = evaluator.evaluate(neighbor);
             if (acceptor.accept(oldScore, newScore, temperature)) candidate = neighbor;

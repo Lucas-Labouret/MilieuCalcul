@@ -1,4 +1,4 @@
-package local.misc.simulatedAnnealing;
+package local.simulatedAnnealing.acceptor;
 
 public class GreedyAcceptor implements Acceptor {
     @Override

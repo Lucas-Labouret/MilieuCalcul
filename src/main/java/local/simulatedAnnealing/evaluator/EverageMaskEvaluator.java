@@ -1,11 +1,9 @@
-package local.computingMedia.cannings.simulatedAnnealing;
+package local.simulatedAnnealing.evaluator;
 
 import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.VertexCanningCompleter;
 import local.computingMedia.cannings.evaluation.MasksComputer;
 import local.computingMedia.cannings.vertexCannings.VertexCanning;
-import local.computingMedia.media.Medium;
-import local.misc.simulatedAnnealing.Evaluator;
 
 /**
  * Evaluator for vertex cannings that computes the average of the masks used for transfers.

@@ -1,10 +1,11 @@
-package local.computingMedia.cannings.simulatedAnnealing;
+package local.simulatedAnnealing;
 
+import local.simulatedAnnealing.neighborGenerator.neighborSelector.MaximumWeightSelector;
+import local.simulatedAnnealing.neighborGenerator.NearestNeighborGenerator;
 import local.computingMedia.cannings.vertexCannings.VertexCanning;
-import local.computingMedia.media.Medium;
-import local.misc.simulatedAnnealing.StandardAnnealer;
-import local.misc.simulatedAnnealing.StandardAcceptor;
-import local.misc.simulatedAnnealing.StandardTemperatureRegulator;
+import local.simulatedAnnealing.acceptor.GreedyAcceptor;
+import local.simulatedAnnealing.evaluator.EverageMaskEvaluator;
+import local.simulatedAnnealing.temperatureRegulator.StandardTemperatureRegulator;
 
 /**
  * VertexCanningNearestNeighborAnnealer is a specialized annealer for vertex cannings.
@@ -22,8 +23,8 @@ public class VertexCanningNearestNeighborAnnealer extends StandardAnnealer<Verte
                 maxIterations,
                 new StandardTemperatureRegulator(maxIterations),
                 new EverageMaskEvaluator(),
-                new StandardAcceptor(),
-                new NearestNeighborGenerator()
+                new GreedyAcceptor(),
+                new NearestNeighborGenerator(new MaximumWeightSelector<>())
         );
     }
 }

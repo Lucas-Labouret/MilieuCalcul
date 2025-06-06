@@ -1,18 +1,17 @@
-package local.computingMedia.cannings.simulatedAnnealing;
+package local.simulatedAnnealing.neighborGenerator;
 
 import local.computingMedia.cannings.coords.sCoords.VertexCoord;
+import local.simulatedAnnealing.neighborGenerator.neighborSelector.NeighborSelector;
 import local.computingMedia.cannings.vertexCannings.SimpleVertexCanning;
 import local.computingMedia.cannings.vertexCannings.VertexCanning;
 import local.computingMedia.sLoci.Edge;
 import local.computingMedia.sLoci.Vertex;
-import local.misc.WeightedRandomCollection;
-import local.misc.simulatedAnnealing.RandomNeighborGenerator;
 
 import java.util.HashMap;
 
-public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexCanning> {
-    // A random selector for potential neighbors of a vertex canning.
-    private final WeightedRandomCollection<VertexCanning> potentialNeighbors = new WeightedRandomCollection<>();
+public class NearestNeighborGenerator implements NeighborGenerator<VertexCanning> {
+    // A selector for potential neighbors of a vertex canning.
+    private final NeighborSelector<VertexCanning> potentialNeighbors;
 
     private VertexCanning candidate;
 
@@ -27,6 +26,10 @@ public class NearestNeighborGenerator implements RandomNeighborGenerator<VertexC
     // so that we can eventually remove lines and columns and increase the density of the vertex canning through merging.
     private final HashMap<Integer, Double> lineFillPenalty = new HashMap<>();
     private final HashMap<Integer, Double> columnFillPenalty = new HashMap<>();
+
+    public NearestNeighborGenerator(NeighborSelector<VertexCanning> neighborSelector) {
+        this.potentialNeighbors = neighborSelector;
+    }
 
     /**
      * Generates a new neighbor for the given candidate vertex canning.
