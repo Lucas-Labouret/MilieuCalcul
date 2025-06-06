@@ -28,17 +28,26 @@ public class StandardAnnealer<C> extends Annealer<C> {
 
     public C optimize(C seed) {
         System.out.println("Starting optimization...");
+        int accepted = 0;
         C candidate = seed;
-        double oldScore;
-        double newScore = evaluator.evaluate(candidate);
+        double score = evaluator.evaluate(candidate);
+        double newScore;
         for (int i = 0; i < maxIterations; i++) {
             System.out.println("Iteration " + (i+1) + " of " + maxIterations);
             double temperature = temperatureRegulator.progress();
             C neighbor = neighborGenerator.generate(candidate);
-            oldScore = newScore;
             newScore = evaluator.evaluate(neighbor);
-            if (acceptor.accept(oldScore, newScore, temperature)) candidate = neighbor;
-            else newScore = oldScore;
+            if (acceptor.accept(score, newScore, temperature)) {
+                System.out.println("Accepted new candidate with score: " + newScore);
+                accepted++;
+                System.out.println("Acceptance rate: " + (accepted / (double)(i + 1)));
+                candidate = neighbor;
+                score = newScore;
+            }
+            else {
+                System.out.println("Rejected new candidate with score: " + newScore);
+                System.out.println("Acceptance rate: " + (accepted / (double)(i + 1)));
+            }
         }
         return candidate;
     }

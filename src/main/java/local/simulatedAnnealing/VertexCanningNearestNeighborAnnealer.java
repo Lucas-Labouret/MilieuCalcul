@@ -1,5 +1,6 @@
 package local.simulatedAnnealing;
 
+import local.simulatedAnnealing.neighborGenerator.neighborSelector.MaximumScoreSelector;
 import local.simulatedAnnealing.neighborGenerator.neighborSelector.MaximumWeightSelector;
 import local.simulatedAnnealing.neighborGenerator.NearestNeighborGenerator;
 import local.computingMedia.cannings.vertexCannings.VertexCanning;
@@ -24,7 +25,7 @@ public class VertexCanningNearestNeighborAnnealer extends StandardAnnealer<Verte
                 new StandardTemperatureRegulator(maxIterations),
                 new EverageMaskEvaluator(),
                 new GreedyAcceptor(),
-                new NearestNeighborGenerator(new MaximumWeightSelector<>())
+                new NearestNeighborGenerator(new MaximumScoreSelector<>(new EverageMaskEvaluator()))
         );
     }
 }

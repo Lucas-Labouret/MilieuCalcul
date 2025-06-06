@@ -19,6 +19,6 @@ public class EverageMaskEvaluator implements Evaluator<VertexCanning> {
 
         return (masksComputer.getAverageEfFe()+
                 masksComputer.getAverageVeEv()+
-                masksComputer.getAverageVfFv()) / -3 * candidate.getMedium().size();
+                masksComputer.getAverageVfFv()) / -3;
     }
 }

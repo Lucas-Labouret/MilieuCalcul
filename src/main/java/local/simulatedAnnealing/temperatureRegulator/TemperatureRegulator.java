@@ -4,7 +4,7 @@ package local.simulatedAnnealing.temperatureRegulator;
 public interface TemperatureRegulator {
     /**
      * Provides the current temperature in the simulated annealing process.
-     * The temperature should decrease over time, simulating the cooling process.
+     * The temperature should decrease over time, starting from 1 and converging to 0.
      *
      * @return the current temperature
      */

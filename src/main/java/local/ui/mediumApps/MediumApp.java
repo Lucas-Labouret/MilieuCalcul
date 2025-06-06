@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.evaluation.MasksComputer;
 import local.computingMedia.cannings.VertexCanningCompleter;
+import local.simulatedAnnealing.NearestNeighborHybridAnnealer;
 import local.simulatedAnnealing.VertexCanningNearestNeighborAnnealer;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordDichotomyVCanning;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordIncrementalVCanning;
@@ -347,12 +348,14 @@ public abstract class MediumApp extends BorderPane {
         RadioButton roundedCoordDichotomyCanning = new RadioButton("Rounded Coordinates Dichotomy");
         RadioButton topDistanceXSortedCanning = new RadioButton("Top Distance X Sorted");
         RadioButton AnnealedRoundedCoordCanning = new RadioButton("Annealed Rounded Coordinates Dichotomy");
+        RadioButton HybridAnnealedCanning = new RadioButton("Hybrid Annealed Rounded Coordinates Dichotomy");
 
         defaultCanning.setToggleGroup(canGroup);
         roundedCoordIncrementalCanning.setToggleGroup(canGroup);
         roundedCoordDichotomyCanning.setToggleGroup(canGroup);
         topDistanceXSortedCanning.setToggleGroup(canGroup);
         AnnealedRoundedCoordCanning.setToggleGroup(canGroup);
+        HybridAnnealedCanning.setToggleGroup(canGroup);
 
         defaultCanning.setSelected(true);
 
@@ -370,7 +373,12 @@ public abstract class MediumApp extends BorderPane {
             } else if (newVal == AnnealedRoundedCoordCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
                         new RoundedCoordDichotomyVCanning(m),
-                        new VertexCanningNearestNeighborAnnealer(10000)
+                        new VertexCanningNearestNeighborAnnealer(1000)
+                ));
+            } else if (newVal == HybridAnnealedCanning) {
+                canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
+                        new RoundedCoordDichotomyVCanning(m),
+                        new NearestNeighborHybridAnnealer(10000, 100)
                 ));
             }
             setCanning();
@@ -443,7 +451,8 @@ public abstract class MediumApp extends BorderPane {
                 roundedCoordIncrementalCanning,
                 roundedCoordDichotomyCanning,
                 topDistanceXSortedCanning,
-                AnnealedRoundedCoordCanning
+                AnnealedRoundedCoordCanning,
+                HybridAnnealedCanning
         );
         canning.setSpacing(5);
         sidePanel.add(new TitledPane("Canning", canning));
