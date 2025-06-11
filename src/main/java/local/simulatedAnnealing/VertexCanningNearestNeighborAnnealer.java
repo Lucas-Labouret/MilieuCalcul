@@ -1,12 +1,11 @@
 package local.simulatedAnnealing;
 
 import local.simulatedAnnealing.neighborGenerator.neighborSelector.MaximumScoreSelector;
-import local.simulatedAnnealing.neighborGenerator.neighborSelector.MaximumWeightSelector;
 import local.simulatedAnnealing.neighborGenerator.NearestNeighborGenerator;
 import local.computingMedia.cannings.vertexCannings.VertexCanning;
 import local.simulatedAnnealing.acceptor.GreedyAcceptor;
 import local.simulatedAnnealing.evaluator.EverageMaskEvaluator;
-import local.simulatedAnnealing.temperatureRegulator.StandardTemperatureRegulator;
+import local.simulatedAnnealing.temperatureRegulator.LinearTemperatureRegulator;
 
 /**
  * VertexCanningNearestNeighborAnnealer is a specialized annealer for vertex cannings.
@@ -18,11 +17,11 @@ import local.simulatedAnnealing.temperatureRegulator.StandardTemperatureRegulato
  * In both cases, the selection is biased toward modifications of elements that are "close" to each other.
  * </p>
  */
-public class VertexCanningNearestNeighborAnnealer extends StandardAnnealer<VertexCanning> {
+public class VertexCanningNearestNeighborAnnealer extends MaxIterationAnnealer<VertexCanning> {
     public VertexCanningNearestNeighborAnnealer(int maxIterations) {
         super(
                 maxIterations,
-                new StandardTemperatureRegulator(maxIterations),
+                new LinearTemperatureRegulator(maxIterations),
                 new EverageMaskEvaluator(),
                 new GreedyAcceptor(),
                 new NearestNeighborGenerator(new MaximumScoreSelector<>(new EverageMaskEvaluator()))

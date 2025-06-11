@@ -328,6 +328,8 @@ public class MediumDrawer extends Pane {
             Vertex[] ends = e.getEnds().toArray(new Vertex[2]);
             Vertex v1 = ends[0];
             Vertex v2 = ends[1];
+            VertexCoord v1Canning = canning.getVertexCanning().get(v1);
+            VertexCoord v2Canning = canning.getVertexCanning().get(v2);
 
             double x1 = (v1.getX() - xmin) * scale + offsetX;
             double y1 = (v1.getY() - ymin) * scale + offsetY;
@@ -350,7 +352,8 @@ public class MediumDrawer extends Pane {
             Stop[] stops = new Stop[] {new Stop(0, color1), new Stop(1, color2)};
             LinearGradient linearGradient = new LinearGradient(
                     gradientStartX, gradientStartY, gradientEndX, gradientEndY, true, CycleMethod.NO_CYCLE, stops);
-            line.setStroke(linearGradient);
+            if (Math.abs(v1Canning.X() - v2Canning.X()) > 2 || Math.abs(v1Canning.Y() - v2Canning.Y()) > 2) line.setStroke(Color.LIGHTGREEN);
+            else line.setStroke(linearGradient);
             line.setStrokeWidth(2);
 
             getChildren().add(line);

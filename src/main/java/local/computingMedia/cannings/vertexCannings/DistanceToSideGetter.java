@@ -60,7 +60,7 @@ public class DistanceToSideGetter {
     private HashMap<Vertex, Integer> getDistanceToSide(Medium medium, SIDE side) {
         HashMap<Vertex, Integer> coords = new HashMap<>();
 
-        Vertex start = getStart(coords.keySet(), side);
+        Vertex start = getStart(medium, side);
         coords.put(start, 0);
 
         if (start == null) throw new IllegalArgumentException("Invalid border configuration");

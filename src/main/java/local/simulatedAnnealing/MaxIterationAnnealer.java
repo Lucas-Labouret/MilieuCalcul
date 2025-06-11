@@ -6,13 +6,12 @@ import local.simulatedAnnealing.neighborGenerator.NeighborGenerator;
 import local.simulatedAnnealing.temperatureRegulator.TemperatureRegulator;
 
 /**
- * Standard implementation of the Acceptor interface for simulated annealing.
- * This implementation runs a set number of iteration before stopping.
+ * Runs a set number of iteration before stopping.
  */
-public class StandardAnnealer<C> extends Annealer<C> {
+public class MaxIterationAnnealer<C> extends Annealer<C> {
     int maxIterations;
 
-    public StandardAnnealer(
+    public MaxIterationAnnealer(
             int maxIterations,
             TemperatureRegulator temperatureRegulator,
             Evaluator<C> evaluator,
@@ -38,16 +37,15 @@ public class StandardAnnealer<C> extends Annealer<C> {
             C neighbor = neighborGenerator.generate(candidate);
             newScore = evaluator.evaluate(neighbor);
             if (acceptor.accept(score, newScore, temperature)) {
-                System.out.println("Accepted new candidate with score: " + newScore);
+                System.out.println("    Accepted new candidate with score: " + newScore);
                 accepted++;
-                System.out.println("Acceptance rate: " + (accepted / (double)(i + 1)));
                 candidate = neighbor;
                 score = newScore;
             }
             else {
-                System.out.println("Rejected new candidate with score: " + newScore);
-                System.out.println("Acceptance rate: " + (accepted / (double)(i + 1)));
+                System.out.println("    Rejected new candidate with score: " + newScore);
             }
+            System.out.println("    Acceptance rate: " + (accepted / (double)(i + 1)));
         }
         return candidate;
     }

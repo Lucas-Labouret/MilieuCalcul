@@ -9,6 +9,13 @@ import local.computingMedia.sLoci.Vertex;
 
 import java.util.HashMap;
 
+
+/**
+ * Generates a new neighbor for the given candidate vertex canning.
+ * The neighbors can be generated in two ways:
+ * 1. By repositioning a vertex to an adjacent cell, if there is no vertex in that position.
+ * 2. By merging two adjacent lines or columns into a single line or column if that would cause vertices to overlap.
+ */
 public class NearestNeighborGenerator implements NeighborGenerator<VertexCanning> {
     // A selector for potential neighbors of a vertex canning.
     private final NeighborSelector<VertexCanning> potentialNeighbors;
@@ -31,16 +38,6 @@ public class NearestNeighborGenerator implements NeighborGenerator<VertexCanning
         this.potentialNeighbors = neighborSelector;
     }
 
-    /**
-     * Generates a new neighbor for the given candidate vertex canning.
-     * The neighbors can be generated in two ways:
-     * 1. By repositioning a vertex to an adjacent cell, if there is no vertex in that position.
-     * 2. By merging two adjacent lines or columns into a single line or column if that would cause vertices to overlap.
-     * The generated neighbor is randomly selected from the potential neighbors, with a bias towards closer neighbors.
-     *
-     * @param candidate The candidate vertex canning to generate a neighbor for.
-     * @return A new vertex canning that is a neighbor of the candidate.
-     */
     @Override
     public VertexCanning generate(VertexCanning candidate) {
         potentialNeighbors.clear();
@@ -317,7 +314,7 @@ public class NearestNeighborGenerator implements NeighborGenerator<VertexCanning
             if (coord.Y() <= y) neighborCanning.getVertexCanning().put(vertex, coord);
             else neighborCanning.getVertexCanning().put(vertex, new VertexCoord(coord.Y()-1, coord.X()));
         }
-        distances.put(neighborCanning, distance);
+        distances.put(neighborCanning, distance/10);
     }
 
     /** Merges the columns x and x+1, and adds the resulting vertex canning to potential neighbors. */
@@ -333,10 +330,10 @@ public class NearestNeighborGenerator implements NeighborGenerator<VertexCanning
             if (coord.X() <= x) neighborCanning.getVertexCanning().put(vertex, coord);
             else neighborCanning.getVertexCanning().put(vertex, new VertexCoord(coord.Y(), coord.X()-1));
         }
-        distances.put(neighborCanning, distance);
+        distances.put(neighborCanning, distance/10);
     }
 
-    /** Defines a function that is convex over [0, 1] */
+    /** Defines a convex function defined on [0, 1] -> [0, 1] */
     private interface ConvexFunction {
         double apply(double weight);
     }

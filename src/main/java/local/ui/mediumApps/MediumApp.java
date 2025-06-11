@@ -378,7 +378,7 @@ public abstract class MediumApp extends BorderPane {
             } else if (newVal == HybridAnnealedCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
                         new RoundedCoordDichotomyVCanning(m),
-                        new NearestNeighborHybridAnnealer(10000, 100)
+                        new NearestNeighborHybridAnnealer(10000, 0.2)
                 ));
             }
             setCanning();
