@@ -148,7 +148,7 @@ public class NearestNeighborGenerator implements NeighborGenerator<VertexCanning
 
         SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
                 candidate.getMedium(),
-                (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
+                new HashMap<>(vertexToCoord),
                 candidate.getWidth(), candidate.getHeight()
         );
         neighborCanning.getVertexCanning().put(vertex, neighborCoord);
@@ -195,7 +195,7 @@ public class NearestNeighborGenerator implements NeighborGenerator<VertexCanning
 
         SimpleVertexCanning neighborCanning = new SimpleVertexCanning(
                 candidate.getMedium(),
-                (HashMap<Vertex, VertexCoord>) vertexToCoord.clone(),
+                new HashMap<>(vertexToCoord),
                 candidate.getWidth(), candidate.getHeight()
         );
         neighborCanning.getVertexCanning().put(vertex, neighborCoord);

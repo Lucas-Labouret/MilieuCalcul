@@ -6,7 +6,6 @@ import local.computingMedia.cannings.evaluation.MasksComputer;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordDichotomyVCanning;
 import local.computingMedia.cannings.vertexCannings.RoundedCoordIncrementalVCanning;
 import local.computingMedia.media.Medium;
-import local.computingMedia.sLoci.Edge;
 import local.computingMedia.sLoci.Vertex;
 import local.savefileManagers.HardRectangleManager;
 import local.savefileManagers.SavefileManager;

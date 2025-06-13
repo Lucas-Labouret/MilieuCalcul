@@ -4,7 +4,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import local.computingMedia.cannings.Canning;
 import local.computingMedia.cannings.evaluation.MasksComputer;
 
 /**

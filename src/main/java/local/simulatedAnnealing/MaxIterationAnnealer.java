@@ -9,7 +9,7 @@ import local.simulatedAnnealing.temperatureRegulator.TemperatureRegulator;
  * Runs a set number of iteration before stopping.
  */
 public class MaxIterationAnnealer<C> extends Annealer<C> {
-    int maxIterations;
+    private final int maxIterations;
 
     public MaxIterationAnnealer(
             int maxIterations,
