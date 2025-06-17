@@ -4,29 +4,29 @@ module local.furthestpointoptimization {
     requires transitive javafx.graphics;
     requires commons.math3;
 
-    opens local.ui to javafx.fxml;
-    opens local.ui.mediumApps to javafx.fxml;
+    opens ui to javafx.fxml;
+    opens ui.mediumApps to javafx.fxml;
 
-    exports local.computingMedia.media;
-    exports local.computingMedia.cannings;
+    exports computingMedia.media;
+    exports computingMedia.cannings;
     
-    exports local.ui;
-    exports local.ui.mediumApps;
-    exports local.savefileManagers;
-    exports local.ui.utils;
-    opens local.savefileManagers to javafx.fxml;
-    exports local.computingMedia.sLoci;
-    exports local.computingMedia.tLoci;
-    exports local.computingMedia.cannings.coords.sCoords;
-    exports local.computingMedia.cannings.coords.tCoords;
-    exports local.computingMedia.cannings.vertexCannings;
-    exports local.computingMedia.cannings.evaluation;
-    exports local.simulatedAnnealing;
-    exports local.misc.linkedList;
-    exports local.computingMedia;
-    exports local.simulatedAnnealing.acceptor;
-    exports local.simulatedAnnealing.evaluator;
-    exports local.simulatedAnnealing.neighborGenerator;
-    exports local.simulatedAnnealing.temperatureRegulator;
-    exports local.simulatedAnnealing.neighborGenerator.neighborSelector;
+    exports ui;
+    exports ui.mediumApps;
+    exports savefileManagers;
+    exports ui.utils;
+    opens savefileManagers to javafx.fxml;
+    exports computingMedia.sLoci;
+    exports computingMedia.tLoci;
+    exports computingMedia.cannings.coords.sCoords;
+    exports computingMedia.cannings.coords.tCoords;
+    exports computingMedia.cannings.vertexCannings;
+    exports computingMedia.cannings.evaluation;
+    exports simulatedAnnealing;
+    exports misc.linkedList;
+    exports computingMedia;
+    exports simulatedAnnealing.acceptor;
+    exports simulatedAnnealing.evaluator;
+    exports simulatedAnnealing.neighborGenerator;
+    exports simulatedAnnealing.temperatureRegulator;
+    exports simulatedAnnealing.neighborGenerator.neighborSelector;
 }
