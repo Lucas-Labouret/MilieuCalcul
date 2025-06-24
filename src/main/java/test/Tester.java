@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Tester {
-    private static final String OUTPUT_DIR = "src/main/java/local/test/testResults/";
+    private static final String OUTPUT_DIR = "src/main/java/test/testResults/";
     private static final String EXTENSION = ".csv";
 
     private static final HashMap<String, SavefileManager> savefileManagers = new HashMap<>() {{
@@ -73,6 +73,7 @@ public class Tester {
         try { writer = new BufferedWriter(new FileWriter(fileName)); }
         catch (Exception e) {
             System.out.println("Error creating file: " + fileName);
+            e.printStackTrace();
             return;
         }
         try { writer.write(sb.toString()); }
@@ -237,6 +238,42 @@ public class Tester {
             MediumStatisticTest test = new MediumStatisticTest(medium);
             boolean isotropic = test.testIsotropism(0.1);
             results[y + 1][x + 1] = isotropic ? "Isotropic" : "Anisotropic";
+        }
+
+        makeCSV(methodName, results);
+    }
+
+    public static void testRoundedCoordIncrementalCoefStability(String methodName) {
+        System.out.println("Executing " + methodName);
+
+        String[][] results = new String[families.size()*sizes.size() + 1][201];
+        results[0][0] = "";
+
+        for (double incr = 0.01; incr <= 2.0; incr += 0.01) {
+            results[0][(int)(incr * 100)] = String.format("%.5f", incr);
+        }
+
+        for (int i = 0; i < families.size(); i++) for (int j = 0; j < sizes.size(); j++) {
+            String family = families.get(i);
+            String size = sizes.get(j);
+            String mediumName = family + size;
+            results[i * sizes.size() + j + 1][0] = mediumName;
+
+            System.out.println("Testing " + mediumName);
+            for (double incr = 0.01; incr <= 2.0; incr += 0.01) {
+                Medium medium;
+                try { medium = savefileManagers.get(family).load(mediumName); }
+                catch (Exception e) {
+                    System.out.println("Failed to load medium: " + mediumName);
+                    continue;
+                }
+
+                Canning canning = new VertexCanningCompleter(new RoundedCoordIncrementalVCanning(medium, incr));
+                canning.can();
+
+                double density = canning.getDensity();
+                results[i * sizes.size() + j + 1][(int)(incr * 100)] = String.format("%.5f", density);
+            }
         }
 
         makeCSV(methodName, results);

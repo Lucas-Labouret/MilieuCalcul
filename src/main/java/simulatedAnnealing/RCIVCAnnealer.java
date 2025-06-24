@@ -7,6 +7,10 @@ import simulatedAnnealing.evaluator.EverageMaskEvaluator;
 import simulatedAnnealing.neighborGenerator.RCIVCGenerator;
 import simulatedAnnealing.temperatureRegulator.LinearTemperatureRegulator;
 
+/**
+ * RCIVCAnnealer is a specialized annealer for RoundedCoordIncrementalVCanning
+ * It optimizes the vertex canning by adjusting the increment of the coordinates.
+ */
 public class RCIVCAnnealer extends MaxIterationAnnealer<VertexCanning> {
     public RCIVCAnnealer(int maxIterations) {
         super(

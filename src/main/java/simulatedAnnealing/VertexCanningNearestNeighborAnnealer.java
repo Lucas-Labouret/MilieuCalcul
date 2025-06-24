@@ -1,10 +1,12 @@
 package simulatedAnnealing;
 
+import simulatedAnnealing.evaluator.ManhattanDistanceEvaluator;
 import simulatedAnnealing.neighborGenerator.neighborSelector.MaximumScoreSelector;
 import simulatedAnnealing.neighborGenerator.NearestNeighborGenerator;
 import computingMedia.cannings.vertexCannings.VertexCanning;
 import simulatedAnnealing.acceptor.GreedyAcceptor;
 import simulatedAnnealing.evaluator.EverageMaskEvaluator;
+import simulatedAnnealing.neighborGenerator.neighborSelector.WeightedRandomSelector;
 import simulatedAnnealing.temperatureRegulator.LinearTemperatureRegulator;
 
 /**
@@ -22,9 +24,9 @@ public class VertexCanningNearestNeighborAnnealer extends MaxIterationAnnealer<V
         super(
                 maxIterations,
                 new LinearTemperatureRegulator(maxIterations),
-                new EverageMaskEvaluator(),
+                new ManhattanDistanceEvaluator(),
                 new GreedyAcceptor(),
-                new NearestNeighborGenerator(new MaximumScoreSelector<>(new EverageMaskEvaluator()))
+                new NearestNeighborGenerator(new WeightedRandomSelector<>())
         );
     }
 }

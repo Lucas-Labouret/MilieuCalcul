@@ -363,7 +363,6 @@ public abstract class MediumApp extends BorderPane {
 
         defaultCanning.setSelected(true);
 
-
         canGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
             // Modify the canning factory to always use the user selected canning
             if (newVal == defaultCanning) {
@@ -375,7 +374,7 @@ public abstract class MediumApp extends BorderPane {
             } else if (newVal == optimizedIncrementRCIVCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
                         new RoundedCoordIncrementalVCanning(m),
-                        new RCIVCAnnealer(200)
+                        new RCIVCAnnealer(50)
                 ));
             } else if (newVal == topDistanceXSortedCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning(m));
@@ -390,7 +389,7 @@ public abstract class MediumApp extends BorderPane {
             } else if (newVal == annealedRoundedCoordCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
                         new RoundedCoordDichotomyVCanning(m),
-                        new VertexCanningNearestNeighborAnnealer(1000)
+                        new VertexCanningNearestNeighborAnnealer(10000)
                 ));
             } else if (newVal == hybridAnnealedCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(

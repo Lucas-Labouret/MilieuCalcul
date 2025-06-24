@@ -22,7 +22,7 @@ public class AdaptativeGridVCanning implements VertexCanning {
 
     // Maximum allowed virtual epsilon for vertex positions
     // Should be strictly less than half the smallest dimension of any grid cell.
-    private static final double MAX_EPSILON = 1e-4;
+    private static final double MAX_EPSILON = 1e-2;
 
     // Y-coordinates of the horizontal separation lines
     private ArrayList<Double> lineSeparations;
@@ -184,167 +184,278 @@ public class AdaptativeGridVCanning implements VertexCanning {
         double maxHorizontalEpsilon = MAX_EPSILON * medium.getWidth() / width;
 
         nonMergeCollapse(maxVerticalEpsilon, maxHorizontalEpsilon);
+        mergeCollapse(maxVerticalEpsilon, maxHorizontalEpsilon);
+        //nonMergeCollapse(maxVerticalEpsilon, maxHorizontalEpsilon);
     }
 
     private void nonMergeCollapse(double maxVerticalEpsilon, double maxHorizontalEpsilon) {
-        boolean changed = false;
-        do for (Vertex v: medium) {
-            VertexCoord vCoord = vertexCanning.get(v);
-            for (Vertex n: v.getNeighbors()){
-                VertexCoord nCoord = vertexCanning.get(n);
+        boolean changed;
+        do {
+            changed = false;
+            for (Vertex v: medium) {
+                VertexCoord vCoord = vertexCanning.get(v);
+                for (Vertex n: v.getNeighbors()){
+                    VertexCoord nCoord = vertexCanning.get(n);
 
-                //if v is 3 cells left of n
-                //note : the cases where v is left of n and n is right of v are handled separately despite being symmetric,
-                //as we move a different vertex in each case
-                if (nCoord.X() - vCoord.X() ==  3){
-                    double virtualX = v.getX() + virtualEpsilons.get(v)[1];
-                    double dist = columnSeparations.get(vCoord.X()+1) - virtualX;
-                    //if the distance between between v and the next separation column too large, continue
-                    if (dist > maxHorizontalEpsilon) continue;
-                    //if the virtual position of v would become too far from its real position, continue
-                    if (virtualX + 2*dist > maxHorizontalEpsilon) continue;
+                    //if v is 3 cells left of n
+                    //note : the cases where v is left of n and n is right of v are handled separately despite being symmetric,
+                    //as we move a different vertex in each case
+                    if (nCoord.X() - vCoord.X() ==  3){
+                        double virtualX = v.getX() + virtualEpsilons.get(v)[1];
+                        double dist = columnSeparations.get(vCoord.X()+1) - virtualX;
+                        //if the distance between between v and the next separation column too large, continue
+                        if (dist > maxHorizontalEpsilon) continue;
+                        //if the virtual position of v would become too far from its real position, continue
+                        if (virtualX + 2*dist > maxHorizontalEpsilon) continue;
 
-                    VertexCoord newCoord = new VertexCoord(vCoord.Y(), vCoord.X() + 1);
-                    boolean moreProblems = false;
-                    for (Vertex n2: v.getNeighbors()){
-                        VertexCoord n2Coord = vertexCanning.get(n2);
-                        if (Math.abs(n2Coord.X() - vCoord.X()) <= 2 && Math.abs(n2Coord.X() - newCoord.X()) >= 3) {
-                            moreProblems = true; // n2 is already at the new position
-                            break;
+                        VertexCoord newCoord = new VertexCoord(vCoord.Y(), vCoord.X() + 1);
+                        boolean moreProblems = false;
+                        for (Vertex n2: v.getNeighbors()){
+                            VertexCoord n2Coord = vertexCanning.get(n2);
+                            if (Math.abs(n2Coord.X() - vCoord.X()) <= 2 && Math.abs(n2Coord.X() - newCoord.X()) >= 3) {
+                                moreProblems = true; // n2 is already at the new position
+                                break;
+                            }
                         }
+                        // We cannot move v, as it would create new problems
+                        if (moreProblems) continue;
+
+                        virtualEpsilons.put(v, new double[]{virtualEpsilons.get(v)[0], virtualX + 2*dist});
+                        vertexCanning.put(v, newCoord);
+                        changed = true;
+                        break;
                     }
-                    // We cannot move v, as it would create new problems
-                    if (moreProblems) continue;
 
-                    virtualEpsilons.put(v, new double[]{virtualEpsilons.get(v)[0], virtualX + 2*dist});
-                    vertexCanning.put(v, newCoord);
-                    changed = true;
-                    break;
-                }
+                    //if v is 3 cells right of n
+                    if (vCoord.X() - nCoord.X() ==  3){
+                        double virtualX = v.getX() + virtualEpsilons.get(v)[1];
+                        double dist = virtualX - columnSeparations.get(vCoord.X());
+                        //if the distance between between v and the next separation column too large, continue
+                        if (dist > maxHorizontalEpsilon) continue;
+                        //if the virtual position of v would become too far from its real position, continue
+                        if (virtualX - 2*dist < -maxHorizontalEpsilon) continue;
 
-                //if v is 3 cells right of n
-                if (vCoord.X() - nCoord.X() ==  3){
-                    double virtualX = v.getX() + virtualEpsilons.get(v)[1];
-                    double dist = virtualX - columnSeparations.get(vCoord.X());
-                    //if the distance between between v and the next separation column too large, continue
-                    if (dist > maxHorizontalEpsilon) continue;
-                    //if the virtual position of v would become too far from its real position, continue
-                    if (virtualX - 2*dist < -maxHorizontalEpsilon) continue;
-
-                    VertexCoord newCoord = new VertexCoord(vCoord.Y(), vCoord.X() - 1);
-                    boolean moreProblems = false;
-                    for (Vertex n2: v.getNeighbors()){
-                        VertexCoord n2Coord = vertexCanning.get(n2);
-                        if (Math.abs(n2Coord.X() - vCoord.X()) <= 2 && Math.abs(n2Coord.X() - newCoord.X()) >= 3) {
-                            moreProblems = true; // n2 is already at the new position
-                            break;
+                        VertexCoord newCoord = new VertexCoord(vCoord.Y(), vCoord.X() - 1);
+                        boolean moreProblems = false;
+                        for (Vertex n2: v.getNeighbors()){
+                            VertexCoord n2Coord = vertexCanning.get(n2);
+                            if (Math.abs(n2Coord.X() - vCoord.X()) <= 2 && Math.abs(n2Coord.X() - newCoord.X()) >= 3) {
+                                moreProblems = true; // n2 is already at the new position
+                                break;
+                            }
                         }
+                        // We cannot move v, as it would create new problems
+                        if (moreProblems) continue;
+
+                        System.out.println("Moving vertex at " + v.getX() + " to " + (virtualX - 2*dist));
+                        virtualEpsilons.put(v, new double[]{virtualEpsilons.get(v)[0], virtualX - 2*dist});
+                        vertexCanning.put(v, newCoord);
+                        changed = true;
+                        break;
                     }
-                    // We cannot move v, as it would create new problems
-                    if (moreProblems) continue;
 
-                    virtualEpsilons.put(v, new double[]{virtualEpsilons.get(v)[0], virtualX - 2*dist});
-                    vertexCanning.put(v, newCoord);
-                    changed = true;
-                    break;
-                }
+                    //if v is 3 cells above n
+                    if (nCoord.Y() - vCoord.Y() ==  3){
+                        double virtualY = v.getY() + virtualEpsilons.get(v)[0];
+                        double dist = lineSeparations.get(vCoord.Y()+1) - virtualY;
+                        //if the distance between between v and the next separation line too large, continue
+                        if (dist > maxVerticalEpsilon) continue;
+                        //if the virtual position of v would become too far from its real position, continue
+                        if (virtualY + 2*dist > maxVerticalEpsilon) continue;
 
-                //if v is 3 cells above n
-                if (nCoord.Y() - vCoord.Y() ==  3){
-                    double virtualY = v.getY() + virtualEpsilons.get(v)[0];
-                    double dist = lineSeparations.get(vCoord.Y()+1) - virtualY;
-                    //if the distance between between v and the next separation line too large, continue
-                    if (dist > maxVerticalEpsilon) continue;
-                    //if the virtual position of v would become too far from its real position, continue
-                    if (virtualY + 2*dist > maxVerticalEpsilon) continue;
-
-                    VertexCoord newCoord = new VertexCoord(vCoord.Y() + 1, vCoord.X());
-                    boolean moreProblems = false;
-                    for (Vertex n2: v.getNeighbors()){
-                        VertexCoord n2Coord = vertexCanning.get(n2);
-                        if (Math.abs(n2Coord.Y() - vCoord.Y()) <= 2 && Math.abs(n2Coord.Y() - newCoord.Y()) >= 3) {
-                            moreProblems = true; // n2 is already at the new position
-                            break;
+                        VertexCoord newCoord = new VertexCoord(vCoord.Y() + 1, vCoord.X());
+                        boolean moreProblems = false;
+                        for (Vertex n2: v.getNeighbors()){
+                            VertexCoord n2Coord = vertexCanning.get(n2);
+                            if (Math.abs(n2Coord.Y() - vCoord.Y()) <= 2 && Math.abs(n2Coord.Y() - newCoord.Y()) >= 3) {
+                                moreProblems = true; // n2 is already at the new position
+                                break;
+                            }
                         }
+                        // We cannot move v, as it would create new problems
+                        if (moreProblems) continue;
+
+                        System.out.println("Moving vertex at " + v.getY() + " to " + (virtualY + 2*dist));
+                        virtualEpsilons.put(v, new double[]{virtualY + 2*dist, virtualEpsilons.get(v)[1]});
+                        vertexCanning.put(v, newCoord);
+                        changed = true;
+                        break;
                     }
-                    // We cannot move v, as it would create new problems
-                    if (moreProblems) continue;
 
-                    virtualEpsilons.put(v, new double[]{virtualY + 2*dist, virtualEpsilons.get(v)[1]});
-                    vertexCanning.put(v, newCoord);
-                    changed = true;
-                    break;
-                }
+                    //if v is 3 cells below n
+                    if (vCoord.Y() - nCoord.Y() ==  3){
+                        double virtualY = v.getY() + virtualEpsilons.get(v)[0];
+                        double dist = virtualY - lineSeparations.get(vCoord.Y());
+                        //if the distance between between v and the next separation line too large, continue
+                        if (dist > maxVerticalEpsilon) continue;
+                        //if the virtual position of v would become too far from its real position, continue
+                        if (virtualY - 2*dist < -maxVerticalEpsilon) continue;
 
-                //if v is 3 cells below n
-                if (vCoord.Y() - nCoord.Y() ==  3){
-                    double virtualY = v.getY() + virtualEpsilons.get(v)[0];
-                    double dist = virtualY - lineSeparations.get(vCoord.Y());
-                    //if the distance between between v and the next separation line too large, continue
-                    if (dist > maxVerticalEpsilon) continue;
-                    //if the virtual position of v would become too far from its real position, continue
-                    if (virtualY - 2*dist < -maxVerticalEpsilon) continue;
-
-                    VertexCoord newCoord = new VertexCoord(vCoord.Y() - 1, vCoord.X());
-                    boolean moreProblems = false;
-                    for (Vertex n2: v.getNeighbors()){
-                        VertexCoord n2Coord = vertexCanning.get(n2);
-                        if (Math.abs(n2Coord.Y() - vCoord.Y()) <= 2 && Math.abs(n2Coord.Y() - newCoord.Y()) >= 3) {
-                            moreProblems = true; // n2 is already at the new position
-                            break;
+                        VertexCoord newCoord = new VertexCoord(vCoord.Y() - 1, vCoord.X());
+                        boolean moreProblems = false;
+                        for (Vertex n2: v.getNeighbors()){
+                            VertexCoord n2Coord = vertexCanning.get(n2);
+                            if (Math.abs(n2Coord.Y() - vCoord.Y()) <= 2 && Math.abs(n2Coord.Y() - newCoord.Y()) >= 3) {
+                                moreProblems = true; // n2 is already at the new position
+                                break;
+                            }
                         }
-                    }
-                    // We cannot move v, as it would create new problems
-                    if (moreProblems) continue;
+                        // We cannot move v, as it would create new problems
+                        if (moreProblems) continue;
 
-                    virtualEpsilons.put(v, new double[]{virtualY - 2*dist, virtualEpsilons.get(v)[1]});
-                    vertexCanning.put(v, newCoord);
-                    changed = true;
-                    break;
+                        virtualEpsilons.put(v, new double[]{virtualY - 2*dist, virtualEpsilons.get(v)[1]});
+                        vertexCanning.put(v, newCoord);
+                        changed = true;
+                        break;
+                    }
                 }
             }
         } while (changed);
     }
 
+    private void mergeCollapse(double maxVerticalEpsilon, double maxHorizontalEpsilon) {
+        int maxDelta = 0;
+        HashSet<Integer> linesToMerge = new HashSet<>();
+        HashSet<Integer> columnsToMerge = new HashSet<>();
+
+        for (Vertex v : medium) for (Vertex n : v.getNeighbors()) {
+            VertexCoord vCoord = vertexCanning.get(v);
+            VertexCoord nCoord = vertexCanning.get(n);
+
+            int deltaX = nCoord.X() - vCoord.X();
+            int deltaY = nCoord.Y() - vCoord.Y();
+
+            if (deltaX > maxDelta) maxDelta = deltaX;
+            if (deltaY > maxDelta) maxDelta = deltaY;
+        }
+
+        while (maxDelta > 2) {
+            boolean changed = false;
+            for (Vertex v : medium) for (Vertex n : v.getNeighbors()) {
+                VertexCoord vCoord = vertexCanning.get(v);
+                VertexCoord nCoord = vertexCanning.get(n);
+
+                int deltaX = nCoord.X() - vCoord.X();
+                int deltaY = nCoord.Y() - vCoord.Y();
+
+                if (deltaX == maxDelta) columnsToMerge.add(vCoord.X());
+                if (deltaY == maxDelta) linesToMerge.add(vCoord.Y());
+            }
+
+            for (int line : linesToMerge) {
+                if (changed) break;
+                if (mergeLinesCols(true, line, line + maxDelta - 1, maxVerticalEpsilon, maxHorizontalEpsilon)) changed = true;
+            }
+
+            for (int column : columnsToMerge) {
+                if (changed) break;
+                if (mergeLinesCols(false, column, column + maxDelta - 1, maxVerticalEpsilon, maxHorizontalEpsilon)) changed = true;
+            }
+            System.out.println(maxDelta + " " + linesToMerge + " " + columnsToMerge + " " + changed);
+
+            if (!changed) maxDelta--;
+        }
+    }
+
     /**
-     * Merges n lines of the grid into n-1.
+     * Merges (start - end + 1) lines or columns of the grid into (start - end).
+     * @param lines if true, merges lines; if false, merges columns.
+     * @param start the index of the first line or column to merge.
+     * @param end the index of the last line or column to merge.
+     * @param maxVerticalEpsilon the maximum allowed vertical movement for vertices.
+     * @param maxHorizontalEpsilon the maximum allowed horizontal movement for vertices.
      * @return a boolean indicating whether the merge was successful.
      */
-    private boolean mergeLines(int upperLine, int lowerLine) {
-        if (upperLine < 0 || lowerLine < 0 || upperLine >= height || lowerLine >= height) {
-            throw new IllegalArgumentException("Invalid line indices: " + upperLine + ", " + lowerLine);
+    private boolean mergeLinesCols(boolean lines, int start, int end, double maxVerticalEpsilon, double maxHorizontalEpsilon) {
+        if (start < 0 || end < 0 || start >= (lines? height : width) || end >= (lines? height : width)) {
+            throw new IllegalArgumentException("Invalid line indices: " + start + ", " + end);
         }
-        if (lowerLine - upperLine < 1) {
+        if (end - start < 1) {
             throw new IllegalArgumentException("There must at least two lines to merge");
         }
 
-        int deltaY = lowerLine - upperLine;
-        double upperSeparation = lineSeparations.get(upperLine);
-        double lowerSeparation = lineSeparations.get(lowerLine+1);
-        double[] newSeparations = new double[deltaY - 1];
+        ArrayList<Double> separations = lines ? lineSeparations : columnSeparations;
 
-        double totalGap = lowerSeparation - upperSeparation;
-        for (int i = 0; i < deltaY - 1; i++) {
-            newSeparations[i] = upperSeparation + (i + 1) * totalGap / deltaY;
+        int delta = end - start;
+        double startSeparation = separations.get(start);
+        double endSeparation = separations.get(end+1);
+        double[] newSeparations = new double[delta - 1];
+
+        double totalGap = endSeparation - startSeparation;
+        for (int i = 0; i < delta - 1; i++) {
+            newSeparations[i] = startSeparation + (i - 1) * totalGap / delta;
         }
 
         HashSet<Vertex> affectedVertices = new HashSet<>();
         for (Vertex v : medium) {
-            double vY = v.getY() + virtualEpsilons.get(v)[0];
-            if (vY >= upperSeparation && vY <= lowerSeparation) affectedVertices.add(v);
+            double vPos = lines ? v.getY() + virtualEpsilons.get(v)[0] : v.getX() + virtualEpsilons.get(v)[1];
+            if (vPos >= startSeparation && vPos <= endSeparation) affectedVertices.add(v);
         }
 
         HashMap<Vertex, VertexCoord> newCanning = new HashMap<>(vertexCanning);
         for (Vertex v : affectedVertices) newCanning.remove(v);
+        HashMap<VertexCoord, Vertex> reversedNewCanning = new HashMap<>();
+        for (Vertex v : newCanning.keySet()) reversedNewCanning.put(newCanning.get(v), v);
 
         for (Vertex v : affectedVertices) {
-            double vY = v.getY() + virtualEpsilons.get(v)[0];
-            int newYIndex = 0;
-            while (newYIndex < newSeparations.length && vY > newSeparations[newYIndex]) newYIndex++;
+            double vPos = lines ? v.getY() + virtualEpsilons.get(v)[0] : v.getX() + virtualEpsilons.get(v)[1];
+            int newIndex = 0;
+            while (newIndex < newSeparations.length && vPos > newSeparations[newIndex]) newIndex++;
+            newIndex += start;
+            int otherIndex = lines ? vertexCanning.get(v).X() : vertexCanning.get(v).Y();
 
+            VertexCoord newCoord = lines ? new VertexCoord(newIndex, otherIndex) :
+                                           new VertexCoord(otherIndex, newIndex);
+
+            // If the cell at newCoord is not already occupied, we fill it with the vertex v.
+            if (!reversedNewCanning.containsKey(newCoord)) {
+                reversedNewCanning.put(newCoord, v);
+                newCanning.put(v, newCoord);
+            // Otherwise, we check if we can move v to an unoccupied cell in the same line or column.
+            } else  {
+                double pos = lines ? v.getY() : v.getX();
+                double lowSeparation = newSeparations[0];
+                double highSeparation = newIndex < newSeparations.length ? newSeparations[newSeparations.length - 1] :
+                                                                           (lines ? medium.getHeight() : medium.getWidth());
+                // If the real position of v is in the previous cell or close enough to it
+                if (pos - lowSeparation < (lines ? maxVerticalEpsilon : maxHorizontalEpsilon)) {
+                    // We move v to the previous cell
+                    newCoord = lines ? new VertexCoord(newIndex - 1, otherIndex) :
+                                       new VertexCoord(otherIndex, newIndex - 1);
+                // If the real position of v is in the next cell or close enough to it
+                } else if (highSeparation - pos < (lines ? maxVerticalEpsilon : maxHorizontalEpsilon)) {
+                    // We move v to the next cell
+                    newCoord = lines ? new VertexCoord(newIndex + 1, otherIndex) :
+                                       new VertexCoord(otherIndex, newIndex + 1);
+                // Otherwise, we cannot move v, as it would create new problems
+                } else {
+                    return false;
+                }
+                // If the new position is not already occupied, we fill it with the vertex v.
+                if (!reversedNewCanning.containsKey(newCoord)) {
+                    reversedNewCanning.put(newCoord, v);
+                    newCanning.put(v, newCoord);
+                // Otherwise, we cannot merge the lines or columns.
+                } else {
+                    return false;
+                }
+            }
+        }
+        vertexCanning = newCanning;
+
+        // Update the separation lines or columns
+        for (int i = 0; i < delta - 1; i++) {
+            separations.set(start + i, newSeparations[i]);
+        }
+        for (int i = start + delta - 1; i < separations.size() - 1; i++) {
+            separations.set(i, separations.get(i + 1));
         }
 
-        lineSeparations.removeLast();
-        return false;
+        // Update the size of the grid
+        if (lines) height--;
+        else width--;
+
+        separations.removeLast();
+        return true;
     }
 }
