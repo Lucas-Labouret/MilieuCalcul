@@ -185,7 +185,7 @@ public class AdaptativeGridVCanning implements VertexCanning {
 
         nonMergeCollapse(maxVerticalEpsilon, maxHorizontalEpsilon);
         mergeCollapse(maxVerticalEpsilon, maxHorizontalEpsilon);
-        //nonMergeCollapse(maxVerticalEpsilon, maxHorizontalEpsilon);
+        nonMergeCollapse(maxVerticalEpsilon, maxHorizontalEpsilon);
     }
 
     private void nonMergeCollapse(double maxVerticalEpsilon, double maxHorizontalEpsilon) {
@@ -314,9 +314,7 @@ public class AdaptativeGridVCanning implements VertexCanning {
     }
 
     private void mergeCollapse(double maxVerticalEpsilon, double maxHorizontalEpsilon) {
-        int maxDelta = 0;
-        HashSet<Integer> linesToMerge = new HashSet<>();
-        HashSet<Integer> columnsToMerge = new HashSet<>();
+        int maxDeltaInit = 0;
 
         for (Vertex v : medium) for (Vertex n : v.getNeighbors()) {
             VertexCoord vCoord = vertexCanning.get(v);
@@ -325,12 +323,14 @@ public class AdaptativeGridVCanning implements VertexCanning {
             int deltaX = nCoord.X() - vCoord.X();
             int deltaY = nCoord.Y() - vCoord.Y();
 
-            if (deltaX > maxDelta) maxDelta = deltaX;
-            if (deltaY > maxDelta) maxDelta = deltaY;
+            if (deltaX > maxDeltaInit) maxDeltaInit = deltaX;
+            if (deltaY > maxDeltaInit) maxDeltaInit = deltaY;
         }
 
+        int maxDelta = maxDeltaInit;
         while (maxDelta > 2) {
-            boolean changed = false;
+            HashSet<Integer> linesToMerge = new HashSet<>();
+            HashSet<Integer> columnsToMerge = new HashSet<>();
             for (Vertex v : medium) for (Vertex n : v.getNeighbors()) {
                 VertexCoord vCoord = vertexCanning.get(v);
                 VertexCoord nCoord = vertexCanning.get(n);
@@ -342,11 +342,11 @@ public class AdaptativeGridVCanning implements VertexCanning {
                 if (deltaY == maxDelta) linesToMerge.add(vCoord.Y());
             }
 
+            boolean changed = false;
             for (int line : linesToMerge) {
                 if (changed) break;
                 if (mergeLinesCols(true, line, line + maxDelta - 1, maxVerticalEpsilon, maxHorizontalEpsilon)) changed = true;
             }
-
             for (int column : columnsToMerge) {
                 if (changed) break;
                 if (mergeLinesCols(false, column, column + maxDelta - 1, maxVerticalEpsilon, maxHorizontalEpsilon)) changed = true;
@@ -354,6 +354,7 @@ public class AdaptativeGridVCanning implements VertexCanning {
             System.out.println(maxDelta + " " + linesToMerge + " " + columnsToMerge + " " + changed);
 
             if (!changed) maxDelta--;
+            else maxDelta = maxDeltaInit; // Reset maxDelta to the initial value if we made any changes
         }
     }
 
@@ -368,7 +369,10 @@ public class AdaptativeGridVCanning implements VertexCanning {
      */
     private boolean mergeLinesCols(boolean lines, int start, int end, double maxVerticalEpsilon, double maxHorizontalEpsilon) {
         if (start < 0 || end < 0 || start >= (lines? height : width) || end >= (lines? height : width)) {
-            throw new IllegalArgumentException("Invalid line indices: " + start + ", " + end);
+            throw new IllegalArgumentException(
+                    "Invalid line indices: " + start + ", " + end +
+                    " for " + (lines ? "lines" : "columns") + " of size " + (lines ? height : width)
+            );
         }
         if (end - start < 1) {
             throw new IllegalArgumentException("There must at least two lines to merge");
@@ -379,11 +383,10 @@ public class AdaptativeGridVCanning implements VertexCanning {
         int delta = end - start;
         double startSeparation = separations.get(start);
         double endSeparation = separations.get(end+1);
-        double[] newSeparations = new double[delta - 1];
+        double[] newSeparations = new double[delta+1];
 
-        double totalGap = endSeparation - startSeparation;
-        for (int i = 0; i < delta - 1; i++) {
-            newSeparations[i] = startSeparation + (i - 1) * totalGap / delta;
+        for (int i = 0; i < delta+1; i++) {
+            newSeparations[i] = startSeparation + (endSeparation - startSeparation) * i / delta;
         }
 
         HashSet<Vertex> affectedVertices = new HashSet<>();
@@ -400,39 +403,47 @@ public class AdaptativeGridVCanning implements VertexCanning {
         for (Vertex v : affectedVertices) {
             double vPos = lines ? v.getY() + virtualEpsilons.get(v)[0] : v.getX() + virtualEpsilons.get(v)[1];
             int newIndex = 0;
-            while (newIndex < newSeparations.length && vPos > newSeparations[newIndex]) newIndex++;
-            newIndex += start;
+            while (newIndex < newSeparations.length && vPos >= newSeparations[newIndex]) newIndex++;
+            newIndex += start - 1;
             int otherIndex = lines ? vertexCanning.get(v).X() : vertexCanning.get(v).Y();
 
             VertexCoord newCoord = lines ? new VertexCoord(newIndex, otherIndex) :
-                                           new VertexCoord(otherIndex, newIndex);
+                    new VertexCoord(otherIndex, newIndex);
 
             // If the cell at newCoord is not already occupied, we fill it with the vertex v.
             if (!reversedNewCanning.containsKey(newCoord)) {
                 reversedNewCanning.put(newCoord, v);
                 newCanning.put(v, newCoord);
             // Otherwise, we check if we can move v to an unoccupied cell in the same line or column.
-            } else  {
+            } else {
                 double pos = lines ? v.getY() : v.getX();
-                double lowSeparation = newSeparations[0];
-                double highSeparation = newIndex < newSeparations.length ? newSeparations[newSeparations.length - 1] :
-                                                                           (lines ? medium.getHeight() : medium.getWidth());
+                double lowSeparation = newSeparations[newIndex - start];
+                double highSeparation = newSeparations[newIndex + 1 - start];
                 // If the real position of v is in the previous cell or close enough to it
-                if (pos - lowSeparation < (lines ? maxVerticalEpsilon : maxHorizontalEpsilon)) {
+                if (Math.abs(pos - lowSeparation) < (lines ? maxVerticalEpsilon : maxHorizontalEpsilon)) {
                     // We move v to the previous cell
                     newCoord = lines ? new VertexCoord(newIndex - 1, otherIndex) :
                                        new VertexCoord(otherIndex, newIndex - 1);
+                    double dist = Math.abs(pos - lowSeparation);
+                    // Update the virtual position of v
+                    if (lines) virtualEpsilons.get(v)[0] = -2*dist;
+                    else virtualEpsilons.get(v)[1] = -2*dist;
                 // If the real position of v is in the next cell or close enough to it
-                } else if (highSeparation - pos < (lines ? maxVerticalEpsilon : maxHorizontalEpsilon)) {
+                } else if (Math.abs(highSeparation - pos) < (lines ? maxVerticalEpsilon : maxHorizontalEpsilon)) {
                     // We move v to the next cell
                     newCoord = lines ? new VertexCoord(newIndex + 1, otherIndex) :
                                        new VertexCoord(otherIndex, newIndex + 1);
+                    // Update the virtual position of v
+                    double dist = Math.abs(highSeparation - pos);
+                    if (lines) virtualEpsilons.get(v)[0] = 2*dist;
+                    else virtualEpsilons.get(v)[1] = 2*dist;
                 // Otherwise, we cannot move v, as it would create new problems
                 } else {
                     return false;
                 }
                 // If the new position is not already occupied, we fill it with the vertex v.
                 if (!reversedNewCanning.containsKey(newCoord)) {
+                    reversedNewCanning.remove(newCanning.get(v));
                     reversedNewCanning.put(newCoord, v);
                     newCanning.put(v, newCoord);
                 // Otherwise, we cannot merge the lines or columns.
@@ -441,7 +452,6 @@ public class AdaptativeGridVCanning implements VertexCanning {
                 }
             }
         }
-        vertexCanning = newCanning;
 
         // Update the separation lines or columns
         for (int i = 0; i < delta - 1; i++) {
@@ -451,11 +461,26 @@ public class AdaptativeGridVCanning implements VertexCanning {
             separations.set(i, separations.get(i + 1));
         }
 
-        // Update the size of the grid
+        // Move up all the vertices placed after the merged lines or columns
+        for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
+            Vertex v = reversedNewCanning.get(new VertexCoord(y, x));
+            if (v == null) continue;
+
+            if (lines && y > end) {
+                newCanning.remove(v);
+                newCanning.put(v, new VertexCoord(y - 1, x));
+            }
+            if (!lines && x > end) {
+                newCanning.remove(v);
+                newCanning.put(v, new VertexCoord(y, x - 1));
+            }
+        }
+
+        vertexCanning = newCanning;
         if (lines) height--;
         else width--;
-
         separations.removeLast();
+
         return true;
     }
 }

@@ -20,6 +20,7 @@ public class RoundedCoordIncrementalVCanning implements VertexCanning {
     private int height = 0;
 
     private final double increment;
+    private double scale = 1;
 
     public RoundedCoordIncrementalVCanning(Medium medium) {
         this(medium, 1);
@@ -33,6 +34,7 @@ public class RoundedCoordIncrementalVCanning implements VertexCanning {
     public double getIncrement() {
         return increment;
     }
+    public double getScale() { return scale; }
 
     @Override public Medium getMedium() { return medium; }
 
@@ -44,13 +46,12 @@ public class RoundedCoordIncrementalVCanning implements VertexCanning {
     private HashMap<VertexCoord, Vertex> getCoordVertexMap(Medium medium){
         HashMap<VertexCoord, Vertex> coordVertexMap = new HashMap<>();
 
-        double scale = 1;
         while (true){
             boolean exit = true;
             for (Vertex vertex : medium){
                 VertexCoord coord = new VertexCoord(
-                        (int) Math.round(scale*vertex.getY()),
-                        (int) Math.round(scale*vertex.getX())
+                        (int) Math.round(scale*vertex.getY()*medium.getHeight()),
+                        (int) Math.round(scale*vertex.getX()*medium.getWidth())
                 );
                 if (coordVertexMap.get(coord) == null) coordVertexMap.put(coord, vertex);
                 else {
@@ -69,18 +70,15 @@ public class RoundedCoordIncrementalVCanning implements VertexCanning {
         HashMap<VertexCoord, Vertex> coordVertexMap = getCoordVertexMap(medium);
 
         int yMax = 0, xMax = 0;
+        HashMap<Vertex, VertexCoord> result = new HashMap<>();
         for (VertexCoord coord : coordVertexMap.keySet()){
             if (coord.Y() > yMax) yMax = coord.Y();
             if (coord.X() > xMax) xMax = coord.X();
+            result.put(coordVertexMap.get(coord), coord);
         }
 
         width = xMax+1;
         height = yMax+1;
-
-        HashMap<Vertex, VertexCoord> result = new HashMap<>();
-        for (VertexCoord coord : coordVertexMap.keySet()){
-            result.put(coordVertexMap.get(coord), coord);
-        }
         vertexCanning = result;
     }
 }

@@ -268,10 +268,11 @@ public class Tester {
                     continue;
                 }
 
-                Canning canning = new VertexCanningCompleter(new RoundedCoordIncrementalVCanning(medium, incr));
+                RoundedCoordIncrementalVCanning vc = new RoundedCoordIncrementalVCanning(medium, incr);
+                Canning canning = new VertexCanningCompleter(vc);
                 canning.can();
 
-                double density = canning.getDensity();
+                double density = vc.getDensity();
                 results[i * sizes.size() + j + 1][(int)(incr * 100)] = String.format("%.5f", density);
             }
         }

@@ -1,10 +1,11 @@
-\documentclass{article}
+\documentclass{report}
 
 \usepackage{caption}
 \usepackage{subcaption}
 
 \usepackage{enumitem}
 
+\usepackage{titlepic}
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage[section]{placeins}
@@ -28,10 +29,11 @@
 	colorlinks=true,
 	citecolor=blue
 ]{hyperref}
+\usepackage{bookmark}
 
 \title{
 	Canning for Amorphous Blob Computing\\
-	\small TER report
+	\small Internship Report
 }
 
 \author{
@@ -46,25 +48,34 @@
     \small frederic.gruau@universite-paris-saclay.fr
 }
 
+\titlepic{\includegraphics[width=0.87\linewidth]{assets/Circle500.png}}
+
 \date{}
 
 \begin{document}
  
 \maketitle
 
-\begin{figure}[H]
-	\centering\includegraphics[width=0.9\linewidth]{assets/Circle500.png}
-\end{figure}
-
 \newpage
 \tableofcontents
 \newpage
 
-\section*{Introduction}
+\chapter*{Introduction}
 \label{introduction}
-\addcontentsline{toc}{section}{\nameref{introduction}}
+\addcontentsline{toc}{chapter}{\nameref{introduction}}
 
-This TER took place at the LISN from January to April 2025 under the supervision of Frédéric Gruau. It is the continuation of a research project I did under him last year  my Licence degree's curriculum. It is part of a long term research project about the concept of "blob computing"\supercite{blob_computing1}. During this TER, I performed research about the simulation of blob computing on classical computers, and wrote a GUI application that allows users to visualize and interact with my results.
+This report summarizes the work I performed at LISN under the supervision of Frédéric Gruau. It is the continuation of a research project I did under him last year  my Licence degree's curriculum. It is part of a long term research project about the concept of "blob computing"\supercite{blob_computing1}. 
+
+My presence at LISN was spread over two periods~: first, a TER from January to April 2025, then an internship from May to July 2025.
+During the TER, I performed research about the simulation of blob computing on classical computers, and wrote a GUI application that allows users to visualize and interact with my results.
+The internship then focused on improving and expanding on the results I obtained during the TER.
+
+The program that I produced during this internship can be found \href{https://github.com/Lucas-Labouret/MilieuCalcul}{\textbf{here}}.
+
+$ $\\
+\small\textit{Note : Chapters 1 and 2 are identical the TER report I already submitted. I chose to include them anyway as they are necessary to understand the new chapter 3.}
+
+\chapter{Prerequisites}
 
 \section{What is Blob Computing ?}
 
@@ -140,13 +151,13 @@ Therefore, two blobs at two consecutive timestep are "the same blob" if they onl
 
 The basic idea is the following~: we start with a set of "seeds" distributed over the vertices of the network. Each seed is now the center of a blob. Then, at each synchronous step, the blobs will spread to their adjacent vertices if this would not cause them to merge with another blob, until no blob can spread further. It can be implemented with very few types of local operations that are applied simultaneously to every S-locus in the network~:
 \begin{itemize}
-	\item Multi-cast :\\
+	\item Multi-cast~:\\
 	The S-locus copies its value into its t-loci of a given type.
-	\item Rotation :\\
+	\item Rotation~:\\
 	Since t-loci are spatially arranged around their S-loci, we can define a clockwise and counter-clockwise neighbor. T-loci can perform logical operations on their and their neighbors' values.
-	\item Reduction :\\
+	\item Reduction~:\\
 	The S-locus stores the result of a commutative and associative operation applied to the values of its t-loci of a given type.
-	\item Transfer :\\
+	\item Transfer~:\\
 	Each of the S-locus' t-loci exchanges its value with the value of its pair. 
 \end{itemize}
 In fact, clever association of these primitives allows to program everything a computing medium is capable of, such as sorting arrays of integer or multiplying matrices\supercite{blob_computing2}.
@@ -191,11 +202,13 @@ The Farthest Point Optimization algorithm \supercite{FPO} allows the constructio
 
 The implementation of FPO in my case was not straightforward. This is because the article applied the algorithm to sets of points in the unit torus, while the media uses bounded subsets of the Euclidean plane instead. In particular, I had to adapt the algorithm to work around the existence of borders with predetermined shape, and that can contain fixed points that cannot be moved even though they can still influence the placement of other points.
 
+\chapter{TER}
+
 \section{Borders and Media}
 
 The border of a medium is the set composed of both the edges separating the outer face of the graph from the inner faces of the graph, and the vertices at the ends of those edges.
 
-The method we chose to handle the borders of our media is crucial, as it impacts how the media are optimized, how they are canned afterward, and decide some useful properties they have for performing computations. Ultimately, we decided to study two broad types of borders : "soft" and "hard" borders.
+The method we chose to handle the borders of our media is crucial, as it impacts how the media are optimized, how they are canned afterward, and decide some useful properties they have for performing computations. Ultimately, we decided to study two broad types of borders~: "soft" and "hard" borders.
 
 \subsection{Soft Borders}
 
@@ -211,7 +224,7 @@ This method of handling the border tends to connect vertices that would normally
 	\label{fig:softLossLocality}
 \end{figure}
 
-We initially considered two types of soft bordered media : soft square media, where the vertices are confined into a square, and soft circle media, where the vertices are confined into a circle. However, we quickly abandoned soft circle media as they currently do not have any application for computing.
+We initially considered two types of soft bordered media~: soft square media, where the vertices are confined into a square, and soft circle media, where the vertices are confined into a circle. However, we quickly abandoned soft circle media as they currently do not have any application for computing.
 
 \subsection{Hard Borders}
 
@@ -232,7 +245,7 @@ A hard bordered medium is a media whose border (both the edges and the vertices)
 	\caption{Effects of over- and under-filling.}
 \end{figure}
 
-Initially, we tried to work with a border following a hexagonal lattice to approach previous work, but we ended dropping the idea as we would either experience the loss of homogeneity/locality mentioned above, or FPO would end converging back to a hexagonal crystal, losing the isotropicism of the media. Instead, we focused on two types of hard border : a hard square with evenly placed vertices, and a hard rectangle with ratio $1\colon\sqrt{3}$. We chose this ratio as it is the ratio of the minimal over maximal radius of a regular hexagon. This allows some semblance of hexagonal structure in the border while avoiding the problems we encountered with an outright hexagonal pattern.
+Initially, we tried to work with a border following a hexagonal lattice to approach previous work, but we ended dropping the idea as we would either experience the loss of homogeneity/locality mentioned above, or FPO would end converging back to a hexagonal crystal, losing the isotropicism of the media. Instead, we focused on two types of hard border~: a hard square with evenly placed vertices, and a hard rectangle with ratio $1\colon\sqrt{3}$. We chose this ratio as it is the ratio of the minimal over maximal radius of a regular hexagon. This allows some semblance of hexagonal structure in the border while avoiding the problems we encountered with an outright hexagonal pattern.
 
 \subsection{About Hybrid Borders}
 
@@ -272,6 +285,7 @@ Regarding the TopDistanceXStorted algorithm, I first tried sorting the lines usi
 Intuitively from figure~\ref{fig:topdist_vs_rounded}, we can infer that RoundedCoordinates is better as it creates a more "grid-like" canning, whereas the columns in TopDistanceXSorted seem to "drift" to the left. We will confirm this intuition later.
 
 \subsection{From Vertex to Total Cannings}
+\label{vertexCanningCompleter}
 
 Now that we can build vertex cannings, we want a method to convert them into total cannings.
 
@@ -296,7 +310,7 @@ Now, given a vertex $v$, an edge $e$ and a face $f$ we write
 	\item $Fe(f)$ the set of Fe t-loci belonging to $f$\\
 \end{itemize}
 
-Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we set the arities $a_\text E = a_\text F = a_\text{Ve} = a_\text{Vf} = a_\text V+1 = 3$. Similarly, Ev's and Ef's will be indexed relative to edges so we set $a_\text{Ev} = a_\text{Ef} = a_\text E+1 = 4$, and Fv's and Fe's will be indexed relative to faces so we set $a_\text{Fv} = a_\text{Fe} = a_\text F+1 = 4$. Now, the attribution of coordinates works in the following way :
+Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we set the arities $a_\text E = a_\text F = a_\text{Ve} = a_\text{Vf} = a_\text V+1 = 3$. Similarly, Ev's and Ef's will be indexed relative to edges so we set $a_\text{Ev} = a_\text{Ef} = a_\text E+1 = 4$, and Fv's and Fe's will be indexed relative to faces so we set $a_\text{Fv} = a_\text{Fe} = a_\text F+1 = 4$. Now, the attribution of coordinates works in the following way~:
 \begin{itemize}
 	\item \textbf{Edges}~:\\
 	For each vertex $v$
@@ -373,6 +387,7 @@ Since the edges, faces, Ve's and Vf's will be indexed relative to vertices, we s
 \subsection{Evaluation}
 
 \subsubsection{Definition}
+\label{eval_def}
 
 \newcommand{\footnoteConstantFactor}{
 	For example, there is exactly 2 Ev per edge, and there are at most 3 times as many edges as there are vertices, so Ev-Ve communication will have a constant factor of 6. This factor can be seen as the density of a given type of locus relative to the vertices.
@@ -432,17 +447,104 @@ Below are some pictures of the kind of visualization the GUI provides.
 	\label{fig:gui_EfFe}
 \end{figure}
 
-\section*{Conclusion}
+\chapter{Internship}
+
+\setcounter{section}{-1}
+\section{Some conventions going forward}
+
+We decided to adopt some convention to reduce the scope of the research.
+
+- We decided to work only on media with a hard rectangular border, as they are much easier to work with and present properties for the simulation (most notably, they can be mirrored along their sides or repeated in every direction in a grid-like pattern).
+
+- We only work on vertex cannings, and rely entirely on the algorithm described in \ref{vertexCanningCompleter} to convert them into total vertex cannings.
+
+\section{Platform-CA2\supercite{platform_CA2} and Evaluation}
+
+I spent the first two weeks of the internship reading the source code of the simulation platform at \cite{platform_CA2}. I was hoping to be able to implement the simulation of amorphous media into it, although we ultimately decided against it as the internship was simply too short for this to be a realistic goal.
+
+So how does this platform work, and how exactly do cannings help ?
+
+\subsection{How is SIMD applied ?}
+
+To simplify things, let's assume that vertices can communicate between themselves directly
+without the need for transfer locus intermediary edges, and that they each contain a boolean value. We will now take the example of an OR reduction on the third line of vertices of a medium $M$. It is a simple operation~: each vertex has (up to) 8 neighbors, and we compute its new value as $Value(neighbor_0)\lor\dots\lor Value(neighbor_7)$.
+
+First, we fill two 2D arrays~: one that will contain the starting values of the reduction, i.e. the values contained in the vertices before the reduction, and the other will be our result table which and will contains the new values of our vertices after the reduction. These arrays are linked to a canning $C$ of $M$ in that the value in the cell $(Y, X)$ correspond to the value of the vertex at position $(Y, X)$ in $C$. 
+
+\begin{figure}[H]
+	\centering\includegraphics[width=0.9\linewidth]{assets/OR_Reduction_Tables.png}
+\end{figure}
+
+Since 0 is the neutral element of the OR operator, we use it to initialize our result table. Grey values in the grid indicate that the cell does correspond to a vertex, which means it contains a garbage value that can be safely ignored as it will never be used.
+
+An here is where the magic operates~: instead of storing $L0$ as an array of boolean values containing $\{0, 0, 1, 1, 1, 0\}$, we store it as the integer $0b001110$, or simply 14. This allows us to perform our simulation much faster, as we can now apply an operation (such as a bitwise OR) on an entire line of vertices in a single action.
+
+Now, let's perform the first step of our reduction~:
+
+\begin{figure}[H]
+	\centering\includegraphics[width=0.9\linewidth]{assets/OR_Reduction_Bitshift.png}
+\end{figure}
+
+Here, we notice the first neighbor of each vertex is stored in the cell directly to its top right. Since the neighbors are one step to far to the right, we want to shift them back one step left to realign them vertically with our vertices before OR'ing the line to the values currently stored in our result table.\\
+
+However, this situation where everything works perfectly with just a single bitshift would probably never happen. What if instead not all vertices on the line had their i-th neighbor in the same position relative to them ? Let's perform the second step of our reduction~:
+
+\begin{figure}[H]
+	\centering\includegraphics[width=0.9\linewidth]{assets/OR_Reduction_Masks.png}
+\end{figure}
+
+First, we select all the lines that contain a second neighbor of a vertex on the third line. Note that a line can be selected multiple times if reaching the appropriate cells requires different bitshifts. Then, we apply a mask to each line selected to destroy all the information that we don't need so that it doesn't interfere with the result. Finally, we recombine all these lines by consecutively OR'ing them to to the values currently stored in our result table.\\
+
+Now, in reality, vertices don't communicate directly but the two concepts above apply no matter which types of loci are communicating as they are all stored as n-dimensional arrays with the last dimension being represented as an integer instead of an actual array.
+
+\subsection{Exact Measurement of the Performance of a Canning}
+
+From there, establishing an exact method of measuring the performance of canning might seem easy~: the best canning is simply the one that minimizes the number of masks that need to be used in the simulation, as it determines the amount of logical operations that need to be performed. Additionally, since each line is treated separately, we don't need to minimize the total number of masks par se, but the average amount used by each line
+
+However, it is important to notice that different actions need different amounts of masks. For example,  an Ev$\rightarrow$Ve communication might not require as many masks as a Fe$\rightarrow$Ef communication. Similarly, a Vertex to 1st Ve communication might not require as many masks as a Vertex to 8th Ve communication. Still, all symmetrical communications use the same amount of masks.
+
+Most importantly, this means that it may not be possible to the best canning for a given medium, as the effectiveness of the canning will be dependent on the tasks performed.
+
+\subsection{SIMD limitations}
+\label{simd_limitations}
+
+A key limitation of this approach to SIMD is the size of the "int" type. In java, an int is stored as a sequence of 32 bits. This means that a single integer cannot store a full line if it contains more than 32 booleans, which has two consequences~:
+\begin{enumerate}
+	\item Lines longer than 32 nits need to be chopped into int arrays, and there need to be a way to "reattach" them. In the current implementation of the the simulator, this is done by reserving $\Delta x$ (as defined in \ref{eval_def}) bits on each side of the integer as this guarantees that all the ints can be bitshifted in either direction without losing any information.
+	For $\Delta x = 2$, this only leaves 28 usable bits per int to store information.
+	
+	\item Since each int encodes information for $32 - \Delta x$, we have a maximum speedup of $32 - \Delta x$. However, each mask needed to apply a computation to a line fragment decreases that speedup rather significantly. To continue with our OR reduction example~: let's imagine a canning with $\Delta x = 2$, and a line fragment associated with 3 masks. Then, to update our result table, we need 9 bitwise operations~: 3 "bithshifts" to align our data, 3 "and" to apply our masks, and 3 "or" to update our results. This means that the total speedup is $\lfloor 28/9\rfloor = 3$, far from the factor of 32 we hoped for. This also means that there is a rather low upper limit on the amount of masks that can be used before this method starts hindering the performance of the simulator instead of improving it.
+\end{enumerate}
+
+\subsection{Importance of $\Delta$'s and Density}
+
+As we just saw, the $\Delta x$ is another important factor on the performance of a canning, as is indicates how much information can be stored in a line fragment. The $\Delta y$ is also important, as it determines how many lines need to be loaded in memory at any time. It is sufficient to compute them on the vertex canning alone as it fully determines the entire canning.\\
+
+The last performance metric we use is the density of a vertex canning. It is the ratio of the number of vertex in the medium over the number of cells in the vertex canning. It is an interesting metric because it is very efficient to compute, and it has many different uses.
+
+Most obviously, increasing the density lowers the space between the vertices and is therefore correlated to reducing the $\Delta$'s \textit{up to a certain point}. However, increasing the density too much starts to cause vertices to get "too close" to each other, which lowers the performance of the canning as the unnatural positioning of the vertices causes the apparition of new masks.
+
+On the other hand, decreasing the starting density \textit{up to a certain point} often yields better result when the canning is optimized through simulated annealing. But, like before, decreasing the density too much creates a starting canning so bad that it ends up hindering the annealing process.
+
+In the end, we have a lot of forces trying to pull the density in every direction, which makes it a parameter that is both very interesting and hard to use correctly.
+
+\section{Creating New Vertex Cannings}
+
+\section{Optimizing Existing Vertex Cannings}
+
+\chapter*{Conclusion}
 \label{conclusion}
-\addcontentsline{toc}{section}{\nameref{conclusion}}
+\addcontentsline{toc}{chapter}{\nameref{conclusion}}
 
 This TER was a very enriching experience which allowed me to delve once again in the fascinating world of blob computing and computing media. Over the course of the project I was brought to perform many different tasks such as bibliographical work, theoretical development of cannings and their concrete implementation, and building a GUI application. It was particularly satisfying to see how ideas developed on paper could translate into working software, and how the GUI made the concepts more tangible.
 
-However, while I am happy about my first results, there remains a lot of work to be done. For this reason, this TER will be extended into a full-time internship. In the foreseeable future, I will focus on three tasks :
+However, while I am happy about my first results, there remains a lot of work to be done. For this reason, this TER will be extended into a full-time internship. In the foreseeable future, I will focus on three tasks~:
 \begin{itemize}[label=-]
 	\item Reworking the border correction of soft-bordered media, potentially retroactively modifying it after it has been canned to optimize said canning.
+	
 	\item Implementing an exact measurement of the performance of a canning.\\
 	While $\mathcal{A}_{max}$ is a good as a first indicator, I am unsure if it is a very tight bound on performance (although I conjecture it is for large media).
+	
 	\item Improve vertex canning algorithms, and write a simulated annealing algorithm to optimize existing cannings.
 \end{itemize}
 

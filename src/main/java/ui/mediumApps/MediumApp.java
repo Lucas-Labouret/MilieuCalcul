@@ -344,20 +344,22 @@ public abstract class MediumApp extends BorderPane {
         RadioButton defaultCanning = new RadioButton("Default");
         RadioButton roundedCoordIncrementalCanning = new RadioButton("Rounded Coordinates Incremental");
         RadioButton roundedCoordDichotomyCanning = new RadioButton("Rounded Coordinates Dichotomy");
-        RadioButton optimizedIncrementRCIVCanning = new RadioButton("Optimized Increment RCI");
         RadioButton topDistanceXSortedCanning = new RadioButton("Top Distance X Sorted");
         RadioButton adaptativeIncrementalCanning = new RadioButton("Adaptative Incremental");
         RadioButton adaptativeDichotomyCanning = new RadioButton("Adaptative Dichotomy");
+        RadioButton divideAndConquerCanning = new RadioButton("Divide and Conquer");
+        RadioButton optimizedIncrementRCIVCanning = new RadioButton("Optimized Increment RCI");
         RadioButton annealedRoundedCoordCanning = new RadioButton("Annealed Rounded Coordinates Dichotomy");
         RadioButton hybridAnnealedCanning = new RadioButton("Hybrid Annealed Rounded Coordinates Dichotomy");
 
         defaultCanning.setToggleGroup(canGroup);
         roundedCoordIncrementalCanning.setToggleGroup(canGroup);
         roundedCoordDichotomyCanning.setToggleGroup(canGroup);
-        optimizedIncrementRCIVCanning.setToggleGroup(canGroup);
         topDistanceXSortedCanning.setToggleGroup(canGroup);
         adaptativeIncrementalCanning.setToggleGroup(canGroup);
         adaptativeDichotomyCanning.setToggleGroup(canGroup);
+        divideAndConquerCanning.setToggleGroup(canGroup);
+        optimizedIncrementRCIVCanning.setToggleGroup(canGroup);
         annealedRoundedCoordCanning.setToggleGroup(canGroup);
         hybridAnnealedCanning.setToggleGroup(canGroup);
 
@@ -371,11 +373,6 @@ public abstract class MediumApp extends BorderPane {
                 canningFactory = m -> new VertexCanningCompleter(new RoundedCoordIncrementalVCanning(m));
             } else if (newVal == roundedCoordDichotomyCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new RoundedCoordDichotomyVCanning(m));
-            } else if (newVal == optimizedIncrementRCIVCanning) {
-                canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
-                        new RoundedCoordIncrementalVCanning(m),
-                        new RCIVCAnnealer(50)
-                ));
             } else if (newVal == topDistanceXSortedCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new TopDistanceXSortedLinesVCanning(m));
             } else if (newVal == adaptativeIncrementalCanning) {
@@ -386,6 +383,13 @@ public abstract class MediumApp extends BorderPane {
                 canningFactory = m -> new VertexCanningCompleter(
                         new AdaptativeGridVCanning(new RoundedCoordDichotomyVCanning(m))
                 );
+            } else if (newVal == divideAndConquerCanning) {
+                canningFactory = m -> new VertexCanningCompleter(new DivideAndConquerVCanning(m));
+            } else if (newVal == optimizedIncrementRCIVCanning) {
+                canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
+                        new RoundedCoordIncrementalVCanning(m),
+                        new RCIVCAnnealer(50)
+                ));
             } else if (newVal == annealedRoundedCoordCanning) {
                 canningFactory = m -> new VertexCanningCompleter(new VertexCanningAnnealer(
                         new RoundedCoordDichotomyVCanning(m),
@@ -466,10 +470,11 @@ public abstract class MediumApp extends BorderPane {
                 defaultCanning,
                 roundedCoordIncrementalCanning,
                 roundedCoordDichotomyCanning,
-                optimizedIncrementRCIVCanning,
                 topDistanceXSortedCanning,
                 adaptativeIncrementalCanning,
                 adaptativeDichotomyCanning,
+                divideAndConquerCanning,
+                optimizedIncrementRCIVCanning,
                 annealedRoundedCoordCanning,
                 hybridAnnealedCanning
         );

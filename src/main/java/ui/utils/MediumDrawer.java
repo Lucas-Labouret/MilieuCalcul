@@ -352,7 +352,7 @@ public class MediumDrawer extends Pane {
             Stop[] stops = new Stop[] {new Stop(0, color1), new Stop(1, color2)};
             LinearGradient linearGradient = new LinearGradient(
                     gradientStartX, gradientStartY, gradientEndX, gradientEndY, true, CycleMethod.NO_CYCLE, stops);
-            if (Math.abs(v1Canning.X() - v2Canning.X()) + Math.abs(v1Canning.Y() - v2Canning.Y()) > 2) line.setStroke(Color.LIGHTGREEN);
+            if (Math.max(Math.abs(v1Canning.X() - v2Canning.X()), Math.abs(v1Canning.Y() - v2Canning.Y())) > 2) line.setStroke(Color.LIGHTGREEN);
             else line.setStroke(linearGradient);
             line.setStrokeWidth(2);
 

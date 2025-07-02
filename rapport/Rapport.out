@@ -1,21 +1,23 @@
-\BOOKMARK [1][-]{section*.3}{Introduction}{}% 1
-\BOOKMARK [1][-]{section.4}{What is Blob Computing ?}{}% 2
-\BOOKMARK [2][-]{subsection.5}{Definition and Structure of a Computing Medium}{section.4}% 3
-\BOOKMARK [2][-]{subsection.11}{An Example of Computation : the Vorono\357 Diagram}{section.4}% 4
-\BOOKMARK [2][-]{subsection.13}{Objective : Cannings}{section.4}% 5
-\BOOKMARK [1][-]{section.23}{Preliminary Work}{}% 6
-\BOOKMARK [2][-]{subsection.24}{Delaunay Triangulation}{section.23}% 7
-\BOOKMARK [2][-]{subsection.25}{Farthest Point Optimization}{section.23}% 8
-\BOOKMARK [1][-]{section.26}{Borders and Media}{}% 9
-\BOOKMARK [2][-]{subsection.27}{Soft Borders}{section.26}% 10
-\BOOKMARK [2][-]{subsection.29}{Hard Borders}{section.26}% 11
-\BOOKMARK [2][-]{subsection.31}{About Hybrid Borders}{section.26}% 12
-\BOOKMARK [1][-]{section.32}{Canning and Evaluation}{}% 13
-\BOOKMARK [2][-]{subsection.33}{Vertex Cannings}{section.32}% 14
-\BOOKMARK [2][-]{subsection.37}{From Vertex to Total Cannings}{section.32}% 15
-\BOOKMARK [2][-]{subsection.38}{Evaluation}{section.32}% 16
-\BOOKMARK [3][-]{subsubsection.39}{Definition}{subsection.38}% 17
-\BOOKMARK [3][-]{subsubsection.43}{Some results}{subsection.38}% 18
-\BOOKMARK [1][-]{section.44}{GUI}{}% 19
-\BOOKMARK [1][-]{section*.52}{Conclusion}{}% 20
-\BOOKMARK [1][-]{section*.53}{References}{}% 21
+\BOOKMARK [1][-]{section*.2}{Introduction}{}% 1
+\BOOKMARK [0][-]{chapter.3}{Prerequisites}{}% 2
+\BOOKMARK [1][-]{section.4}{What is Blob Computing ?}{chapter.3}% 3
+\BOOKMARK [2][-]{subsection.5}{Definition and Structure of a Computing Medium}{section.4}% 4
+\BOOKMARK [2][-]{subsection.11}{An Example of Computation : the Vorono\357 Diagram}{section.4}% 5
+\BOOKMARK [2][-]{subsection.13}{Objective : Cannings}{section.4}% 6
+\BOOKMARK [1][-]{section.23}{Preliminary Work}{chapter.3}% 7
+\BOOKMARK [2][-]{subsection.24}{Delaunay Triangulation}{section.23}% 8
+\BOOKMARK [2][-]{subsection.25}{Farthest Point Optimization}{section.23}% 9
+\BOOKMARK [0][-]{chapter.26}{TER}{}% 10
+\BOOKMARK [1][-]{section.27}{Borders and Media}{chapter.26}% 11
+\BOOKMARK [2][-]{subsection.28}{Soft Borders}{section.27}% 12
+\BOOKMARK [2][-]{subsection.30}{Hard Borders}{section.27}% 13
+\BOOKMARK [2][-]{subsection.32}{About Hybrid Borders}{section.27}% 14
+\BOOKMARK [1][-]{section.33}{Canning and Evaluation}{chapter.26}% 15
+\BOOKMARK [2][-]{subsection.34}{Vertex Cannings}{section.33}% 16
+\BOOKMARK [2][-]{subsection.38}{From Vertex to Total Cannings}{section.33}% 17
+\BOOKMARK [2][-]{subsection.39}{Evaluation}{section.33}% 18
+\BOOKMARK [1][-]{section.45}{GUI}{chapter.26}% 19
+\BOOKMARK [0][-]{chapter.53}{Internship}{}% 20
+\BOOKMARK [1][-]{section*.54}{Some convention going forward}{chapter.53}% 21
+\BOOKMARK [1][-]{section*.55}{Conclusion}{chapter.53}% 22
+\BOOKMARK [0][-]{chapter*.56}{Bibliography}{}% 23
