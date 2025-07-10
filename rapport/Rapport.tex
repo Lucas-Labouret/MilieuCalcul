@@ -475,7 +475,7 @@ First, we fill two 2D arrays~: one that will contain the starting values of the 
 	\centering\includegraphics[width=0.9\linewidth]{assets/OR_Reduction_Tables.png}
 \end{figure}
 
-Since 0 is the neutral element of the OR operator, we use it to initialize our result table. Grey values in the grid indicate that the cell does correspond to a vertex, which means it contains a garbage value that can be safely ignored as it will never be used.
+Since 0 is the neutral element of the OR operator, we use it to initialize our result table. Grey values in the grid indicate that the cell does not correspond to a vertex, which means it contains a garbage value that can be safely ignored as it will never be used.
 
 An here is where the magic operates~: instead of storing $L0$ as an array of boolean values containing $\{0, 0, 1, 1, 1, 0\}$, we store it as the integer $0b001110$, or simply 14. This allows us to perform our simulation much faster, as we can now apply an operation (such as a bitwise OR) on an entire line of vertices in a single action.
 
@@ -513,8 +513,10 @@ A key limitation of this approach to SIMD is the size of the "int" type. In java
 	\item Lines longer than 32 nits need to be chopped into int arrays, and there need to be a way to "reattach" them. In the current implementation of the the simulator, this is done by reserving $\Delta x$ (as defined in \ref{eval_def}) bits on each side of the integer as this guarantees that all the ints can be bitshifted in either direction without losing any information.
 	For $\Delta x = 2$, this only leaves 28 usable bits per int to store information.
 	
-	\item Since each int encodes information for $32 - \Delta x$, we have a maximum speedup of $32 - \Delta x$. However, each mask needed to apply a computation to a line fragment decreases that speedup rather significantly. To continue with our OR reduction example~: let's imagine a canning with $\Delta x = 2$, and a line fragment associated with 3 masks. Then, to update our result table, we need 9 bitwise operations~: 3 "bithshifts" to align our data, 3 "and" to apply our masks, and 3 "or" to update our results. This means that the total speedup is $\lfloor 28/9\rfloor = 3$, far from the factor of 32 we hoped for. This also means that there is a rather low upper limit on the amount of masks that can be used before this method starts hindering the performance of the simulator instead of improving it.
+	\item Since each int encodes information for $32 - 2\Delta x$, we have a maximum speedup of $32 - 2\Delta x$. However, each mask needed to apply a computation to a line fragment decreases that speedup rather significantly. To continue with our OR reduction example~: let's imagine a canning with $\Delta x = 2$, and a line fragment associated with 3 masks. Then, to update our result table, we need 9 bitwise operations~: 3 "bithshifts" to align our data, 3 "and" to apply our masks, and 3 "or" to update our results. This means that the total speedup is $\lfloor 28/9\rfloor = 3$, far from the factor of 32 we hoped for. This also means that there is a rather low upper limit on the amount of masks that can be used before this method starts hindering the performance of the simulator instead of improving it.
 \end{enumerate}
+
+Still, even though it is difficult to significantly improve the running time, this methods provides two other benefits : it allows to reuse the same program for both crystalline and amorphous media without much changes, and it still improves memory usage by a factor of $32 - 2\Delta x$ as the additional space required to store the masks quickly dwarfs in front of the space needed to store the values of the loci.
 
 \subsection{Importance of $\Delta$'s and Density}
 
@@ -522,9 +524,9 @@ As we just saw, the $\Delta x$ is another important factor on the performance of
 
 The last performance metric we use is the density of a vertex canning. It is the ratio of the number of vertex in the medium over the number of cells in the vertex canning. It is an interesting metric because it is very efficient to compute, and it has many different uses.
 
-Most obviously, increasing the density lowers the space between the vertices and is therefore correlated to reducing the $\Delta$'s \textit{up to a certain point}. However, increasing the density too much starts to cause vertices to get "too close" to each other, which lowers the performance of the canning as the unnatural positioning of the vertices causes the apparition of new masks.
+Most obviously, increasing the density lowers the space between the vertices and is therefore correlated to reducing the $\Delta$'s \textit{up to a certain point}. However, increasing the density too much starts to cause vertices to get "too close" to each other, which lowers the performance of the canning. This happens because vertices become harder to place near there neighbors as the amount of empty cells in the grid diminishes.
 
-On the other hand, decreasing the starting density \textit{up to a certain point} often yields better result when the canning is optimized through simulated annealing. But, like before, decreasing the density too much creates a starting canning so bad that it ends up hindering the annealing process.
+On the other hand, decreasing the starting density \textit{up to a certain point} often yields better result when the canning is optimized through simulated annealing, because the algorithms we use tend to rely on moving vertices in the grid to empty adjacent cells which is made easier when many cells are empty. But, like before, decreasing the density too much becomes detrimental, as the annealing starts allocating a lot of resources just to reduce the density in the first place, without much benefit afterward.
 
 In the end, we have a lot of forces trying to pull the density in every direction, which makes it a parameter that is both very interesting and hard to use correctly.
 

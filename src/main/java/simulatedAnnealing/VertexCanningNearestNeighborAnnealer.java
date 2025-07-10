@@ -1,11 +1,9 @@
 package simulatedAnnealing;
 
 import simulatedAnnealing.evaluator.ManhattanDistanceEvaluator;
-import simulatedAnnealing.neighborGenerator.neighborSelector.MaximumScoreSelector;
 import simulatedAnnealing.neighborGenerator.NearestNeighborGenerator;
-import computingMedia.cannings.vertexCannings.VertexCanning;
+import cannings.vertexCannings.VertexCanning;
 import simulatedAnnealing.acceptor.GreedyAcceptor;
-import simulatedAnnealing.evaluator.EverageMaskEvaluator;
 import simulatedAnnealing.neighborGenerator.neighborSelector.WeightedRandomSelector;
 import simulatedAnnealing.temperatureRegulator.LinearTemperatureRegulator;
 

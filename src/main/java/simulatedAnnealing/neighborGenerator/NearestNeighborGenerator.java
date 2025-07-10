@@ -1,9 +1,9 @@
 package simulatedAnnealing.neighborGenerator;
 
-import computingMedia.cannings.coords.sCoords.VertexCoord;
+import cannings.coords.sCoords.VertexCoord;
 import simulatedAnnealing.neighborGenerator.neighborSelector.NeighborSelector;
-import computingMedia.cannings.vertexCannings.SimpleVertexCanning;
-import computingMedia.cannings.vertexCannings.VertexCanning;
+import cannings.vertexCannings.SimpleVertexCanning;
+import cannings.vertexCannings.VertexCanning;
 import computingMedia.sLoci.Edge;
 import computingMedia.sLoci.Vertex;
 

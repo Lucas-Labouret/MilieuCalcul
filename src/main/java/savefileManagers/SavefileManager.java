@@ -1,5 +1,10 @@
 package savefileManagers;
 
+import cannings.Canning;
+import cannings.VertexCanningCompleter;
+import cannings.coords.sCoords.VertexCoord;
+import cannings.vertexCannings.RoundedCoordIncrementalVCanning;
+import cannings.vertexCannings.SimpleVertexCanning;
 import computingMedia.sLoci.Vertex;
 import computingMedia.media.Medium;
 import misc.linkedList.LinkedList;
@@ -29,16 +34,21 @@ public abstract class SavefileManager {
     protected abstract Medium makeMedium();
 
     /**
-     * Saves the given Medium to a file with the specified name.
+     * Saves the given Canning to a file with the specified name.
      * The file will be saved in the default location with the default extension.
+     * Note that only the vertex canning is saved, as the rest of the canning can be easily reconstructed with the completer.
      *
-     * @param medium The Medium to save.
+     * @param canning The Canning to save.
      * @param name   The name of the savefile (without extension).
      * @throws IOException If an error occurs during saving.
      */
-    public void save(Medium medium, String name) throws IOException {
-        if (medium == null) return;
+    public void save(Canning canning, String name) throws IOException {
+        if (canning == null) return;
+
         String fullName = DEFAULT_LOCATION + name + DEFAULT_EXTENSION;
+
+        Medium medium = canning.getMedium();
+        HashMap<Vertex, VertexCoord> vertexCanning = canning.getVertexCanning();
 
         HashMap<Integer, Vertex> indexToVertex = new HashMap<>();
         HashMap<Vertex, Integer> vertexToIndex = new HashMap<>();
@@ -114,6 +124,17 @@ public abstract class SavefileManager {
             saveStr.append("\n");
         }
 
+        saveStr.append("\n-- Canning --\n");
+        for (Vertex v : medium) {
+            int index = vertexToIndex.get(v);
+            VertexCoord coord = vertexCanning.get(v);
+            saveStr.append(index).append(":").append(" ")
+                   .append(coord.Y()).append(" ")
+                   .append(coord.X());
+            saveStr.append("\n");
+        }
+
+
         BufferedWriter writer = new BufferedWriter(new FileWriter(fullName));
         writer.write(saveStr.toString());
         writer.close();
@@ -127,10 +148,12 @@ public abstract class SavefileManager {
      * @return The loaded Medium.
      * @throws IOException If an error occurs during loading.
      */
-    public Medium load(String name) throws IOException {
+    public Canning load(String name) throws IOException {
         String fullName = DEFAULT_LOCATION + name + DEFAULT_EXTENSION;
 
         Medium medium = makeMedium();
+        Canning canning;
+
         HashMap<Integer, Vertex> indexToVertex = new HashMap<>();
 
         BufferedReader reader = new BufferedReader(new FileReader(fullName));
@@ -221,6 +244,7 @@ public abstract class SavefileManager {
             }
         }
         catch (NullPointerException e) {
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
 
@@ -257,6 +281,7 @@ public abstract class SavefileManager {
             }
         }
         catch (NullPointerException e) {
+            reader.close();
             throw new IOException("Unexpected end of file");
         }
 
@@ -371,8 +396,73 @@ public abstract class SavefileManager {
             );
         }
 
+        line = reader.readLine();
+        lineCounter++;
+
+        if (line == null){
+            reader.close();
+            throw new IOException("Unexpected end of file");
+        }
+        if (!line.isEmpty()) {
+            reader.close();
+            throw new IOException("Expected an empty line but got '" + line + "' on line " + lineCounter);
+        }
+
+        line = reader.readLine();
+        lineCounter++;
+        if (line == null){
+            reader.close();
+            throw new IOException("Unexpected end of file");
+        }
+        line = line.trim();
+        if (!line.equals("-- Canning --")) {
+            reader.close();
+            throw new IOException("Expected '-- Canning --' but got '" + line + "' on line " + lineCounter);
+        }
+        try {
+            line = reader.readLine();
+            if (line.equals("null")) {
+                canning = new VertexCanningCompleter(new RoundedCoordIncrementalVCanning(medium));
+                canning.can();
+            }
+            else {
+                HashMap<Vertex, VertexCoord> vertexCoords = new HashMap<>();
+                int width = 0;
+                int height = 0;
+                do {
+                    lineCounter++;
+                    line = line.trim();
+
+                    String[] coordLine = line.split(" ");
+                    try {
+                        int index = Integer.parseInt(coordLine[0].substring(0, coordLine[0].length() - 1));
+                        Vertex vertex = indexToVertex.get(index);
+                        int y = Integer.parseInt(coordLine[1]);
+                        int x = Integer.parseInt(coordLine[2]);
+                        vertexCoords.put(vertex, new VertexCoord(y, x));
+
+                        if (y >= height) height = y + 1;
+                        if (x >= width) width = x + 1;
+
+                    } catch (NumberFormatException e) {
+                        reader.close();
+                        throw new IOException(
+                                "Expected line of the form '<index>: <Y> <X>' " +
+                                        "but got '" + line + "' on line " + lineCounter
+                        );
+                    }
+                } while ((line = reader.readLine()) != null && !line.isEmpty());
+                canning = new VertexCanningCompleter(new SimpleVertexCanning(medium, vertexCoords, width, height));
+                canning.can();
+            }
+        }
+        catch (NullPointerException e) {
+            reader.close();
+            throw new IOException("Unexpected end of file");
+        }
+
         reader.close();
-        return medium;
+        return canning;
     }
 
     /**

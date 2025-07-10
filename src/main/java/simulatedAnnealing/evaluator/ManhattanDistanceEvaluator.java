@@ -1,7 +1,7 @@
 package simulatedAnnealing.evaluator;
 
-import computingMedia.cannings.coords.sCoords.VertexCoord;
-import computingMedia.cannings.vertexCannings.VertexCanning;
+import cannings.coords.sCoords.VertexCoord;
+import cannings.vertexCannings.VertexCanning;
 import computingMedia.sLoci.Vertex;
 
 /**

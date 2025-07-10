@@ -1,6 +1,6 @@
 package simulatedAnnealing;
 
-import computingMedia.cannings.vertexCannings.VertexCanning;
+import cannings.vertexCannings.VertexCanning;
 import simulatedAnnealing.acceptor.GreedyAcceptor;
 import simulatedAnnealing.acceptor.StandardAcceptor;
 import simulatedAnnealing.evaluator.EverageMaskEvaluator;

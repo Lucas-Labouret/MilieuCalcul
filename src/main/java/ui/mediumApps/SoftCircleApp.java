@@ -1,8 +1,8 @@
 package ui.mediumApps;
 
-import computingMedia.cannings.Canning;
-import computingMedia.cannings.VertexCanningCompleter;
-import computingMedia.cannings.vertexCannings.RoundedCoordDichotomyVCanning;
+import cannings.Canning;
+import cannings.VertexCanningCompleter;
+import cannings.vertexCannings.RoundedCoordDichotomyVCanning;
 import computingMedia.media.SoftCircleMedium;
 import savefileManagers.SoftCircleManager;
 import ui.utils.TBIntInput;

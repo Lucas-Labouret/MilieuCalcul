@@ -1,7 +1,7 @@
 package simulatedAnnealing.neighborGenerator;
 
-import computingMedia.cannings.vertexCannings.RoundedCoordIncrementalVCanning;
-import computingMedia.cannings.vertexCannings.VertexCanning;
+import cannings.vertexCannings.RoundedCoordIncrementalVCanning;
+import cannings.vertexCannings.VertexCanning;
 import simulatedAnnealing.evaluator.EverageMaskEvaluator;
 import simulatedAnnealing.neighborGenerator.neighborSelector.MaximumScoreSelector;
 import simulatedAnnealing.neighborGenerator.neighborSelector.NeighborSelector;

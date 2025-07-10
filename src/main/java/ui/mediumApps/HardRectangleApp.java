@@ -1,9 +1,8 @@
 package ui.mediumApps;
 
-import computingMedia.cannings.Canning;
-import computingMedia.cannings.VertexCanningCompleter;
-import computingMedia.cannings.vertexCannings.RoundedCoordDichotomyVCanning;
-import computingMedia.cannings.vertexCannings.RoundedCoordIncrementalVCanning;
+import cannings.Canning;
+import cannings.VertexCanningCompleter;
+import cannings.vertexCannings.RoundedCoordIncrementalVCanning;
 import computingMedia.media.HardRectangleMedium;
 import savefileManagers.HardRectangleManager;
 import ui.utils.TBIntInput;

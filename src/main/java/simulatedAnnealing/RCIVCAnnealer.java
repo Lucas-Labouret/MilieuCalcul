@@ -1,7 +1,7 @@
 package simulatedAnnealing;
 
-import computingMedia.cannings.vertexCannings.RoundedCoordIncrementalVCanning;
-import computingMedia.cannings.vertexCannings.VertexCanning;
+import cannings.vertexCannings.RoundedCoordIncrementalVCanning;
+import cannings.vertexCannings.VertexCanning;
 import simulatedAnnealing.acceptor.StandardAcceptor;
 import simulatedAnnealing.evaluator.EverageMaskEvaluator;
 import simulatedAnnealing.neighborGenerator.RCIVCGenerator;

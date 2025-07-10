@@ -6,10 +6,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import computingMedia.cannings.Canning;
-import computingMedia.cannings.evaluation.MasksComputer;
-import computingMedia.cannings.VertexCanningCompleter;
-import computingMedia.cannings.vertexCannings.*;
+import cannings.Canning;
+import cannings.evaluation.MasksComputer;
+import cannings.VertexCanningCompleter;
+import cannings.vertexCannings.*;
 import simulatedAnnealing.NearestNeighborHybridAnnealer;
 import simulatedAnnealing.RCIVCAnnealer;
 import simulatedAnnealing.VertexCanningNearestNeighborAnnealer;
@@ -168,7 +168,7 @@ public abstract class MediumApp extends BorderPane {
             savefileInfo.setText("Please enter a file name");
             return;
         }
-        try { savefileManager.save(medium, getFileName()); }
+        try { savefileManager.save(canning, getFileName()); }
         catch (IOException e) {
             savefileInfo.setText("Failed to save to a file.");
             e.printStackTrace();
@@ -176,8 +176,11 @@ public abstract class MediumApp extends BorderPane {
     }
     private void load(){
         try {
-            medium = savefileManager.load(getFileName());
-            setCanning();
+            canning = savefileManager.load(getFileName());
+            medium = canning.getMedium();
+
+            drawPane.setCanning(canning);
+            masksComputer.setCanning(canning);
             updateInfoBars();
         }
         catch (FileNotFoundException e) { savefileInfo.setText("File not found."); }

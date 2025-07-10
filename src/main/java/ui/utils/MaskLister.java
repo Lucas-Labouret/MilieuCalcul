@@ -4,7 +4,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import computingMedia.cannings.evaluation.MasksComputer;
+import cannings.evaluation.MasksComputer;
 
 /**
  * A utility class that displays the maximum and average values of various mask metrics.
