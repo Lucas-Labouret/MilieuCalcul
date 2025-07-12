@@ -1,5 +1,8 @@
 \documentclass{report}
 
+\usepackage[a4paper,margin=1in,footskip=0.25in]{geometry}
+\usepackage[T1]{fontenc}
+
 \usepackage{caption}
 \usepackage{subcaption}
 
@@ -30,6 +33,8 @@
 	citecolor=blue
 ]{hyperref}
 \usepackage{bookmark}
+
+\newcommand{\warning}{{\fontencoding{U}\fontfamily{futs}\selectfont\char 66\relax}}
 
 \title{
 	Canning for Amorphous Blob Computing\\
@@ -88,7 +93,7 @@ We aim to achieve this through the use of arbitrarily many processing elements (
 \subsection{Definition and Structure of a Computing Medium}
 
 \begin{figure}[h]
-	\centering\includegraphics[width=0.9\linewidth]{assets/handdrawn_medium.png}
+	\centering\includegraphics[width=0.6\linewidth]{assets/handdrawn_medium.png}
 	\caption{Example of triangulated medium.}
 	\label{fig:example_structure}
 \end{figure}
@@ -139,7 +144,7 @@ Therefore, two blobs at two consecutive timestep are "the same blob" if they onl
 \cite{Voronoi} develops tools to program on computing media. As an example, it shows how to build a (discrete) Voronoï diagram from a set of "seeds" in a medium.
 
 \begin{figure}[h]
-	\centering\includegraphics[width=0.7\linewidth]{assets/voronoi_spread.png}
+	\centering\includegraphics[width=0.5\linewidth]{assets/voronoi_spread.png}
 	\caption{
 		Computation of a discrete Voronoï diagram.\\
 		Cells marked with a dot are the vertices of the medium.
@@ -412,41 +417,6 @@ RoundedCoordinates seems to perform overall better on (reasonably defined) hard 
 
 TopDistanceXSorted seems to get worse the wider the media get. This is further evidence that the "drift" in the columns we observed earlier is responsible for the poor performance of this method.
 
-\section{GUI}
-
-A large portion of the TER was focused on the development of a software equipped with a GUI that allows the user to
-\begin{enumerate}[noitemsep,nosep]
-	\item Randomly generate new media, save them, and load them.
-	\item Optimize media with different parameters.
-	\item Visualize different aspects of media.
-	\item Compute and visualize different cannings.
-\end{enumerate}
-$ $
-
-If developing a GUI for this application ended up being time-consuming, it proved to be an incredibly helpful tool. It was an invaluable resource while debugging and for general development, and it allowed me to develop a visual intuition for media and cannings.
-$ $
-
-Below are some pictures of the kind of visualization the GUI provides.
-
-\begin{figure}[h]
-	\centering\includegraphics[width=0.45\linewidth]{assets/canonical_before.png}
-	\centering\includegraphics[width=0.45\linewidth]{assets/canonical_after.png}
-	\caption{"Canonical" view of a medium before (left) and after (right) optimization with FPO.}
-	\label{fig:gui_before_after_FPO}
-\end{figure}
-
-\begin{figure}[h]
-	\centering\includegraphics[width=0.8\linewidth]{assets/canning_view.png}
-	\caption{View of a partial canning (see \ref{partial_canning}) of the vertices of the medium in figure~\ref{fig:gui_before_after_FPO}}
-	\label{fig:gui_canning}
-\end{figure}
-
-\begin{figure}[h]
-	\centering\includegraphics[width=0.8\linewidth]{assets/EfFe_transfers.png}
-	\caption{View of the Ef-Fe pairs in the medium of figure~\ref{fig:gui_before_after_FPO}.}
-	\label{fig:gui_EfFe}
-\end{figure}
-
 \chapter{Internship}
 
 \setcounter{section}{-1}
@@ -472,7 +442,7 @@ without the need for transfer locus intermediary edges, and that they each conta
 First, we fill two 2D arrays~: one that will contain the starting values of the reduction, i.e. the values contained in the vertices before the reduction, and the other will be our result table which and will contains the new values of our vertices after the reduction. These arrays are linked to a canning $C$ of $M$ in that the value in the cell $(Y, X)$ correspond to the value of the vertex at position $(Y, X)$ in $C$. 
 
 \begin{figure}[H]
-	\centering\includegraphics[width=0.9\linewidth]{assets/OR_Reduction_Tables.png}
+	\centering\includegraphics[width=0.7\linewidth]{assets/OR_Reduction_Tables.png}
 \end{figure}
 
 Since 0 is the neutral element of the OR operator, we use it to initialize our result table. Grey values in the grid indicate that the cell does not correspond to a vertex, which means it contains a garbage value that can be safely ignored as it will never be used.
@@ -551,6 +521,63 @@ However, while I am happy about my first results, there remains a lot of work to
 \end{itemize}
 
 Overall, this internship allowed me to sharpen both my research and technical skills, and gave me the opportunity to contribute meaningfully to an interesting and evolving research project.
+
+\chapter*{Appendix~: Use the application}
+\label{appendix}
+\addcontentsline{toc}{chapter}{\nameref{appendix}}
+
+\renewcommand{\thesection}{\Alph{section}}
+\setcounter{section}{0}
+\section{How to use the GUI}
+
+Upon launching the application, the user will be faced with the main window. It divided into 5 parts~:
+
+\begin{figure}[H]
+	\centering\includegraphics[width=1\linewidth]{assets/GUI_Main.png}
+	\caption{}
+	\label{fig:gui_main}
+\end{figure}
+
+\begin{enumerate}
+	\item \textbf{Medium shapes}\\
+	This bar allows to chose the medium shape to use.
+	
+	\item \textbf{Medium generation and optimization}\\
+	toto
+	
+	\item \textbf{Main view}\\
+	This part displays the currently shown medium and canning.
+	
+	\item \textbf{Parameter panel}\\
+	This panel is used to change various parameters.\\
+	The "Graphics" category impacts how the currently shown medium and canning are displayed\\
+	The "Canning" category changes which canning should be displayed. Note that a canning is only computed when it is selected, and is recomputed every time the medium changes and every time it is re-selected after switching back from another canning. This operation can be time consuming, although the "Default" canning is usually very fast.\\
+	The FPO category changes how the the FPO should be applied. The "Set iteration" mode performed as many iteration of the algorithm as indicated in the textbox directly underneath it. The "To convergence" mode keep going until the medium is "sufficiently" optimized (as defined in the textbox directly underneath it, the closer to 1 the better), or until no further progress is made. \\
+	\warning The "To convergence" mode is bugged. Using 7 iterations should be enough for virtually any medium.
+	
+	\item \textbf{Information bar}\\
+	This bar displays various information about the currently shown medium an canning.
+	
+	\item \textbf{Save management}\\
+	This bar is used to save the currently shown medium and canning or load previously saved ones.\\ 
+	To save a canning, write "<name>" in the textbox and click on the "save" button. This will create a new file (or overwrite an old file with the same) in the "save" directory called "<name>.vtxs".\\
+	To load a canning, make sure a "<name>.vtxs" file exists in the "save" directory, write "<name>" in the textbox and click the "load" button.
+	
+\end{enumerate}
+
+\section{How to add new medium shapes}
+
+Start by creating a new class extending either \verb|SoftBorderedMedium| or \verb|HardBorderedMedium| (or \verb|Medium| directly). In the case of a \verb|HardBorderedMedium| extension, it is recommanded to override the \verb|delaunayTriangulate| method to repair any incorrect link between vertices on the border that may occur after triangulation.
+
+This class should contain at least one constructor filling the medium with randomly generated vertices (and not simply a list of preexisting vertices)\\
+
+Create a new class extending \verb|SavefileManager|. It should only override the \verb|makeMedium| method with \verb|public <MediumClass> makeMedium() { return new <MediumClass>(); }|\\
+
+Create a class extending \verb|MediumApp|. This class should define a constructor creating all the input you may need to add to the top tool bar (2 in figure \ref{fig:gui_main}), and create an instance of the suitable \verb|SavefileManager| subclass. This class should also override the \verb|generate| method to create the new medium according to user specification.
+
+\section{How to add new cannings}
+
+
 
 \printbibliography[heading=bibintoc]
 

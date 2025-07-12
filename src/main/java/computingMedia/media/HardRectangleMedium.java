@@ -17,6 +17,7 @@ public class HardRectangleMedium extends HardBorderedMedium {
         super(width, height, vertices);
     }
 
+    @Override
     public HardRectangleMedium copy() {
         return new HardRectangleMedium(width, height, this.toArray(new Vertex[0]));
     }
