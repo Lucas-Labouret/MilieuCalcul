@@ -1,11 +1,19 @@
 package ui.mediumApps;
 
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+
+import ui.utils.InformationBar;
+import ui.utils.MaskLister;
+import ui.utils.MediumDrawer;
+import savefileManagers.SavefileManager;
+import ui.utils.SidePanel;
+
 import cannings.Canning;
 import cannings.evaluation.MasksComputer;
 import cannings.VertexCanningCompleter;
@@ -14,14 +22,10 @@ import simulatedAnnealing.NearestNeighborHybridAnnealer;
 import simulatedAnnealing.RCIVCAnnealer;
 import simulatedAnnealing.VertexCanningNearestNeighborAnnealer;
 import computingMedia.media.Medium;
-import ui.utils.InformationBar;
-import ui.utils.MaskLister;
-import ui.utils.MediumDrawer;
-import savefileManagers.SavefileManager;
-import ui.utils.SidePanel;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * MediumApp is an abstract class that serves as a base for different medium applications.
@@ -48,6 +52,8 @@ public abstract class MediumApp extends BorderPane {
     protected final InformationBar mediumInfoBar;
     protected final InformationBar maskInfoBar;
     protected final MediumDrawer drawPane;
+
+    private final ArrayList<Node> topToolBarInputs;
 
     protected final VBox botVBox;
 
@@ -83,6 +89,8 @@ public abstract class MediumApp extends BorderPane {
         maskInfoBar = new InformationBar();
         botToolBar = new ToolBar();
         drawPane = new MediumDrawer();
+
+        topToolBarInputs = new ArrayList<>();
 
         botVBox = new VBox();
         botVBox.getChildren().addAll(mediumInfoBar, maskInfoBar, botToolBar);
@@ -121,6 +129,16 @@ public abstract class MediumApp extends BorderPane {
      * This method should be overridden in subclasses to provide generation logic specific to each type of medium.
      */
     abstract protected void generate();
+
+    protected void registerTopToolBarInput(Node input) {
+        topToolBarInputs.add(input);
+    }
+
+    protected void buildTopToolBar() {
+        topToolBar.getItems().clear();
+        topToolBar.getItems().addAll(topToolBarInputs);
+        topToolBar.getItems().addAll(gen, tri, fpo, msk);
+    }
 
     /** Common actions to be performed during generation. */
     protected void generateCommon(){

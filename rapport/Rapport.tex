@@ -78,7 +78,7 @@ The internship then focused on improving and expanding on the results I obtained
 The program that I produced during this internship can be found \href{https://github.com/Lucas-Labouret/MilieuCalcul}{\textbf{here}}.
 
 $ $\\
-\small\textit{Note : Chapters 1 and 2 are identical the TER report I already submitted. I chose to include them anyway as they are necessary to understand the new chapter 3.}
+\small\textit{Note~: Chapters 1 and 2 are identical the TER report I already submitted. I chose to include them anyway as they are necessary to understand the new chapter 3.}
 
 \chapter{Prerequisites}
 
@@ -486,7 +486,7 @@ A key limitation of this approach to SIMD is the size of the "int" type. In java
 	\item Since each int encodes information for $32 - 2\Delta x$, we have a maximum speedup of $32 - 2\Delta x$. However, each mask needed to apply a computation to a line fragment decreases that speedup rather significantly. To continue with our OR reduction example~: let's imagine a canning with $\Delta x = 2$, and a line fragment associated with 3 masks. Then, to update our result table, we need 9 bitwise operations~: 3 "bithshifts" to align our data, 3 "and" to apply our masks, and 3 "or" to update our results. This means that the total speedup is $\lfloor 28/9\rfloor = 3$, far from the factor of 32 we hoped for. This also means that there is a rather low upper limit on the amount of masks that can be used before this method starts hindering the performance of the simulator instead of improving it.
 \end{enumerate}
 
-Still, even though it is difficult to significantly improve the running time, this methods provides two other benefits : it allows to reuse the same program for both crystalline and amorphous media without much changes, and it still improves memory usage by a factor of $32 - 2\Delta x$ as the additional space required to store the masks quickly dwarfs in front of the space needed to store the values of the loci.
+Still, even though it is difficult to significantly improve the running time, this methods provides two other benefits~: it allows to reuse the same program for both crystalline and amorphous media without much changes, and it still improves memory usage by a factor of $32 - 2\Delta x$ as the additional space required to store the masks quickly dwarfs in front of the space needed to store the fields.
 
 \subsection{Importance of $\Delta$'s and Density}
 
@@ -507,20 +507,6 @@ In the end, we have a lot of forces trying to pull the density in every directio
 \chapter*{Conclusion}
 \label{conclusion}
 \addcontentsline{toc}{chapter}{\nameref{conclusion}}
-
-This TER was a very enriching experience which allowed me to delve once again in the fascinating world of blob computing and computing media. Over the course of the project I was brought to perform many different tasks such as bibliographical work, theoretical development of cannings and their concrete implementation, and building a GUI application. It was particularly satisfying to see how ideas developed on paper could translate into working software, and how the GUI made the concepts more tangible.
-
-However, while I am happy about my first results, there remains a lot of work to be done. For this reason, this TER will be extended into a full-time internship. In the foreseeable future, I will focus on three tasks~:
-\begin{itemize}[label=-]
-	\item Reworking the border correction of soft-bordered media, potentially retroactively modifying it after it has been canned to optimize said canning.
-	
-	\item Implementing an exact measurement of the performance of a canning.\\
-	While $\mathcal{A}_{max}$ is a good as a first indicator, I am unsure if it is a very tight bound on performance (although I conjecture it is for large media).
-	
-	\item Improve vertex canning algorithms, and write a simulated annealing algorithm to optimize existing cannings.
-\end{itemize}
-
-Overall, this internship allowed me to sharpen both my research and technical skills, and gave me the opportunity to contribute meaningfully to an interesting and evolving research project.
 
 \chapter*{Appendix~: Use the application}
 \label{appendix}
@@ -543,8 +529,15 @@ Upon launching the application, the user will be faced with the main window. It 
 	This bar allows to chose the medium shape to use.
 	
 	\item \textbf{Medium generation and optimization}\\
-	toto
-	
+	This bar contains~:
+	\begin{enumerate}[noitemsep, nosep]
+		\item A series of user input fields that is defined separately for each medium shape.
+		\item A "Generate" button which creates a new random medium using the user-provided parameters.
+		\item A "Triangulate" button which applies a Delaunay triangulation of the medium.
+		\item An "FPO" button which both triangulates the medium and apply the FPO algorithm using the parameter provided the parameter panel.
+		\item A "Masks" button, which opens a new window displaying information about the masks needed to perform a communication using the current canning. 
+	\end{enumerate}
+
 	\item \textbf{Main view}\\
 	This part displays the currently shown medium and canning.
 	
@@ -576,6 +569,27 @@ Create a new class extending \verb|SavefileManager|. It should only override the
 Create a class extending \verb|MediumApp|. This class should define a constructor creating all the input you may need to add to the top tool bar (2 in figure \ref{fig:gui_main}), and create an instance of the suitable \verb|SavefileManager| subclass. This class should also override the \verb|generate| method to create the new medium according to user specification.
 
 \section{How to add new cannings}
+
+\textbf{To create a standalone canning}~:\\
+Simply create a class implementing the \verb|VertexCanning|. Its instances can later be passed to a \verb|VertexCanningCompleter| to convert them to total cannings.
+
+While it is possible to create a class directly implementing the \verb|Canning| interface, this approach is not recommended, as the backup of such cannings is currently not supported.\\
+$ $\\
+\textbf{To create an annealing-based canning}~:\\
+Create a new class extending \verb|Annealer<VertexCanning>|, and pass its instances to a \verb|VertexCanningAnnealer| along with a \verb|VertexCanning| to use as a seed for the annealing process. Finally, give the instance of the \verb|VertexCanningAnnealer| to a \verb|VertexCanningCompleter|.\\
+$ $\\
+\textbf{To add a canning to the GUI}~:\\
+In the source code of the class \verb|MediumApp|, after the line \verb|ToggleGroup canGroup = new ToggleGroup();| in \verb|fillSidePanel()|~:
+\begin{enumerate}[noitemsep, nosep]
+	\item Create a new \verb|RadioButton rd| and add it to the toggle group with \verb|rd.setToggleGroup(canGroup)|.
+	
+	\item In the lambda passed to \verb|canGroup.selectedToggleProperty().addListener()|, add 
+	\begin{verbatim}
+		else if (newVal == rd) { canningFactory = m -> new NewCanning(parameters...) }
+	\end{verbatim}
+	
+	\item Add \verb|rd| to the constructor of \verb|VBox canning|.
+\end{enumerate}
 
 
 

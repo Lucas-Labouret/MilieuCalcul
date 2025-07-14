@@ -16,8 +16,8 @@ public class SoftSquareApp extends MediumApp {
         pointCountField = new TBIntInput("Count", "20");
         pointCountField.setPrefWidth(50);
 
-        topToolBar.getItems().addAll(pointCountField, gen, tri, fpo, msk);
-        setTop(topToolBar);
+        registerTopToolBarInput(pointCountField);
+        buildTopToolBar();
 
         savefileManager = new SoftSquareManager();
     }

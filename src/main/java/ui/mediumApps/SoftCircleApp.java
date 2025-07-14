@@ -15,8 +15,8 @@ public class SoftCircleApp extends MediumApp {
     public SoftCircleApp() {
         ptCountInput = new TBIntInput("Count", "20");
 
-        topToolBar.getItems().addAll(ptCountInput, gen, tri, fpo, msk);
-        setTop(topToolBar);
+        registerTopToolBarInput(ptCountInput);
+        buildTopToolBar();
 
         savefileManager = new SoftCircleManager();
     }
