@@ -2,22 +2,22 @@ package test;
 
 import cannings.Canning;
 import cannings.VertexCanningCompleter;
+import cannings.coords.sCoords.VertexCoord;
 import cannings.evaluation.MasksComputer;
-import cannings.vertexCannings.AdaptativeGridVCanning;
-import cannings.vertexCannings.RoundedCoordDichotomyVCanning;
-import cannings.vertexCannings.RoundedCoordIncrementalVCanning;
+import cannings.vertexCannings.*;
 import computingMedia.media.HardRectangleMedium;
 import computingMedia.media.Medium;
 import computingMedia.sLoci.Vertex;
 import savefileManagers.HardRectangleManager;
 import savefileManagers.SavefileManager;
+import simulatedAnnealing.NearestNeighborHybridAnnealer;
+import simulatedAnnealing.VertexCanningNearestNeighborAnnealer;
 
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class Tester {
@@ -40,6 +40,12 @@ public class Tester {
         "1024",
         "2025",
         "4096"
+    );
+
+    private static final List<String> canningMethods = List.of(
+        "ORCI",
+        "ORCI_AGVC",
+        "ORCI2D"
     );
 
     private static Medium createMedium(String family, String size) {
@@ -301,82 +307,97 @@ public class Tester {
         makeCSV(methodName, results);
     }
 
-    public static void generate(String methodName) {
+    public static void canningStats(String methodName) {
         System.out.println("Executing " + methodName);
-        for (String family : families) for (String size : sizes) for (int i = 0; i < 10; i++) {
-            String name = family + size + "_ORCI_" + i;
+
+        String[][] results = new String[sizes.size() * 10 + 1][11];
+
+        results[0][0]  = "Name";
+        results[0][1]  = "dY";
+        results[0][2]  = "dX";
+        results[0][3]  = "Masks Average";
+        results[0][4]  = "Masks Max";
+        results[0][5]  = "Lines";
+        results[0][6]  = "Average Fragments/Line";
+        results[0][7]  = "Max Fragments/Line";
+        results[0][8]  = "Average Fragment Size";
+        results[0][9]  = "Max Fragment Size";
+        results[0][10] = "Density";
+
+        for (int iSize = 0; iSize < sizes.size(); iSize++) for (int i = 0; i < 10; i++){
+            String name = "HardSquare" + sizes.get(iSize) + "_AnnealedRCIFull_" + i;
 
             Canning canning;
-            SavefileManager manager = savefileManagers.get(family);
-            try {
-                canning = manager.load(name);
-            } catch (Exception e) {
-                System.err.println("Failed to load medium: " + name);
-                e.printStackTrace();
-                continue;
-            }
-
-            Canning newCanning = new VertexCanningCompleter(new AdaptativeGridVCanning(canning));
-            try { newCanning.can(); }
+            try { canning = savefileManagers.get("HardSquare").load(name); }
             catch (Exception e) {
-                System.err.println("Failed to complete canning for " + name);
+                System.out.println("Failed to load : " + name);
                 continue;
             }
 
-            MasksComputer defaultCanningMasks = new MasksComputer(canning);
-            int[] defaultDeltas = defaultCanningMasks.getDeltas();
-            MasksComputer newCanningMasks = new MasksComputer(newCanning);
-            int[] newDeltas = newCanningMasks.getDeltas();
+            System.out.println("Studying " + name);
 
-            try {
-                if (Math.max(newDeltas[0], newDeltas[1]) < Math.max(defaultDeltas[0], defaultDeltas[1])) {
-                    System.out.println("New canning has larger deltas than default for " + name);
-                    manager.save(newCanning, family + size + "_ORCI_AGVC_" + i);
-                } else if (
-                        Math.max(newDeltas[0], newDeltas[1]) == Math.max(defaultDeltas[0], defaultDeltas[1]) &&
-                                (newDeltas[0] < Math.min(defaultDeltas[0], defaultDeltas[1]) ||
-                                 newDeltas[1] < Math.min(defaultDeltas[0], defaultDeltas[1]))
-                ) {
-                    System.out.println("New canning has smaller deltas than default for " + name);
-                    manager.save(newCanning, family + size + "_ORCI_AGVC_" + i);
-                }
-            } catch (IOException e) {
-                System.err.println("Failed to save new canning for " + name);
-                e.printStackTrace();
-            }
-        }
-    }
+            int line = iSize * 10 + i + 1;
 
-    private static void getAllDeltas(String methodName){
-        System.out.println("Executing " + methodName);
+            results[line][0] = name;
 
-        File dir = new File("save");
-        File[] files = dir.listFiles((d, name) -> name.endsWith(".vtxs"));
-        if (files == null) {
-            System.out.println("No files found in directory: " + dir.getAbsolutePath());
-            return;
-        }
+            MasksComputer masksRCI = new MasksComputer(canning);
+            int[] deltas = masksRCI.getDeltas();
 
-        String[][] results = new String[files.length][3];
-        for (int i = 0; i < files.length; i++) {
-            String fileName = files[i].getName().substring(0, files[i].getName().lastIndexOf('.'));
+            results[line][1] = String.valueOf(deltas[0]);
+            results[line][2] = String.valueOf(deltas[1]);
 
-            SavefileManager manager = new HardRectangleManager();
-            Canning canning;
-            try {
-                canning = manager.load(fileName);
-            } catch (Exception e) {
-                System.out.println("Failed to load medium: " + fileName);
-                continue;
+            double averageMasks = (masksRCI.getAverageEfFe() +
+                                   masksRCI.getAverageVfFv() +
+                                   masksRCI.getAverageVeEv()   ) / 3.0;
+            results[line][3] = String.format("%.2f", averageMasks);
+
+            int maxMasks = Math.max(
+                    Math.max(masksRCI.getMaxEfFe(), masksRCI.getMaxVfFv()),
+                    masksRCI.getMaxVeEv()
+            );
+            results[line][4] = String.valueOf(maxMasks);
+
+            results[line][5] = String.valueOf(canning.getHeight());
+
+            HashMap<VertexCoord, HashSet<Vertex>> fragments = new HashMap<>();
+            for (Vertex vertex : canning.getMedium()) {
+                VertexCoord coord = canning.getVertexCanning().get(vertex);
+                VertexCoord fragment = new VertexCoord(coord.Y(), coord.X()/(32 - 2*deltas[1]) + 1);
+                fragments.computeIfAbsent(fragment, k -> new HashSet<>()).add(vertex);
             }
 
-            MasksComputer masksComputer = new MasksComputer(canning);
-            int[] deltas = masksComputer.getDeltas();
-            results[i][0] = fileName;
-            results[i][1] = String.valueOf(deltas[0]);
-            results[i][2] = String.valueOf(deltas[1]);
+            int[] fragmentsPerLine = new int[canning.getHeight()];
+            for (VertexCoord fragment : fragments.keySet()) {
+                int lineIndex = fragment.Y();
+                if(fragment.X() > fragmentsPerLine[lineIndex]) fragmentsPerLine[lineIndex] = fragment.X();
+            }
+
+            double averageFragmentsPerLine = 0;
+            int maxFragmentsPerLine = 0;
+            for (int k : fragmentsPerLine) {
+                averageFragmentsPerLine += k;
+                if (k > maxFragmentsPerLine) maxFragmentsPerLine = k;
+            }
+            averageFragmentsPerLine /= canning.getHeight();
+
+            results[line][6] = String.format("%.2f", averageFragmentsPerLine);
+            results[line][7] = String.valueOf(maxFragmentsPerLine);
+
+            double averageFragmentSize = 0;
+            int maxFragmentSize = 0;
+            for (HashSet<Vertex> fragment : fragments.values()) {
+                int size = fragment.size();
+                averageFragmentSize += size;
+                if (size > maxFragmentSize) maxFragmentSize = size;
+            }
+            averageFragmentSize /= fragments.size();
+
+            results[line][8] = String.format("%.2f", averageFragmentSize);
+            results[line][9] = String.valueOf(maxFragmentSize);
+
+            results[line][10] = String.format("%.2f", canning.getDensity());
         }
 
-        makeCSV("allDeltas", results);
+        makeCSV(methodName + "2", results);
     }
 }

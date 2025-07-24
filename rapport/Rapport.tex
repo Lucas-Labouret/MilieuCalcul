@@ -274,7 +274,7 @@ To align with the way crystaline media are hendled, we set $a_V = 2$, i.e. we wa
 	This vertex canning was developed to rely exclusively on the spatial embedding of the medium, completing ignoring its graph structure. It works in the following way~:\\
 	- First set a counter to 1.\\
 	- Multiply the spatial coordinates of each vertex by the counter and round the result. Use the two integers obtained as a 2D index to put each vertex in the grid.\\
-	- If two vertices share the same cell, increment the counter by one and go back to the previous step. Otherwise, we have a vertex canning.
+	- If two vertices share the same cell, increment the counter by 1 and go back to the previous step. Otherwise, we have a vertex canning.
 \end{enumerate}
 
 Regarding the TopDistanceXStorted algorithm, I first tried sorting the lines using the distance to the left-side border, however it resulted in invalid vertex cannings where two vertices would share the same cell.
@@ -469,7 +469,13 @@ Now, in reality, vertices don't communicate directly but the two concepts above 
 
 \subsection{Exact Measurement of the Performance of a Canning}
 
-From there, establishing an exact method of measuring the performance of canning might seem easy~: the best canning is simply the one that minimizes the number of masks that need to be used in the simulation, as it determines the amount of logical operations that need to be performed. Additionally, since each line is treated separately, we don't need to minimize the total number of masks par se, but the average amount used by each line
+From there, establishing an exact method of measuring the performance of canning might seem easy~: the best canning is the one that minimizes 4 values~:
+\begin{enumerate}[noitemsep, nosep]
+	\item The number of lines in the canning
+	\item The number of fragments of length $32-2\Delta x$ in each line (i.e. the $\Delta x$)
+	\item The number of masks per fragment
+\end{enumerate}
+Additionally, we also want to minimize the $\Delta y$ as it determines how many lines must remain readily accessible in memory at any given point in time.
 
 However, it is important to notice that different actions need different amounts of masks. For example,  an Ev$\rightarrow$Ve communication might not require as many masks as a Fe$\rightarrow$Ef communication. Similarly, a Vertex to 1st Ve communication might not require as many masks as a Vertex to 8th Ve communication. Still, all symmetrical communications use the same amount of masks.
 
@@ -494,19 +500,95 @@ As we just saw, the $\Delta x$ is another important factor on the performance of
 
 The last performance metric we use is the density of a vertex canning. It is the ratio of the number of vertex in the medium over the number of cells in the vertex canning. It is an interesting metric because it is very efficient to compute, and it has many different uses.
 
-Most obviously, increasing the density lowers the space between the vertices and is therefore correlated to reducing the $\Delta$'s \textit{up to a certain point}. However, increasing the density too much starts to cause vertices to get "too close" to each other, which lowers the performance of the canning. This happens because vertices become harder to place near there neighbors as the amount of empty cells in the grid diminishes.
+Most obviously, increasing the density lowers the space between the vertices and is therefore correlated to reducing the $\Delta$'s \textit{up to a certain point}. However, increasing the density too much starts to cause vertices to get "too close" to each other, which lowers the performance of the canning. This happens because vertices become harder to place near there neighbors as the amount of empty cells in the grid diminishes, and conflicts start to appear when two (or more) vertices try to occupy the same cell without a good way to relocate one of them.
 
 On the other hand, decreasing the starting density \textit{up to a certain point} often yields better result when the canning is optimized through simulated annealing, because the algorithms we use tend to rely on moving vertices in the grid to empty adjacent cells which is made easier when many cells are empty. But, like before, decreasing the density too much becomes detrimental, as the annealing starts allocating a lot of resources just to reduce the density in the first place, without much benefit afterward.
 
 In the end, we have a lot of forces trying to pull the density in every direction, which makes it a parameter that is both very interesting and hard to use correctly.
 
-\section{Creating New Vertex Cannings}
+\section{Creating Vertex Cannings From Scratch}
+
+\subsection{Revisiting the Rounded Coordinates Algorithm$^{\ref{partial_canning}}$}
+
+Although the algorithm seems to work well, one key issue with its design is the arbitrariness of the increment. Initially, it was always one, but there is no reason to that particular value except for ease of programming.\\
+
+Firstly, we want to notice that the objective of this algorithm is to find a suitable "scaling factor" by which we can multiply our coordinates, such that they remain unique even after rounding. The increment method was simply a way to find such scaling factor.
+
+One way to remove the arbitrariness is to perform a dichotomic search for the minimum working scaling factor. However, this methods yields terrible results (in fact, often worse than simply setting the increment to one). This is caused by the fact that a scaling factor $x_1$ can work while being smaller than a scaling $x_2$ which doesn't, making the dichotomic search ill-suited for this problem. This method had the additional drawback of trying to reduce increase the density of the canning at all cost, even if it would cause it to hurt the overall performance of the canning.\\
+
+A better way to get rid of the arbitrariness is to use simulated annealing to optimize the value of the increment. This method allow for a thorough search over the increments (provided that the neighbor generation allows to reach any real number), while actually allowing to optimize the canning based on its performance, rather than simply its density.
+
+While it may seem like a good idea to optimize the scaling factor directly rather than the increment, there is a pitfall to be aware of : it is very difficult to determine a good search interval, as the final value of the scaling is very sensitive to both the size of medium and its shape. Optimizing the increment instead basically guarantees that 1 is a good starting position regardless of the medium, and that a good solution will be found relatively close by.\\
+
+However, even with the arbitrariness gone, we run into a second issue : this algorithm performs really well on square media, but struggles with rectangular media. This problem arises because we use the same scaling factor for both the $y$ and $x$ coordinates : since the rectangle is longer than it is tall (or vice-versa), we require a larger horizontal scaling factor (i.e. we want longer lines to fit all our vertices), but because we use the same scaling factor for both coordinates, we also en up with taller, emptier columns. The solution is then easy : using two separated scaling factors.
+
+Once this correction is implemented, the algorithm starts performing almost as well on rectangular grids as it does on square grids.
+
+\subsection{A Divide and Conquer Algorithm}
+
+A divide and conquer algorithm also seems attractive on paper, since our objective is to build a grid around our vertices, but it is difficult to implement in practice.\\
+
+The first difficulty is to know when to stop the division. Fortunately, it is relatively easy to computed an "expected length" for the lines and columns of the canning : given medium with $n$ vertices, width $w$ and height $h$, a line should contain close to $\lceil\frac{w}{h}\sqrt{n}\rceil$ vertices, and a column close to $\lceil\frac{h}{w}\sqrt{n}\rceil$ vertices. 
+
+Now, we could be tempted to define the lines (resp. columns) by recursively dividing the medium in half until all the lines (resp. columns) contain at most the expected number of vertices, but causes several issues~:
+\begin{itemize}[noitemsep, nosep, label=-]
+	\item This systematically results in cannings whose number of lines and columns are powers of 2, which may not always be well-suited.
+	\item Two vertices could both be placed in the same line and the same column. This means that they would be placed in the same cell, which is disallowed by definition.
+	\item This would create lines and columns that are extremely uneven. 
+\end{itemize}$ $
+
+Instead, the current algorithm work by that an expected number of vertices on a line (resp. column) is also an expected number of columns (resp. lines) in the canning. Then it recursively divides the medium to reach that expected number in the following manner :
+\begin{enumerate}[noitemsep, nosep]
+	\item 
+	If there is one column (resp. line) to create
+	Put the expected amount of vertices in it, starting from the closest to the center of the current part.
+	\item 
+	If there is a pair number of columns (resp. lines) to create\\
+	Divide the medium into two parts with half the vertices on the left (resp. above) and half the vertices on the right (resp. below), and repeat this algorithm on each part.
+	\item 
+	If there is odd number of columns (resp. lines) to create\\
+	Create a column (resp. line) and fill it with the expected amount of the vertices that are closest to the middle of the current part.
+	Repeat this algorithm on the the two parts that are left on each side of side of the new column (resp. line). 
+\end{enumerate}$ $
+
+This approach solves the problem of having uneven lines and columns and provides number of lines and columns that more fitted to the medium, but doesn't solve the issue of vertices sharing the same cell and even result in vertices that are not placed at all. Placing those missing vertices correctly while separating those which share the same cells is not trivial at all, and ultimately I couldn't find a goo way to do it. 
 
 \section{Optimizing Existing Vertex Cannings}
+
+Once a canning has been created, it may be beneficial to modify it. For example, should a canning contain an empty line, there is no reason not to remove it.
+
+\subsection{Adaptative Grid Method}
+
+This method tries to optimize cannings whose lines and columns are separable, i.e. it is possible to draw straight horizontal and vertical lines that mark a separation between all the lines and columns of the the canning. It aims to reduce the deltas of such cannings by merging lines and columns wherever there is a "problematic" pair of neighbors. 
+
+For example, a canning with a $\Delta x$ of 4 means means that there  is at least one pair of vertices that are neighbor and separated by 3 columns (covering 5 in total). This method then attempts to merge those 5 columns into 4, thus reducing the $\Delta x$ to 3. To do this, the method checks that on each line of the canning, at least one of the columns contains an empty cell. If this is the case, then merging is easy. Otherwise, the method allows vertices to move to an adjacent cell if they close enough to the border of that cell to try and create an empty cell on each line. This method keeps going as long as there remain problematic pairs that it hasn't already tried to solve.
+
+\subsection{Simulated Annealing}
+
+Another approach is to optimize the vertex placements in the canning through simulated annealing.
+
+\subsubsection{Search Space and Neighbor Selection}
+
+\subsubsection{Annealing Process}
 
 \chapter*{Conclusion}
 \label{conclusion}
 \addcontentsline{toc}{chapter}{\nameref{conclusion}}
+
+\textit{\small Note : the following conclusions are based on the results available in the file src/main/java/test/testResults/canningStats.csv}\\
+$ $\\
+Over the course of this internship, I explored the notion of canning in depth. 
+
+Overall, the best method was to apply a simulated annealing algorithm to the increment of a Rounded Coordinates Incremental algorithm. For square medium, this method largely outperforms all others, even when using a single scaling factor. For rectangular, the dual scaling factor version remains usually better, although using a single factor and correcting the result with an Adaptive Grid algorithm may sometimes result in a better canning.
+
+Disappointingly, these methods do not always allow to reach a maximum delta of 2 on large mediums ($\ge$ 2025 vertices), however I do strongly believe that such a result is always attainable, given how little problematic pairs of vertices there even in the largest grids. In particular, I believe that the Local Resolution methods has a strong potential. 
+
+A simulated annealing algorithm based on moving vertices in the canning should probably work too given enough time and resources, but it would need a lot more time to fine tune than I was able to spend. To make it work, one would need either a much faster computer than I had access to, or to completely rework the solution space exploration. I do not think that this direction is worth pursuing with my resources. Still, since this approach is highly parallelizable, having access to a computing cluster would make it a lot more attractive.
+
+Similarly, I think Divide and Conquer methods face too many issues to be worth pursuing.\\
+
+Finally, while I would've liked to test my methods on much larger grids (4096 vertices is still low), the time complexity of my FPO implementation simply did not allow it. In the future, it may be worth it to use grids generated through Poisson Disc Sampling. Even though this method will result in lower quality media (and thus deteriorate the results), it could still give us an idea of how well the methods developed here scale with the number of vertices.
+
 
 \chapter*{Appendix~: Use the application}
 \label{appendix}

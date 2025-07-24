@@ -50,9 +50,33 @@ public class MasksComputer {
         return new int[]{deltaY, deltaX, upperBound};
     }
 
+    /** Computes the average number of unique masks used for transfers for each a line of vertices. */
+    private double getAverageTransfer(HashMap<Integer, HashMap<Integer, HashSet<MaskIndex>>> maskSets) {
+        double accumulator = 0;
+        for (HashMap<Integer, HashSet<MaskIndex>> maskSetSet : maskSets.values()) {
+            int lineAccumulator = 0;
+            for (HashSet<MaskIndex> maskSet : maskSetSet.values()) {
+                lineAccumulator += maskSet.size();
+            }
+            accumulator += lineAccumulator / (double)(maskSetSet.size());
+        }
+        return accumulator / maskSets.size();
+    }
+
+    /** Computes the maximum number of unique masks used for transfers. */
+    private int getMaxTransfer(HashMap<Integer, HashMap<Integer, HashSet<MaskIndex>>> maskSets) {
+        int max = 0;
+        for (HashMap<Integer, HashSet<MaskIndex>> maskSetSet : maskSets.values())
+            for (HashSet<MaskIndex> maskSet : maskSetSet.values())
+                if (maskSet.size() > max) max = maskSet.size();
+        return max;
+    }
+
     /** Computes the average number of unique masks used for EvVe transfers for each a line of vertices. */
-    private HashMap<Integer, HashSet<MaskIndex>> maskSetVeEv(){
-        HashMap<Integer, HashSet<MaskIndex>> maskSet = new HashMap<>();
+    private HashMap<Integer, HashMap<Integer, HashSet<MaskIndex>>> maskSetVeEv(){
+        int deltaX = getDeltas()[1];
+
+        HashMap<Integer, HashMap<Integer, HashSet<MaskIndex>>> maskSet = new HashMap<>();
         for (Ev ev : canning.getEv()) {
             EvCoord coord = canning.getEvCanning().get(ev);
             VeCoord facingCoord = canning.getVeCanning().get(canning.getEvVeCommunication().get(ev));
@@ -65,7 +89,10 @@ public class MasksComputer {
             );
 
             int line = coord.edge().vertex().Y();
-            maskSet.computeIfAbsent(line, k -> new HashSet<>()).add(mask);
+            int lineFragment = coord.edge().vertex().X() / (32 - 2*deltaX);
+            maskSet.computeIfAbsent(line, k -> new HashMap<>())
+                   .computeIfAbsent(lineFragment, k -> new HashSet<>())
+                   .add(mask);
         }
         return maskSet;
     }
@@ -75,12 +102,7 @@ public class MasksComputer {
      * Result should be identical to the average number of unique masks used for EvVe transfers.
      */
     public double getAverageVeEv(){
-        HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetVeEv();
-        int accumulator = 0;
-        for (HashSet<MaskIndex> maskSet : maskSets.values()) {
-            accumulator += maskSet.size();
-        }
-        return accumulator / (double)(maskSets.size());
+        return getAverageTransfer(maskSetVeEv());
     }
 
     /**
@@ -88,17 +110,13 @@ public class MasksComputer {
      * Result should be identical to the maximum number of unique masks used for EvVe transfers.
      */
     public int getMaxVeEv(){
-        HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetVeEv();
-        int max = 0;
-        for (HashSet<MaskIndex> maskSet : maskSets.values()) {
-            if (maskSet.size() > max) max = maskSet.size();
-        }
-        return max;
+        return getMaxTransfer(maskSetVeEv());
     }
 
     /** Computes the average number of unique masks used for VfFv transfers for each a line of vertices. */
-    private HashMap<Integer, HashSet<MaskIndex>> maskSetVfFv(){
-        HashMap<Integer, HashSet<MaskIndex>> maskSet = new HashMap<>();
+    private HashMap<Integer, HashMap<Integer, HashSet<MaskIndex>>> maskSetVfFv(){
+        int deltaX = getDeltas()[1];
+        HashMap<Integer, HashMap<Integer, HashSet<MaskIndex>>> maskSet = new HashMap<>();
         for (Vf vf : canning.getVf()) {
             VfCoord coord = canning.getVfCanning().get(vf);
             FvCoord facingCoord = canning.getFvCanning().get(canning.getVfFvCommunication().get(vf));
@@ -111,7 +129,10 @@ public class MasksComputer {
             );
 
             int line = coord.vertex().Y();
-            maskSet.computeIfAbsent(line, k -> new HashSet<>()).add(mask);
+            int lineFragment = coord.vertex().X() / (32 - 2*deltaX);
+            maskSet.computeIfAbsent(line, k -> new HashMap<>())
+                   .computeIfAbsent(lineFragment, k -> new HashSet<>())
+                   .add(mask);
         }
         return maskSet;
     }
@@ -121,29 +142,20 @@ public class MasksComputer {
      * Result should be identical to the average number of unique masks used for FvVf transfers.
      */
     public double getAverageVfFv(){
-        HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetVfFv();
-        int accumulator = 0;
-        for (HashSet<MaskIndex> maskSet : maskSets.values()) {
-            accumulator += maskSet.size();
-        }
-        return accumulator / (double)(maskSets.size());
+        return getAverageTransfer(maskSetVfFv());
     }
     /**
      * Computes the maximum number of unique masks used for VfFv transfers.
      * Result should be identical to the maximum number of unique masks used for FvVf transfers.
      */
     public int getMaxVfFv(){
-        HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetVfFv();
-        int max = 0;
-        for (HashSet<MaskIndex> maskSet : maskSets.values()) {
-            if (maskSet.size() > max) max = maskSet.size();
-        }
-        return max;
+        return getMaxTransfer(maskSetVfFv());
     }
 
     /** Computes the average number of unique masks used for EfFe transfers for each a line of vertices. */
-    private HashMap<Integer, HashSet<MaskIndex>> maskSetEfFe(){
-        HashMap<Integer, HashSet<MaskIndex>> maskSet = new HashMap<>();
+    private HashMap<Integer, HashMap<Integer, HashSet<MaskIndex>>> maskSetEfFe(){
+        int deltaX = getDeltas()[1];
+        HashMap<Integer, HashMap<Integer, HashSet<MaskIndex>>> maskSet = new HashMap<>();
         for (Fe fe : canning.getFe()) {
             FeCoord coord = canning.getFeCanning().get(fe);
             EfCoord facingCoord = canning.getEfCanning().get(canning.getFeEfCommunication().get(fe));
@@ -155,9 +167,10 @@ public class MasksComputer {
                     coord.face().vertex().X() - facingCoord.edge().vertex().X()
             );
             int line = coord.face().vertex().Y();
-            maskSet.computeIfAbsent(line, k -> new HashSet<>()).add(mask);
-
-            //System.out.println(coord + " -> " + facingCoord + " = " + mask);
+            int lineFragment = coord.face().vertex().X() / (32 - 2*deltaX);
+            maskSet.computeIfAbsent(line, k -> new HashMap<>())
+                   .computeIfAbsent(lineFragment, k -> new HashSet<>())
+                   .add(mask);
         }
         return maskSet;
     }
@@ -167,12 +180,7 @@ public class MasksComputer {
      * Result should be identical to the average number of unique masks used for FeEf transfers.
      */
     public double getAverageEfFe(){
-        HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetEfFe();
-        int accumulator = 0;
-        for (HashSet<MaskIndex> maskSet : maskSets.values()) {
-            accumulator += maskSet.size();
-        }
-        return accumulator / (double)(maskSets.size());
+        return getAverageTransfer(maskSetEfFe());
     }
 
     /**
@@ -180,11 +188,6 @@ public class MasksComputer {
      * Result should be identical to the maximum number of unique masks used for FeEf transfers.
      */
     public int getMaxEfFe(){
-        HashMap<Integer, HashSet<MaskIndex>> maskSets = maskSetEfFe();
-        int max = 0;
-        for (HashSet<MaskIndex> maskSet : maskSets.values()) {
-            if (maskSet.size() > max) max = maskSet.size();
-        }
-        return max;
+        return getMaxTransfer(maskSetEfFe());
     }
 }

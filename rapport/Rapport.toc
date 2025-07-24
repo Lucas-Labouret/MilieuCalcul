@@ -1,35 +1,83 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\nameref {introduction}}{2}{chapter*.2}%
+\defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {1}Prerequisites}{3}{chapter.3}%
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.1}What is Blob Computing ?}{3}{section.4}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.1.1}Definition and Structure of a Computing Medium}{3}{subsection.5}%
-\contentsline {subsection}{\numberline {1.1.2}An Example of Computation~: the Voronoï Diagram}{4}{subsection.11}%
-\contentsline {subsection}{\numberline {1.1.3}Objective~: Cannings}{5}{subsection.13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.1.2}An Example of Computation\nobreakspace {}: the Voronoï Diagram}{4}{subsection.11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.1.3}Objective\nobreakspace {}: Cannings}{5}{subsection.13}%
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {1.2}Preliminary Work}{6}{section.23}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.2.1}Delaunay Triangulation}{6}{subsection.24}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {1.2.2}Farthest Point Optimization}{6}{subsection.25}%
+\defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {2}TER}{7}{chapter.26}%
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.1}Borders and Media}{7}{section.27}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.1.1}Soft Borders}{7}{subsection.28}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.1.2}Hard Borders}{7}{subsection.30}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.1.3}About Hybrid Borders}{8}{subsection.32}%
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {2.2}Canning and Evaluation}{8}{section.33}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.2.1}Vertex Cannings}{8}{subsection.34}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.2.2}From Vertex to Total Cannings}{9}{subsection.38}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {2.2.3}Evaluation}{10}{subsection.39}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{Definition}{10}{section*.40}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsubsection}{Some results}{11}{section*.44}%
+\defcounter {refsection}{0}\relax 
 \contentsline {chapter}{\numberline {3}Internship}{12}{chapter.45}%
+\defcounter {refsection}{0}\relax 
 \contentsline {section}{\numberline {3.0}Some conventions going forward}{12}{section.46}%
-\contentsline {section}{\numberline {3.1}Platform-CA2\blx@tocontentsinit {0}\supercite {platform_CA2} and Evaluation}{12}{section.47}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.1}Platform-CA2\supercite {platform_CA2} and Evaluation}{12}{section.47}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.1.1}How is SIMD applied ?}{12}{subsection.48}%
+\defcounter {refsection}{0}\relax 
 \contentsline {subsection}{\numberline {3.1.2}Exact Measurement of the Performance of a Canning}{14}{subsection.52}%
-\contentsline {subsection}{\numberline {3.1.3}SIMD limitations}{14}{subsection.53}%
-\contentsline {subsection}{\numberline {3.1.4}Importance of $\Delta $'s and Density}{14}{subsection.56}%
-\contentsline {section}{\numberline {3.2}Creating New Vertex Cannings}{15}{section.57}%
-\contentsline {section}{\numberline {3.3}Optimizing Existing Vertex Cannings}{15}{section.58}%
-\contentsline {chapter}{\nameref {conclusion}}{16}{chapter*.59}%
-\contentsline {chapter}{\nameref {appendix}}{17}{chapter*.60}%
-\contentsline {section}{\numberline {A}How to use the GUI}{17}{section.61}%
-\contentsline {section}{\numberline {B}How to add new medium shapes}{18}{section.74}%
-\contentsline {section}{\numberline {C}How to add new cannings}{18}{section.75}%
-\contentsline {chapter}{Bibliography}{19}{chapter*.79}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1.3}SIMD limitations}{14}{subsection.56}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1.4}Importance of $\Delta $'s and Density}{14}{subsection.59}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.2}Creating Vertex Cannings From Scratch}{15}{section.60}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.1}Revisiting the Rounded Coordinates Algorithm$^{\ref {partial_canning}}$}{15}{subsection.61}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.2}A Divide and Conquer Algorithm}{15}{subsection.62}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.3}Optimizing Existing Vertex Cannings}{16}{section.66}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.1}Adaptative Grid Method}{16}{subsection.67}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.2}Simulated Annealing}{16}{subsection.68}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Search Space and Neighbor Selection}{16}{section*.69}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Annealing Process}{16}{section*.70}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nameref {conclusion}}{17}{chapter*.71}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\nameref {appendix}}{18}{chapter*.72}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {A}How to use the GUI}{18}{section.73}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {B}How to add new medium shapes}{19}{section.86}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {C}How to add new cannings}{19}{section.87}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{Bibliography}{20}{chapter*.91}%
