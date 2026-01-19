@@ -8,7 +8,7 @@ import java.util.HashSet;
  * The edge is undirected, and the start and end vertices can be swapped without anything.
  * Provides methods to calculate properties such as length, center, and distance from a vertex.
  */
-public class Edge {
+public class Edge extends SimplicialLocus {
     private final Vertex start;
     private final Vertex end;
 

@@ -3,16 +3,21 @@ package computingMedia.tLoci;
 import computingMedia.sLoci.Edge;
 import computingMedia.sLoci.Vertex;
 
-public record Ev(Edge e, Vertex v) {
-    public Ev {
+public class Ev extends TransferLocus {
+    public final Edge e;
+    public final Vertex v;
+
+    public Ev(Edge e, Vertex v) {
         if (e == null || v == null) throw new IllegalArgumentException("Edge and vertex must not be null");
+        this.e = e;
+        this.v = v;
     }
 
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        if (!(other instanceof Ev(Edge e1, Vertex v1))) return false;
-        return e.equals(e1) && v.equals(v1);
+        if (!(other instanceof Ev oEv)) return false;
+        return e.equals(oEv.e) && v.equals(oEv.v);
     }
 
     @Override

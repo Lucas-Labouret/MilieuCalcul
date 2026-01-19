@@ -8,7 +8,7 @@ import java.util.Set;
  * The face is undirected, and the vertices can be given in any order.
  * Provides methods to calculate properties such as area, circumcenter, orthocenter, incenter, and more.
  */
-public class Face {
+public class Face extends SimplicialLocus {
     protected final Vertex a;
     protected final Vertex b;
     protected final Vertex c;

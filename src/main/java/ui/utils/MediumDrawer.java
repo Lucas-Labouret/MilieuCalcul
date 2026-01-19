@@ -433,45 +433,45 @@ public class MediumDrawer extends Pane {
     private void drawTLoci(Vertex v1, Vertex v2, Color color) { drawTLoci(v1, v2, color, null); }
     private void drawEfFe() {
         for (Ef ef: canning.getEf()){
-            Vertex v1 = ef.e().getCenter();
-            Vertex v2 = ef.f().getCentroid();
+            Vertex v1 = ef.e.getCenter();
+            Vertex v2 = ef.f.getCentroid();
             if (SHOW_EF_FE_COORDS) drawTLoci(v1, v2, EF_COLOR, canning.getEfCanning().get(ef).toString());
             else drawTLoci(v1, v2, EF_COLOR);
         }
 
         for (Fe fe : canning.getFe()){
-            Vertex v1 = fe.f().getCentroid();
-            Vertex v2 = fe.e().getCenter();
+            Vertex v1 = fe.f.getCentroid();
+            Vertex v2 = fe.e.getCenter();
             if (SHOW_EF_FE_COORDS) drawTLoci(v1, v2, FE_COLOR, canning.getFeCanning().get(fe).toString());
             else drawTLoci(v1, v2, FE_COLOR);
         }
     }
     private void drawEvVe() {
         for (Ev ev : canning.getEv()){
-            Vertex v1 = ev.e().getCenter();
-            Vertex v2 = ev.v();
+            Vertex v1 = ev.e.getCenter();
+            Vertex v2 = ev.v;
             if (SHOW_EV_VE_COORDS) drawTLoci(v1, v2, EV_COLOR, canning.getEvCanning().get(ev).toString());
             else drawTLoci(v1, v2, EV_COLOR);
         }
 
         for (Ve ve : canning.getVe()){
-            Vertex v1 = ve.v();
-            Vertex v2 = ve.e().getCenter();
+            Vertex v1 = ve.v;
+            Vertex v2 = ve.e.getCenter();
             if (SHOW_EV_VE_COORDS) drawTLoci(v1, v2, VE_COLOR, canning.getVeCanning().get(ve).toString());
             else drawTLoci(v1, v2, VE_COLOR);
         }
     }
     private void drawFvVf() {
         for (Fv fv : canning.getFv()){
-            Vertex v1 = fv.f().getCentroid();
-            Vertex v2 = fv.v();
+            Vertex v1 = fv.f.getCentroid();
+            Vertex v2 = fv.v;
             if (SHOW_FV_VF_COORDS) drawTLoci(v1, v2, FV_COLOR, canning.getFvCanning().get(fv).toString());
             else drawTLoci(v1, v2, FV_COLOR);
         }
 
         for (Vf vf : canning.getVf()){
-            Vertex v1 = vf.v();
-            Vertex v2 = vf.f().getCentroid();
+            Vertex v1 = vf.v;
+            Vertex v2 = vf.f.getCentroid();
             if (SHOW_FV_VF_COORDS) drawTLoci(v1, v2, VF_COLOR, canning.getVfCanning().get(vf).toString());
             else drawTLoci(v1, v2, VF_COLOR);
         }
@@ -500,13 +500,13 @@ public class MediumDrawer extends Pane {
     }
     private void drawTransferEfFe(){
         for (Ef ef : canning.getEf()){
-            Vertex v1 = ef.e().getCenter();
-            Vertex v2 = ef.f().getCentroid();
+            Vertex v1 = ef.e.getCenter();
+            Vertex v2 = ef.f.getCentroid();
             Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
 
             Fe fe = canning.getEfFeCommunication().get(ef);
-            Vertex v3 = fe.f().getCentroid();
-            Vertex v4 = fe.e().getCenter();
+            Vertex v3 = fe.f.getCentroid();
+            Vertex v4 = fe.e.getCenter();
             Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
 
             drawTransfer(start, end, EF_COLOR, FE_COLOR);
@@ -514,13 +514,13 @@ public class MediumDrawer extends Pane {
     }
     private void drawTransferFeEf(){
         for (Fe fe : canning.getFe()){
-            Vertex v1 = fe.f().getCentroid();
-            Vertex v2 = fe.e().getCenter();
+            Vertex v1 = fe.f.getCentroid();
+            Vertex v2 = fe.e.getCenter();
             Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
 
             Ef ef = canning.getFeEfCommunication().get(fe);
-            Vertex v3 = ef.e().getCenter();
-            Vertex v4 = fe.f().getCentroid();
+            Vertex v3 = ef.e.getCenter();
+            Vertex v4 = fe.f.getCentroid();
             Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
 
             drawTransfer(start, end, FE_COLOR, EF_COLOR);
@@ -528,13 +528,13 @@ public class MediumDrawer extends Pane {
     }
     private void drawTransferEvVe(){
         for (Ev ev : canning.getEv()){
-            Vertex v1 = ev.e().getCenter();
-            Vertex v2 = ev.v();
+            Vertex v1 = ev.e.getCenter();
+            Vertex v2 = ev.v;
             Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
 
             Ve ve = canning.getEvVeCommunication().get(ev);
-            Vertex v3 = ve.v();
-            Vertex v4 = ev.e().getCenter();
+            Vertex v3 = ve.v;
+            Vertex v4 = ev.e.getCenter();
             Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
 
             drawTransfer(start, end, EV_COLOR, VE_COLOR);
@@ -542,13 +542,13 @@ public class MediumDrawer extends Pane {
     }
     private void drawTransferVeEv(){
         for (Ve ve : canning.getVe()){
-            Vertex v1 = ve.v();
-            Vertex v2 = ve.e().getCenter();
+            Vertex v1 = ve.v;
+            Vertex v2 = ve.e.getCenter();
             Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
 
             Ev ev = canning.getVeEvCommunication().get(ve);
-            Vertex v3 = ev.e().getCenter();
-            Vertex v4 = ev.v();
+            Vertex v3 = ev.e.getCenter();
+            Vertex v4 = ev.v;
             Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
 
             drawTransfer(start, end, VE_COLOR, EV_COLOR);
@@ -556,26 +556,26 @@ public class MediumDrawer extends Pane {
     }
     private void drawTransferFvVf(){
         for (Fv fv : canning.getFv()){
-            Vertex v1 = fv.f().getCentroid();
-            Vertex v2 = fv.v();
+            Vertex v1 = fv.f.getCentroid();
+            Vertex v2 = fv.v;
             Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
 
             Vf vf = canning.getFvVfCommunication().get(fv);
-            Vertex v3 = vf.v();
-            Vertex v4 = vf.f().getCentroid();
+            Vertex v3 = vf.v;
+            Vertex v4 = vf.f.getCentroid();
             Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
             drawTransfer(start, end, FV_COLOR, VF_COLOR);
         }
     }
     private void drawTransferVfFv(){
         for (Vf vf : canning.getVf()){
-            Vertex v1 = vf.v();
-            Vertex v2 = vf.f().getCentroid();
+            Vertex v1 = vf.v;
+            Vertex v2 = vf.f.getCentroid();
             Vertex start = Edge.getWeightedCenter(TLOCI_SPACING, v1, v2);
 
             Fv fv = canning.getVfFvCommunication().get(vf);
-            Vertex v3 = fv.f().getCentroid();
-            Vertex v4 = fv.v();
+            Vertex v3 = fv.f.getCentroid();
+            Vertex v4 = fv.v;
             Vertex end = Edge.getWeightedCenter(TLOCI_SPACING, v3, v4);
 
             drawTransfer(start, end, VF_COLOR, FV_COLOR);
@@ -679,10 +679,10 @@ public class MediumDrawer extends Pane {
      * Draw the canning grid, optionally with holes for cells that do not contain a vertex.
      * <p>
      * This grid does not match the lines/columns drawn by drawCanning() in general,
-     * it is more a visual aid to see how the holes are organized in the grid.
+     * it is more of a visual aid to see how the holes are organized in the grid.
      * </p><p>
      * It does however match drawCanning() rather well when used on a RoundedCoordinateVCanning,
-     * though still bot perfectly accurately.
+     * though still not perfectly accurately.
      * </p>
      */
     private void drawCanningGrid() {

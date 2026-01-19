@@ -3,16 +3,21 @@ package computingMedia.tLoci;
 import computingMedia.sLoci.Face;
 import computingMedia.sLoci.Vertex;
 
-public record Vf(Vertex v, Face f) {
-    public Vf {
+public class Vf extends TransferLocus {
+    public final Vertex v;
+    public final Face f;
+
+    public Vf(Vertex v, Face f) {
         if (v == null || f == null) throw new IllegalArgumentException("Vertex and face must not be null");
+        this.v = v;
+        this.f = f;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Vf(Vertex v1, Face f1))) return false;
-        return v.equals(v1) && f.equals(f1);
+        if (!(o instanceof Vf oVf)) return false;
+        return v.equals(oVf.v) && f.equals(oVf.f);
     }
 
     @Override

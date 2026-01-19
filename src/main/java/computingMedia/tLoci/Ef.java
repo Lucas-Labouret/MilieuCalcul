@@ -3,16 +3,21 @@ package computingMedia.tLoci;
 import computingMedia.sLoci.Edge;
 import computingMedia.sLoci.Face;
 
-public record Ef(Edge e, Face f) {
-    public Ef {
+public class Ef extends TransferLocus {
+    public final Edge e;
+    public final Face f;
+
+    public Ef(Edge e, Face f) {
         if (e == null || f == null) throw new IllegalArgumentException("Edge and face must not be null");
+        this.e = e;
+        this.f = f;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Ef(Edge e1, Face f1))) return false;
-        return e.equals(e1) && f.equals(f1);
+        if (!(o instanceof Ef oEf)) return false;
+        return e.equals(oEf.e) && f.equals(oEf.f);
     }
 
     @Override

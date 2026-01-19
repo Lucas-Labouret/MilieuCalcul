@@ -3,6 +3,7 @@ package computingMedia.media;
 import computingMedia.sLoci.*;
 import computingMedia.optimization.Delaunay;
 import computingMedia.optimization.FPO;
+import computingMedia.tLoci.*;
 import misc.linkedList.LinkedList;
 
 import java.util.*;
@@ -134,6 +135,38 @@ public abstract class Medium extends HashSet<Vertex> {
             faces.addAll(vertex.getSurroundingFaces());
         }
         return faces;
+    }
+
+    public HashSet<Ve> getVe(){
+        HashSet<Ve> veSet = new HashSet<>();
+        for (Edge edge : getEdges()) for (Vertex vertex : edge.getEnds()) {
+            veSet.add(new Ve(vertex, edge));
+        }
+        return veSet;
+    }
+
+    public HashSet<Vf> getVf(){
+        HashSet<Vf> vfSet = new HashSet<>();
+        for (Face face : getFaces()) for (Vertex vertex : face.getVertices()) {
+            vfSet.add(new Vf(vertex, face));
+        }
+        return vfSet;
+    }
+
+    public HashSet<Ev> getEv(){
+        HashSet<Ev> evSet = new HashSet<>();
+        for (Edge edge : getEdges()) for (Vertex vertex : edge.getEnds()) {
+            evSet.add(new Ev(edge, vertex));
+        }
+        return evSet;
+    }
+
+    public HashSet<Ef> getEf(){
+        HashSet<Ef> efSet = new HashSet<>();
+        for (Face face : getFaces()) for (Vertex vertex : face.getVertices()) {
+            efSet.add(new Ef(edge, face));
+        }
+        return efSet;
     }
 
     /** @return the distance between x and y. */

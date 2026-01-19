@@ -4,7 +4,7 @@ import computingMedia.Orientation;
 
 import java.util.*;
 
-public class Vertex {
+public class Vertex extends SimplicialLocus {
     private double x;
     private double y;
 
