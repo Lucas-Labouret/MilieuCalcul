@@ -13,6 +13,8 @@ public class Ef extends TransferLocus {
         this.f = f;
     }
 
+    @Override public Fe getDual() { return new Fe(f, e); }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

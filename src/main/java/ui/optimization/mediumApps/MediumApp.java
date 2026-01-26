@@ -1,4 +1,4 @@
-package ui.mediumApps;
+package ui.optimization.mediumApps;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -8,11 +8,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-import ui.utils.InformationBar;
-import ui.utils.MaskLister;
-import ui.utils.MediumDrawer;
+import ui.common.InformationBar;
+import ui.optimization.utils.MaskLister;
+import ui.optimization.utils.MediumDrawer;
 import savefileManagers.SavefileManager;
-import ui.utils.SidePanel;
+import ui.common.SidePanel;
 
 import cannings.Canning;
 import cannings.evaluation.MasksComputer;

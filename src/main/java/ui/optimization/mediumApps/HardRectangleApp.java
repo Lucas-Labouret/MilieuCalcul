@@ -1,11 +1,11 @@
-package ui.mediumApps;
+package ui.optimization.mediumApps;
 
 import cannings.Canning;
 import cannings.VertexCanningCompleter;
 import cannings.vertexCannings.RoundedCoordIncrementalVCanning;
 import computingMedia.media.HardRectangleMedium;
 import savefileManagers.HardRectangleManager;
-import ui.utils.TBIntInput;
+import ui.common.TBIntInput;
 
 public class HardRectangleApp extends MediumApp {
     @Override public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordIncrementalVCanning(medium)); }

@@ -2,4 +2,6 @@ package computingMedia.tLoci;
 
 import computingMedia.Locus;
 
-public class TransferLocus extends Locus {}
+public abstract class TransferLocus extends Locus {
+    public abstract TransferLocus getDual();
+}

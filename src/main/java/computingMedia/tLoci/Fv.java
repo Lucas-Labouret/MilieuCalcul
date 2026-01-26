@@ -13,6 +13,8 @@ public class Fv extends TransferLocus {
         this.v = v;
     }
 
+    @Override public Vf getDual() { return new Vf(v, f); }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;

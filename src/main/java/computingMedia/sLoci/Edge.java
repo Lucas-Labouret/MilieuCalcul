@@ -1,5 +1,8 @@
 package computingMedia.sLoci;
 
+import computingMedia.tLoci.Ef;
+import computingMedia.tLoci.Ev;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -107,6 +110,59 @@ public class Edge extends SimplicialLocus {
         double dx = end.getX() - start.getX();
         double dy = end.getY() - start.getY();
         return Math.atan2(dy, dx);
+    }
+
+    /** @return this edge's tLoci toward vertices sorted in clockwise order from the positive x-axis. */
+    public ArrayList<Ev> getEvs() {
+        ArrayList<Ev> evs = new ArrayList<>();
+        Ev sEv = new Ev(this, start);
+        Ev eEv = new Ev(this, end);
+
+        if (start.getY() == end.getY()) {
+            if (start.getX() > end.getX()) {
+                evs.add(sEv); evs.add(eEv);
+            } else {
+                evs.add(eEv); evs.add(sEv);
+            }
+        } else if (start.getY() > end.getY()) {
+            evs.add(sEv); evs.add(eEv);
+        } else {
+            evs.add(eEv); evs.add(sEv);
+        }
+
+        return evs;
+    }
+
+    /** @return this edge's tLoci toward faces sorted in clockwise order from the positive x-axis. */
+    public ArrayList<Ef> getEfs() {
+        ArrayList<Vertex> vertices = new ArrayList<>();
+        for (Vertex ns : start.getNeighbors()) for (Vertex ne : end.getNeighbors())
+            if (ns.equals(ne)) vertices.add(ns);
+
+        ArrayList<Ef> efs = new ArrayList<>();
+
+        if (vertices.size() == 1) {
+            efs.add(new Ef(this, new Face(vertices.getFirst(), start, end)));
+        }
+
+        Vertex v0 = vertices.get(0);
+        Vertex v1 = vertices.get(1);
+        Ef ef0 = new Ef(this, new Face(v0, start, end));
+        Ef ef1 = new Ef(this, new Face(v1, start, end));
+
+        if (v0.getY() == v1.getY()) {
+            if (v0.getX() > v1.getX()) {
+                efs.add(ef0); efs.add(ef1);
+            } else {
+                efs.add(ef1); efs.add(ef0);
+            }
+        } else if (start.getY() > end.getY()) {
+            efs.add(ef0); efs.add(ef1);
+        } else {
+            efs.add(ef1); efs.add(ef0);
+        }
+
+        return efs;
     }
 
     @Override

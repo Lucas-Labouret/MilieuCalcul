@@ -1,6 +1,8 @@
 package computingMedia.sLoci;
 
 import computingMedia.Orientation;
+import computingMedia.tLoci.Ve;
+import computingMedia.tLoci.Vf;
 
 import java.util.*;
 
@@ -84,7 +86,17 @@ public class Vertex extends SimplicialLocus {
      */
     public void removeNeighbor(Vertex v) { if (neighbors.remove(v)) v.removeNeighbor(this); }
 
+    /** @return the set of all the neighbors of this vertex */
     public HashSet<Vertex> getNeighbors() { return neighbors; }
+
+    /** @return the set of all the edges that have this vertex as an endpoint */
+    public HashSet<Edge> getIncidentEdges() {
+        HashSet<Edge> edges = new HashSet<>();
+        for (Vertex neighbor : neighbors) {
+            edges.add(new Edge(this, neighbor));
+        }
+        return edges;
+    }
 
     /** @return the set of all the faces that have this vertex as a vertex */
     public HashSet<Face> getSurroundingFaces() {
@@ -93,6 +105,31 @@ public class Vertex extends SimplicialLocus {
             if (n1.hasNeighbors(n2)) faces.add(new Face(this, n1, n2));
         }
         return faces;
+    }
+
+    /** @return the list of this vertex's tLoci toward edges, sorted in clockwise order from the positive x-axis*/
+    public ArrayList<Ve> getVes() {
+        ArrayList<Vertex> sortedNeighbors = this.sortNeighborsCW();
+        ArrayList<Ve> ves = new ArrayList<>();
+        for (int i = 0; i < sortedNeighbors.size(); i++) {
+            ves.add(new Ve(this, new Edge(this, sortedNeighbors.get(i))));
+        }
+        return ves;
+    }
+
+    /** @return the list of this vertex's tLoci toward faces, sorted in clockwise order from the positive x-axis*/
+    public ArrayList<Vf> getVfs() {
+        ArrayList<Vertex> sortedNeighbors = this.sortNeighborsCW();
+        ArrayList<Vf> vfs = new ArrayList<>();
+        for (int i = 0; i < sortedNeighbors.size(); i++) {
+            Vertex n1 = sortedNeighbors.get(i);
+            Vertex n2 = sortedNeighbors.get((i + 1) % sortedNeighbors.size());
+            if (n1.hasNeighbors(n2)) {
+                Face face = new Face(this, n1, n2);
+                vfs.add(new Vf(this, face));
+            }
+        }
+        return vfs;
     }
 
     @Override

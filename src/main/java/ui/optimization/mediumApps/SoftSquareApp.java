@@ -1,11 +1,11 @@
-package ui.mediumApps;
+package ui.optimization.mediumApps;
 
 import cannings.Canning;
 import cannings.VertexCanningCompleter;
 import cannings.vertexCannings.RoundedCoordDichotomyVCanning;
 import computingMedia.media.SoftSquareMedium;
 import savefileManagers.SoftSquareManager;
-import ui.utils.TBIntInput;
+import ui.common.TBIntInput;
 
 public class SoftSquareApp extends MediumApp {
     public Canning DEFAULT_CANNING() { return new VertexCanningCompleter(new RoundedCoordDichotomyVCanning(medium)); }

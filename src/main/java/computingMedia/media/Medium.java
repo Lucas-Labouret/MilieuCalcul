@@ -163,10 +163,26 @@ public abstract class Medium extends HashSet<Vertex> {
 
     public HashSet<Ef> getEf(){
         HashSet<Ef> efSet = new HashSet<>();
-        for (Face face : getFaces()) for (Vertex vertex : face.getVertices()) {
+        for (Face face : getFaces()) for (Edge edge : face.getEdges()) {
             efSet.add(new Ef(edge, face));
         }
         return efSet;
+    }
+
+    public HashSet<Fv> getFv(){
+        HashSet<Fv> fvSet = new HashSet<>();
+        for (Face face : getFaces()) for (Vertex vertex : face.getVertices()) {
+            fvSet.add(new Fv(face, vertex));
+        }
+        return fvSet;
+    }
+
+    public HashSet<Fe> getFe(){
+        HashSet<Fe> feSet = new HashSet<>();
+        for (Face face : getFaces()) for (Edge edge : face.getEdges()) {
+            feSet.add(new Fe(face, edge));
+        }
+        return feSet;
     }
 
     /** @return the distance between x and y. */

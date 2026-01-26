@@ -5,16 +5,14 @@ module local.furthestpointoptimization {
     requires commons.math3;
     requires java.desktop;
 
-    opens ui to javafx.fxml;
-    opens ui.mediumApps to javafx.fxml;
+    opens ui.optimization.mediumApps to javafx.fxml;
 
     exports computingMedia.media;
     exports cannings;
-    
-    exports ui;
-    exports ui.mediumApps;
+
+    exports ui.optimization.mediumApps;
     exports savefileManagers;
-    exports ui.utils;
+    exports ui.common;
     opens savefileManagers to javafx.fxml;
     exports computingMedia.sLoci;
     exports computingMedia.tLoci;
@@ -30,4 +28,9 @@ module local.furthestpointoptimization {
     exports simulatedAnnealing.neighborGenerator;
     exports simulatedAnnealing.temperatureRegulator;
     exports simulatedAnnealing.neighborGenerator.neighborSelector;
+    exports ui.optimization;
+    opens ui.optimization to javafx.fxml;
+    exports ui.optimization.utils;
+    exports ui;
+    opens ui to javafx.fxml;
 }

@@ -1,5 +1,10 @@
 package computingMedia.sLoci;
 
+import computingMedia.tLoci.Fe;
+import computingMedia.tLoci.Fv;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Set;
 
@@ -26,6 +31,59 @@ public class Face extends SimplicialLocus {
      */
     public Set<Vertex> getVertices(){
         return Set.of(a, b, c);
+    }
+
+    /**
+     * Returns the edges of the face as a set.
+     * The order of the edges does not matter, as the face is undirected.
+     * @return a set containing the three edges of the face.
+     */
+    public Set<Edge> getEdges(){
+        Edge ab = new Edge(a, b);
+        Edge bc = new Edge(b, c);
+        Edge ca = new Edge(c, a);
+        return Set.of(ab, bc, ca);
+    }
+
+    /** @return this faces's tLoci toward vertices sorted in clockwise order around the face's centroid, starting from the positive x-axis. */
+    public ArrayList<Fv> getFvs() {
+        ArrayList<Vertex> vertices = new ArrayList<>(getVertices());
+
+        Vertex c = getCentroid();
+        vertices.sort(new Vertex.CompareByAngleDistance(c, new Vertex(c.getX() + 1, c.getY()), true));
+
+        ArrayList<Fv> fvs = new ArrayList<>();
+        for (Vertex vertex : vertices) fvs.add(new Fv(this, vertex));
+        return fvs;
+    }
+
+    /** @return this face's tLoci toward edges sorted in clockwise order around the face's centroid, starting from the positive x-axis. */
+    public ArrayList<Fe> getFes() {
+        ArrayList<Vertex> vertices = new ArrayList<>();
+
+        Edge ab = new Edge(a, b);
+        Edge bc = new Edge(b, c);
+        Edge ca = new Edge(c, a);
+
+        Vertex midAB = ab.getCenter();
+        Vertex midBC = bc.getCenter();
+        Vertex midCA = ca.getCenter();
+
+        HashMap<Vertex, Edge> edgeMidpoints = new HashMap<>();
+        edgeMidpoints.put(midAB, ab);
+        edgeMidpoints.put(midBC, bc);
+        edgeMidpoints.put(midCA, ca);
+
+        vertices.add(midAB);
+        vertices.add(midBC);
+        vertices.add(midCA);
+
+        Vertex c = getCentroid();
+        vertices.sort(new Vertex.CompareByAngleDistance(c, new Vertex(c.getX() + 1, c.getY()), true));
+
+        ArrayList<Fe> fes = new ArrayList<>();
+        for (Vertex vertex : vertices) fes.add(new Fe(this, edgeMidpoints.get(vertex)));
+        return fes;
     }
 
     /**

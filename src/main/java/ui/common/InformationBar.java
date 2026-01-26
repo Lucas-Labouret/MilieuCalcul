@@ -1,4 +1,4 @@
-package ui.utils;
+package ui.common;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;

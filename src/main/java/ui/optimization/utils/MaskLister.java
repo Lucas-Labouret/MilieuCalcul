@@ -1,4 +1,4 @@
-package ui.utils;
+package ui.optimization.utils;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;

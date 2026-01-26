@@ -2,4 +2,4 @@ package computingMedia.sLoci;
 
 import computingMedia.Locus;
 
-public class SimplicialLocus extends Locus {}
+public abstract class SimplicialLocus extends Locus {}

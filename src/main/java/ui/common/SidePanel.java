@@ -1,4 +1,4 @@
-package ui.utils;
+package ui.common;
 
 import javafx.geometry.Pos;
 import javafx.scene.Node;

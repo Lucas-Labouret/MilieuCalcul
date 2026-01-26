@@ -1,4 +1,4 @@
-package ui.utils;
+package ui.optimization.utils;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
@@ -48,7 +48,6 @@ public class MediumDrawer extends Pane {
     private static final Color CANNING_GRID_1_COLOR = Color.color(.9, .9, .9);
     private static final Color CANNING_GRID_2_COLOR = Color.WHITE;
     private static final Color CANNING_GRID_HOLE_COLOR = Color.color(1, .9 , .9);
-
 
     private static final Color OFF_COLOR = Color.LIGHTGRAY;
 

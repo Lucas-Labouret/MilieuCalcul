@@ -1,4 +1,4 @@
-package ui.utils;
+package ui.common;
 
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
