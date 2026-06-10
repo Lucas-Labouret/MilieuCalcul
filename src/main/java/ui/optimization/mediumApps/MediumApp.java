@@ -65,6 +65,7 @@ public abstract class MediumApp extends BorderPane {
     protected final InformationBar savefileInfo;
     protected final TextField fileName;
     protected final Button saveButton;
+    protected final Button exportButton;
     protected final Button loadButton;
 
     // Model components
@@ -115,9 +116,11 @@ public abstract class MediumApp extends BorderPane {
         fileName = new TextField();
         saveButton = new Button("Save");
         saveButton.setOnAction(event -> save());
+        exportButton = new Button("Export");
+        exportButton.setOnAction(event -> export());
         loadButton = new Button("Load");
         loadButton.setOnAction(event -> load());
-        botToolBar.getItems().addAll(fileName, saveButton, loadButton, savefileInfo);
+        botToolBar.getItems().addAll(fileName, saveButton, exportButton, loadButton, savefileInfo);
 
         widthProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
         heightProperty().addListener((obs, oldVal, newVal) -> updateDrawPaneSize());
@@ -187,6 +190,17 @@ public abstract class MediumApp extends BorderPane {
             return;
         }
         try { savefileManager.save(canning, getFileName()); }
+        catch (IOException e) {
+            savefileInfo.setText("Failed to save to a file.");
+            e.printStackTrace();
+        }
+    }
+    private void export(){
+        if (fileName.getText().isEmpty()){
+            savefileInfo.setText("Please enter a file name");
+            return;
+        }
+        try { savefileManager.export(canning, getFileName()); }
         catch (IOException e) {
             savefileInfo.setText("Failed to save to a file.");
             e.printStackTrace();

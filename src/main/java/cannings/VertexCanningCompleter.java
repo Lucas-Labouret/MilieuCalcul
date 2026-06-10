@@ -205,11 +205,12 @@ public class VertexCanningCompleter implements Canning {
 
             ArrayList<Vertex> neighbors = new ArrayList<>(vertex.getNeighbors());
             neighbors.sort((n1, n2) -> Edge.sortCWWithReferencePoint(vertex, new Edge(vertex, n1), new Edge(vertex, n2)));
+
             int firstNeighborIndex = 0;
             for (int i = 0; i < neighbors.size(); i++) {
                 Vertex neighbor = neighbors.get(i);
                 EdgeCoord edgeCoord = edgeCanning.get(new Edge(vertex, neighbor));
-                if (vertexCanning.get(vertex).equals(edgeCoord.vertex())) {
+                if (vertexCanning.get(vertex).equals(edgeCoord.vertex()) && edgeCoord.theta() == 0) {
                     firstNeighborIndex = i;
                     break;
                 }
@@ -242,19 +243,35 @@ public class VertexCanningCompleter implements Canning {
                 facingEvVe.put(ev, ve);
                 facingVeEv.put(ve, ev);
 
-                Face oldFace = new Face(vertex, neighbor1, neighbor2);
-                Face face = null;
-                int sideFace = 0;
-                for (Face candidate: vertexToManagedFaces.get(vertex))    if (candidate.equals(oldFace)) face = candidate;
-                for (Face candidate: vertexToManagedFaces.get(neighbor1)) if (candidate.equals(oldFace)) {
+                // Sometimes, faces near a corner could be read in the wrong order
+                if (Vertex.ccw(vertex, neighbor1, neighbor2)) {
+                    Vertex tmp = neighbor1;
+                    neighbor1 = neighbor2;
+                    neighbor2 = tmp;
+                }
+                Edge edgeF = new Edge(vertex, neighbor1);
+
+                Face face = new Face(vertex, neighbor1, neighbor2);
+
+                int sideFace = -1;
+                for (Face candidate: vertexToManagedFaces.get(vertex))    if (candidate.equals(face)) {
+                    sideFace = 0;
+                    face = candidate;
+                }
+                if (sideFace == -1) for (Face candidate: vertexToManagedFaces.get(neighbor1)) if (candidate.equals(face)) {
                     sideFace = 2;
                     face = candidate;
                 }
-                for (Face candidate: vertexToManagedFaces.get(neighbor2)) if (candidate.equals(oldFace)) {
+                if (sideFace == -1) for (Face candidate: vertexToManagedFaces.get(neighbor2)) if (candidate.equals(face)) {
                     sideFace = 1;
                     face = candidate;
                 }
-                if (face == null) {
+                if (sideFace == -1) {
+                    if (!vertex.isBorder() || !neighbor1.isBorder() || !neighbor2.isBorder())
+                        System.err.println("Face not found for vertices " +
+                                vertexCanning.get(vertex) + ", " +
+                                vertexCanning.get(neighbor1) + ", " +
+                                vertexCanning.get(neighbor2));
                     continue;
                 }
                 FaceCoord faceCoord = faceCanning.get(face);
@@ -270,7 +287,7 @@ public class VertexCanningCompleter implements Canning {
                 facingFvVf.put(fv, vf);
                 facingVfFv.put(vf, fv);
 
-                Fe fe = new Fe(face, edge);
+                Fe fe = new Fe(face, edgeF);
                 FeCoord feCoord = new FeCoord(sideFace, faceCoord);
                 feCanning.put(fe, feCoord);
 
@@ -281,6 +298,88 @@ public class VertexCanningCompleter implements Canning {
                 facingEfFe.put(ef, fe);
                 facingFeEf.put(fe, ef);
             }
+        }
+
+        System.out.println(
+                "Missing t-loci :" + "\n" +
+                "   Ve: " + (medium.getVe().size() - veCanning.size()) + " | Ev: " + (medium.getEv().size() - evCanning.size()) + "\n" +
+                "   Vf: " + (medium.getVf().size() - vfCanning.size()) + " | Fv: " + (medium.getFv().size() - fvCanning.size()) + "\n" +
+                "   Fe: " + (medium.getFe().size() - feCanning.size()) + " | Ef: " + (medium.getEf().size() - efCanning.size())
+        );
+
+        HashMap<Ve, VeCoord> veD = new HashMap<>(veCanning);
+        HashMap<Ev, EvCoord> evD = new HashMap<>(evCanning);
+        HashMap<Vf, VfCoord> vfD = new HashMap<>(vfCanning);
+        HashMap<Fv, FvCoord> fvD = new HashMap<>(fvCanning);
+        HashMap<Fe, FeCoord> feD = new HashMap<>(feCanning);
+        HashMap<Ef, EfCoord> efD = new HashMap<>(efCanning);
+
+        HashSet<VeCoord> ve = new HashSet<>(veCanning.values());
+        HashSet<EvCoord> ev = new HashSet<>(evCanning.values());
+        HashSet<VfCoord> vf = new HashSet<>(vfCanning.values());
+        HashSet<FvCoord> fv = new HashSet<>(fvCanning.values());
+        HashSet<FeCoord> fe = new HashSet<>(feCanning.values());
+        HashSet<EfCoord> ef = new HashSet<>(efCanning.values());
+
+        System.out.println(
+                "duplicate t-loci :" + "\n" +
+                "   Ve: " + (veD.size() - ve.size()) + " | Ev: " + (evD.size() - ev.size()) + "\n" +
+                "   Vf: " + (vfD.size() - vf.size()) + " | Fv: " + (fvD.size() - fv.size()) + "\n" +
+                "   Fe: " + (feD.size() - fe.size()) + " | Ef: " + (efD.size() - ef.size())
+        );
+
+        System.out.println("Duplicate Ve");
+        for (Ve e: medium.getVe()) {
+            VeCoord c = veCanning.get(e);
+            if (ve.contains(c)) {
+                veD.remove(e);
+                ve.remove(c);
+            } else System.out.println("   " + c);
+        }
+
+        System.out.println("Duplicate Ev");
+        for (Ev e: medium.getEv()) {
+            EvCoord c = evCanning.get(e);
+            if (ev.contains(c)) {
+                evD.remove(e);
+                ev.remove(c);
+            } else System.out.println("   " + c);
+        }
+
+        System.out.println("Duplicate Vf");
+        for (Vf e: medium.getVf()) {
+            VfCoord c = vfCanning.get(e);
+            if (vf.contains(c)) {
+                vfD.remove(e);
+                vf.remove(c);
+            } else System.out.println("   " + c);
+        }
+
+        System.out.println("Duplicate Fv");
+        for (Fv e: medium.getFv()) {
+            FvCoord c = fvCanning.get(e);
+            if (fv.contains(c)) {
+                fvD.remove(e);
+                fv.remove(c);
+            } else System.out.println("   " + c);
+        }
+
+        System.out.println("Duplicate Fe");
+        for (Fe e: medium.getFe()) {
+            FeCoord c = feCanning.get(e);
+            if (fe.contains(c)) {
+                feD.remove(e);
+                fe.remove(c);
+            } else System.out.println("   " + c);
+        }
+
+        System.out.println("Duplicate Ef");
+        for (Ef e: medium.getEf()) {
+            EfCoord c = efCanning.get(e);
+            if (ef.contains(c)) {
+                efD.remove(e);
+                ef.remove(c);
+            } else System.out.println("   " + c);
         }
     }
 

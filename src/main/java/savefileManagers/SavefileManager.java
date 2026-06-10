@@ -2,11 +2,13 @@ package savefileManagers;
 
 import cannings.Canning;
 import cannings.VertexCanningCompleter;
-import cannings.coords.sCoords.VertexCoord;
+import cannings.coords.sCoords.*;
+import cannings.coords.tCoords.*;
 import cannings.vertexCannings.RoundedCoordIncrementalVCanning;
 import cannings.vertexCannings.SimpleVertexCanning;
-import computingMedia.sLoci.Vertex;
+import computingMedia.sLoci.*;
 import computingMedia.media.Medium;
+import computingMedia.tLoci.*;
 import misc.linkedList.LinkedList;
 import misc.linkedList.Node;
 
@@ -20,8 +22,11 @@ import java.util.HashMap;
  * It automatically appends the default extension ".vtxs" to the savefile name, therefore it should not be specified in the file's name.
  */
 public abstract class SavefileManager {
-    public static final String DEFAULT_LOCATION  = "save/";
-    public static final String DEFAULT_EXTENSION = ".vtxs";
+    public static final String DEFAULT_SAVE_LOCATION = "save/";
+    public static final String DEFAULT_EXPORT_LOCATION = "export/";
+    public static final String DEFAULT_SAVE_EXTENSION = ".vtxs";
+    public static final String DEFAULT_EXPORT_EXTENSION = ".can";
+
 
     public SavefileManager() {}
 
@@ -39,13 +44,11 @@ public abstract class SavefileManager {
      * Note that only the vertex canning is saved, as the rest of the canning can be easily reconstructed with the completer.
      *
      * @param canning The Canning to save.
-     * @param name   The name of the savefile (without extension).
+     * @param name The name of the savefile (without extension).
      * @throws IOException If an error occurs during saving.
      */
     public void save(Canning canning, String name) throws IOException {
         if (canning == null) return;
-
-        String fullName = DEFAULT_LOCATION + name + DEFAULT_EXTENSION;
 
         Medium medium = canning.getMedium();
         HashMap<Vertex, VertexCoord> vertexCanning = canning.getVertexCanning();
@@ -134,7 +137,7 @@ public abstract class SavefileManager {
             saveStr.append("\n");
         }
 
-
+        String fullName = DEFAULT_SAVE_LOCATION + name + DEFAULT_SAVE_EXTENSION;
         BufferedWriter writer = new BufferedWriter(new FileWriter(fullName));
         writer.write(saveStr.toString());
         writer.close();
@@ -149,7 +152,7 @@ public abstract class SavefileManager {
      * @throws IOException If an error occurs during loading.
      */
     public Canning load(String name) throws IOException {
-        String fullName = DEFAULT_LOCATION + name + DEFAULT_EXTENSION;
+        String fullName = DEFAULT_SAVE_LOCATION + name + DEFAULT_SAVE_EXTENSION;
 
         Medium medium = makeMedium();
         Canning canning;
@@ -487,5 +490,231 @@ public abstract class SavefileManager {
                 border,
                 topBorder, leftBorder, rightBorder, bottomBorder
         );
+    }
+
+    /**
+     * Export the full canning.
+     * The file will be saved in the default location with the default extension.
+     * The whole canning (along with physical coordinates) is exported for use by other applications.
+     *
+     * @param canning The Canning to save.
+     * @param name The name of the export file (without extension).
+     * @throws IOException If an error occurs during saving.
+     */
+    public void export(Canning canning, String name) throws IOException {
+        HashMap<Vertex, VertexCoord> vertexCanning = canning.getVertexCanning();
+        HashMap<Ve, VeCoord> veCanning = canning.getVeCanning();
+        HashMap<Vf, VfCoord> vfCanning = canning.getVfCanning();
+
+        HashMap<Edge, EdgeCoord> edgeCanning = canning.getEdgeCanning();
+        HashMap<Ev, EvCoord> evCanning = canning.getEvCanning();
+        HashMap<Ef, EfCoord> efCanning = canning.getEfCanning();
+
+        HashMap<Face, FaceCoord> faceCanning = canning.getFaceCanning();
+        HashMap<Fv, FvCoord> fvCanning = canning.getFvCanning();
+        HashMap<Fe, FeCoord> feCanning = canning.getFeCanning();
+
+        HashMap<Integer, Ve> indexToVe = new HashMap<>();
+        HashMap<Ve, Integer> veToIndex = new HashMap<>();
+        HashMap<Integer, Vf> indexToVf = new HashMap<>();
+        HashMap<Vf, Integer> vfToIndex = new HashMap<>();
+
+        HashMap<Ev, Integer> evToIndex = new HashMap<>();
+        HashMap<Integer, Ef> indexToEf = new HashMap<>();
+        HashMap<Ef, Integer> efToIndex = new HashMap<>();
+
+        HashMap<Fv, Integer> fvToIndex = new HashMap<>();
+        HashMap<Fe, Integer> feToIndex = new HashMap<>();
+
+        StringBuilder exportStr = new StringBuilder();
+
+        exportStr.append("-- Dimensions --\n");
+        exportStr.append(canning.getMedium().getHeight()).append(" ").append(canning.getMedium().getWidth()).append("\n\n");
+
+        int i;
+
+        i=0;
+        exportStr.append("-- Vertices --\n");
+        for (Vertex vertex: vertexCanning.keySet()) {
+            double y = vertex.getY();
+            double x = vertex.getX();
+            VertexCoord vertexCoord = vertexCanning.get(vertex);
+            String border = "";
+            border += vertex.isTopBorder()? "T" : "F";
+            border += vertex.isLeftBorder()? "T" : "F";
+            border += vertex.isRightBorder()? "T" : "F";
+            border += vertex.isBottomBorder()? "T" : "F";
+            exportStr.append(i).append(" ").append(y).append(" ").append(x).append(" ")
+                     .append(vertexCoord.Y()).append(" ").append(vertexCoord.X()).append(" ")
+                     .append(border)
+                     .append("\n");
+            i++;
+        }
+        exportStr.append("\n");
+
+        i=0;
+        exportStr.append("-- Ve --\n");
+        for (Ve ve: veCanning.keySet()) {
+            VeCoord veCoord = veCanning.get(ve);
+            indexToVe.put(i, ve);
+            veToIndex.put(ve, i);
+            double y = (2/3d) * ve.v.getY() + (1/3d) * ve.e.getCenter().getY();
+            double x = (2/3d) * ve.v.getX() + (1/3d) * ve.e.getCenter().getX();
+            exportStr.append(i).append(" ").append(y).append(" ").append(x).append(" ")
+                     .append(veCoord.vertex().Y()).append(" ").append(veCoord.vertex().X()).append(" ").append(veCoord.theta())
+                     .append("\n");
+            i++;
+        }
+        exportStr.append("\n");
+
+        i=0;
+        exportStr.append("-- Vf --\n");
+        for (Vf vf: vfCanning.keySet()) {
+            VfCoord vfCoord = vfCanning.get(vf);
+            vfToIndex.put(vf, i);
+            indexToVf.put(i, vf);
+            double y = (2/3d) * vf.v.getY() + (1/3d) * vf.f.getCentroid().getY();
+            double x = (2/3d) * vf.v.getX() + (1/3d) * vf.f.getCentroid().getX();
+            exportStr.append(i).append(" ").append(y).append(" ").append(x).append(" ")
+                     .append(vfCoord.vertex().Y()).append(" ").append(vfCoord.vertex().X()).append(" ").append(vfCoord.theta())
+                     .append("\n");
+            i++;
+        }
+        exportStr.append("\n");
+
+        i=0;
+        exportStr.append("-- Edges --\n");
+        for (Edge edge: edgeCanning.keySet()) {
+            double y = edge.getCenter().getY();
+            double x = edge.getCenter().getX();
+            EdgeCoord edgeCoord = edgeCanning.get(edge);
+            String border = "";
+            border += (edge.getEnds().stream().allMatch(Vertex::isTopBorder))? "T" : "F";
+            border += (edge.getEnds().stream().allMatch(Vertex::isLeftBorder))? "T" : "F";
+            border += (edge.getEnds().stream().allMatch(Vertex::isRightBorder))? "T" : "F";
+            border += (edge.getEnds().stream().allMatch(Vertex::isBottomBorder))? "T" : "F";
+            exportStr.append(i).append(" ").append(y).append(" ").append(x).append(" ")
+                     .append(edgeCoord.vertex().Y()).append(" ").append(edgeCoord.vertex().X()).append(" ").append(edgeCoord.theta()).append(" ")
+                     .append(border)
+                     .append("\n");
+            i++;
+        }
+        exportStr.append("\n");
+
+        i=0;
+        exportStr.append("-- Ev --\n");
+        for (Ev ev: evCanning.keySet()) {
+            EvCoord evCoord = evCanning.get(ev);
+            evToIndex.put(ev, i);
+            double y = (2/3d) * ev.e.getCenter().getY() + (1/3d) * ev.v.getY();
+            double x = (2/3d) * ev.e.getCenter().getX() + (1/3d) * ev.v.getX();
+            exportStr.append(i).append(" ").append(y).append(" ").append(x).append(" ")
+                     .append(evCoord.edge().vertex().Y()).append(" ").append(evCoord.edge().vertex().X()).append(" ")
+                     .append(evCoord.edge().theta()).append(" ").append(evCoord.side())
+                     .append("\n");
+            i++;
+        }
+        exportStr.append("\n");
+
+        i=0;
+        exportStr.append("-- Ef --\n");
+        for (Ef ef: efCanning.keySet()) {
+            EfCoord efCoord = efCanning.get(ef);
+            efToIndex.put(ef, i);
+            indexToEf.put(i, ef);
+            double y = (2/3d) * ef.e.getCenter().getY() + (1/3d) * ef.f.getCentroid().getY();
+            double x = (2/3d) * ef.e.getCenter().getX() + (1/3d) * ef.f.getCentroid().getX();
+            exportStr.append(i).append(" ").append(y).append(" ").append(x).append(" ")
+                     .append(efCoord.edge().vertex().Y()).append(" ").append(efCoord.edge().vertex().X()).append(" ")
+                     .append(efCoord.edge().theta()).append(" ").append(efCoord.side())
+                     .append("\n");
+            i++;
+        }
+        exportStr.append("\n");
+
+        i=0;
+        exportStr.append("-- Faces --\n");
+        for (Face face: faceCanning.keySet()) {
+            FaceCoord faceCoord = faceCanning.get(face);
+            exportStr.append(i).append(" ").append(face.getCentroid().getY()).append(" ").append(face.getCentroid().getX()).append(" ")
+                     .append(faceCoord.vertex().Y()).append(" ").append(faceCoord.vertex().X()).append(" ").append(faceCoord.theta())
+                     .append("\n");
+            i++;
+        }
+        exportStr.append("\n");
+
+        i=0;
+        exportStr.append("-- Fv --\n");
+        for (Fv fv: fvCanning.keySet()) {
+            FvCoord fvCoord = fvCanning.get(fv);
+            fvToIndex.put(fv, i);
+            double y = (2/3d) * fv.f.getCentroid().getY() + (1/3d) * fv.v.getY();
+            double x = (2/3d) * fv.f.getCentroid().getX() + (1/3d) * fv.v.getX();
+            exportStr.append(i).append(" ").append(y).append(" ").append(x).append(" ")
+                     .append(fvCoord.face().vertex().Y()).append(" ").append(fvCoord.face().vertex().X()).append(" ")
+                     .append(fvCoord.face().theta()).append(" ").append(fvCoord.side())
+                     .append("\n");
+            i++;
+        }
+        exportStr.append("\n");
+        i=0;
+        exportStr.append("-- Fe --\n");
+        for (Fe fe: feCanning.keySet()) {
+            FeCoord feCoord = feCanning.get(fe);
+            feToIndex.put(fe, i);
+            double y = (2/3d) * fe.f.getCentroid().getY() + (1/3d) * fe.e.getCenter().getY();
+            double x = (2/3d) * fe.f.getCentroid().getX() + (1/3d) * fe.e.getCenter().getX();
+            exportStr.append(i).append(" ").append(y).append(" ").append(x).append(" ")
+                     .append(feCoord.face().vertex().Y()).append(" ").append(feCoord.face().vertex().X()).append(" ")
+                     .append(feCoord.face().theta()).append(" ").append(feCoord.side())
+                     .append("\n");
+            i++;
+        }
+        exportStr.append("\n");
+
+        exportStr.append("-- Ve <-> Ev --\n");
+        for (int j = 0; j < indexToVe.size(); j++) {
+            Ve ve = indexToVe.get(j);
+            Ev ev = ve.getDual();
+            int evIndex = evToIndex.get(ev);
+            exportStr.append(j).append(" ").append(evIndex).append("\n");
+        }
+        exportStr.append("\n");
+
+        exportStr.append("-- Vf <-> Fv --\n");
+        for (int j = 0; j < indexToVf.size(); j++) {
+            Vf vf = indexToVf.get(j);
+            Fv fv = vf.getDual();
+            int fvIndex = fvToIndex.get(fv);
+            exportStr.append(j).append(" ").append(fvIndex).append("\n");
+        }
+        exportStr.append("\n");
+
+        exportStr.append("-- Ef <-> Fe --\n");
+        for (int j = 0; j < indexToEf.size(); j++) {
+            Ef ef = indexToEf.get(j);
+            Fe fe = ef.getDual();
+            int feIndex = feToIndex.get(fe);
+            exportStr.append(j).append(" ").append(feIndex).append("\n");
+        }
+        exportStr.append("\n");
+
+        String fullName = DEFAULT_EXPORT_LOCATION + name + DEFAULT_EXPORT_EXTENSION;
+        BufferedWriter writer = new BufferedWriter(new FileWriter(fullName));
+        writer.write(exportStr.toString());
+        writer.close();
+    }
+
+    public static void main(String[] args) throws IOException {
+        HardRectangleManager rectangleManager = new HardRectangleManager();
+        Canning large = rectangleManager.load("HardRectangle4096_ORCI2D_9");
+        Canning medium = rectangleManager.load("HardSquare256_ORCI_0");
+            Canning small = rectangleManager.load("HardSquare36_ORCI_0");
+
+        rectangleManager.export(large, "large");
+        rectangleManager.export(medium, "medium");
+        rectangleManager.export(small, "small");
+
+        System.out.println("Done");
     }
 }

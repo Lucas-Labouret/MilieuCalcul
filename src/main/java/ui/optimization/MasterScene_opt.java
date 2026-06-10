@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import javafx.scene.SubScene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
 import ui.MasterScene;
 import ui.optimization.mediumApps.*;
 

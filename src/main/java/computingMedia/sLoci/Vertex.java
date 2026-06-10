@@ -12,7 +12,7 @@ public class Vertex extends SimplicialLocus {
 
     static final Random rd = new Random();
     public static double randomEps() {
-        return rd.nextDouble(1e-5);
+        return 0;//rd.nextDouble(1e-5);
     }
 
     private final HashSet<Vertex> neighbors = new HashSet<>();

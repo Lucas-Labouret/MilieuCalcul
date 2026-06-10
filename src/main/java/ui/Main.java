@@ -7,8 +7,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import ui.optimization.MasterScene_opt;
 
-import java.io.Console;
-
 /**
  * Main class for the Blob application.
  * This class initializes the JavaFX application, and serves as the entry point.

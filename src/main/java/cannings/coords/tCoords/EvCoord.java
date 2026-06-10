@@ -16,7 +16,7 @@ public record EvCoord(int side, EdgeCoord edge) {
     @Override
     public boolean equals(Object o) {
         if (o == this) return true;
-        if (!(o instanceof EfCoord(int s1, EdgeCoord e1))) return false;
+        if (!(o instanceof EvCoord(int s1, EdgeCoord e1))) return false;
         return side == s1 && edge.equals(e1);
     }
 
